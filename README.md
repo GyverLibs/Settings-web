@@ -1,4 +1,6 @@
 # Settings web
+Веб-приложение библиотеки [Settings](https://github.com/GyverLibs/Settings)
+
 ## Как собрать
 - Установить [VS Code](https://code.visualstudio.com/download)
 - Установить [Node JS](https://nodejs.org/en/download/prebuilt-installer)
