@@ -1,6 +1,13 @@
 .date {
     opacity: 0;
     position: absolute;
-    pointer-events: none;
-    padding-top: 10px;
+    cursor: pointer;
+}
+
+.date_block {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }

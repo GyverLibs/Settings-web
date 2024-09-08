@@ -10,29 +10,30 @@ export default class ColorWidget extends WidgetBase {
         super.addOutput(Component.make('div', {
             context: this,
             class: 'input_cont',
-            children: [
-                {
-                    tag: 'input',
-                    type: 'color',
-                    class: 'color',
-                    var: 'col',
-                    attrs: { 'colorpick-eyedropper-active': false },
-                    events: {
-                        change: () => {
-                            this.updateOut();
-                            this.sendEvent(this.hexCol());
+            child: {
+                tag: 'div',
+                class: 'color_block',
+                children: [
+                    {
+                        tag: 'div',
+                        class: 'color_out',
+                        var: 'out',
+                    },
+                    {
+                        tag: 'input',
+                        type: 'color',
+                        class: 'color',
+                        var: 'col',
+                        attrs: { 'colorpick-eyedropper-active': false },
+                        events: {
+                            change: () => {
+                                this.updateOut();
+                                this.sendEvent(this.hexCol());
+                            }
                         }
-                    }
-                },
-                {
-                    tag: 'div',
-                    class: 'color_out',
-                    var: 'out',
-                    events: {
-                        click: () => this.$col.showPicker(),
-                    }
-                }
-            ]
+                    },
+                ]
+            }
         }));
 
         this.update(data.value);

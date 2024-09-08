@@ -10,30 +10,32 @@ class TimeWidgetBase extends WidgetBase {
         super.addOutput(Component.make('div', {
             context: this,
             class: 'input_cont',
-            children: [
-                {
-                    tag: 'input',
-                    var: 'input',
-                    type: this.type,
-                    class: 'date',
-                    step: 1,
-                    events: {
-                        change: () => {
-                            let unix = Math.floor(this.$input.valueAsNumber / 1000);
-                            this.sendEvent(unix);
-                            this.update(unix);
+            child: {
+                tag: 'div',
+                class: 'date_block',
+                children: [
+                    {
+                        tag: 'input',
+                        var: 'input',
+                        type: this.type,
+                        class: 'date value',
+                        step: 1,
+                        events: {
+                            change: () => {
+                                let unix = Math.floor(this.$input.valueAsNumber / 1000);
+                                this.sendEvent(unix);
+                                this.update(unix);
+                            },                        
+                            click: () => this.$input.showPicker(),
                         }
-                    }
-                },
-                {
-                    tag: 'span',
-                    class: 'value active',
-                    var: 'out',
-                    events: {
-                        click: () => this.$input.showPicker(),
                     },
-                }
-            ]
+                    {
+                        tag: 'span',
+                        class: 'value active',
+                        var: 'out',
+                    }
+                ]
+            }
         }));
 
         this.update(data.value);
