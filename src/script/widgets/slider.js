@@ -3,6 +3,8 @@ import WidgetBase from "./widget";
 import './slider.css';
 
 export default class SliderWidget extends WidgetBase {
+    timeout = 60;  // between sends
+
     constructor(data) {
         super(data);
         this.unit = data.unit ?? '';
@@ -22,11 +24,23 @@ export default class SliderWidget extends WidgetBase {
                 class: 'slider',
                 var: 'slider',
                 min: (data.min ?? 0) + '',
-                max: (data.max ?? 100) +'',
+                max: (data.max ?? 100) + '',
                 step: (data.step ?? 1) + '',
                 events: {
-                    input: () => this.move(),
-                    change: () => this.sendEvent(this.$slider.value),
+                    input: () => {
+                        this.move();
+                        if (this._tmr) {
+                            this._buf = this.$slider.value;
+                        } else {
+                            this.sendEvent(this.$slider.value);
+                            this._buf = null;
+
+                            this._tmr = setTimeout(() => {
+                                if (this._buf) this.sendEvent(this._buf);
+                                this._tmr = null;
+                            }, this.timeout);
+                        }
+                    },
                 }
             }
         }));
@@ -45,4 +59,7 @@ export default class SliderWidget extends WidgetBase {
         this.$slider.value = Number(value ?? 0) + '';
         this.move();
     }
+
+    _tmr = null;
+    _buf = null;
 }

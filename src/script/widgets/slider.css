@@ -32,3 +32,7 @@
     height: 25px;
     border-radius: 50%;
 }
+
+.slider::-webkit-slider-thumb:hover {
+    box-shadow: 0 2px 10px 2px #00000029;
+}
