@@ -5,7 +5,8 @@ export default class ConfirmWidget extends WidgetBase {
     constructor(data) {
         super(data, false);
         this.text = data.label ?? 'Confirm';
-        this.$root = document.createDocumentFragment();
+        this.$root = document.createElement('div');
+        this.$root.style = 'display: none';
     }
 
     async update(value) {

@@ -6,10 +6,11 @@ import './select.css';
 
 function SelectDialog(options, selected) {
     return new Promise(resolve => {
-
+        let ctx = {};
         let dialog = new DialogCont();
         Component.config(dialog.$root, {
             style: 'cursor: pointer;',
+            context: ctx,
             events: {
                 click: () => {
                     dialog.destroy();
@@ -34,11 +35,15 @@ function SelectDialog(options, selected) {
                                 }
                             }
                         })),
-                }
+                    also(el) {
+                        setTimeout(() => {
+                            el.scrollTop = selected / options.length * el.scrollHeight;
+                        }, 1);
+                    },
+                },
             }
 
         });
-
     });
 }
 

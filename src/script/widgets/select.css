@@ -5,7 +5,8 @@
 }
 
 .select::-webkit-scrollbar {
-    display: none;
+    width: 7px;
+    height: 7px;
 }
 
 .select::-webkit-scrollbar-track {
@@ -13,7 +14,8 @@
 }
 
 .select::-webkit-scrollbar-thumb {
-    display: none;
+    background: var(--back);
+    border-radius: 4px;
 }
 
 .option {
