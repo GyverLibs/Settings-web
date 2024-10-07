@@ -30,6 +30,10 @@ export default function Group(title, data, parent, pages, widgets) {
         switch (obj.type) {
             case 'menu': ctx.$group_col.append(MenuWidget(obj.title, obj.content, parent, pages, widgets)); break;
             default:
+                if (widgets.has(obj.id)) {
+                    document.dispatchEvent(new CustomEvent("dup_id", { detail: { widget: obj } }));
+                    break;
+                }
                 if (obj.type in WidgetList) {
                     let w = new (WidgetList[obj.type])(obj);
                     ctx.$group_col.append(w.$root);

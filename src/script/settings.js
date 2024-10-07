@@ -218,8 +218,13 @@ export default class Settings {
         this.$main_col.addEventListener("widget_event", async (e) => {
             let res = null;
             switch (e.data.action) {
-                case 'click': res = await this.send('click', e.data.id); break;
-                case 'set': res = await this.send('set', e.data.id, e.data.value); break;
+                case 'click':
+                    res = await this.send('click', e.data.id);
+                    break;
+                case 'set':
+                    res = await this.send('set', e.data.id, e.data.value);
+                    this.updateCache(e.data.id, e.data.value);
+                    break;
             }
             this.parse(res);
             if (res === null) e.data.widget.setError();
@@ -264,7 +269,29 @@ export default class Settings {
         if (localStorage.hasOwnProperty('cache')) {
             this.renderUI(JSON.parse(localStorage.getItem('cache')));
         }
+
         this.load();
+
+        // должно быть в конце
+        document.addEventListener('dup_id', (e) => {
+            popup(`Duplicated widget ID: ${e.detail.widget.id} [${e.detail.widget.type}]`);
+        });
+    }
+
+    updateCache(id, value) {
+        function repl(obj) {
+            for (let k in obj) {
+                if (typeof obj[k] == "object" && obj[k] !== null) repl(obj[k]);
+            }
+            if (obj.id === id) obj.value = value;
+        }
+
+        if (localStorage.hasOwnProperty('cache')) {
+            id = parseInt(id, 16);
+            let packet = JSON.parse(localStorage.getItem('cache'));
+            repl(packet);
+            localStorage.setItem('cache', JSON.stringify(packet));
+        }
     }
 
     async load() {
@@ -419,7 +446,7 @@ export default class Settings {
                             class: 'fs_path',
                             text: path,
                             events: {
-                                click: () => this.fetchFile(path),
+                                click: () => this.downloadFile(path),
                             }
                         },
                         {
@@ -429,12 +456,33 @@ export default class Settings {
                             children: [
                                 {
                                     tag: 'span',
-                                    class: 'fs_size',
+                                    class: 'fs_size fs_icon',
                                     text: (size / 1024).toFixed(1) + 'k',
                                 },
                                 {
                                     tag: 'div',
-                                    class: 'icon cross',
+                                    class: 'icon edit fs_icon',
+                                    style: { background: 'var(--accent)' },
+                                    events: {
+                                        click: async () => {
+                                            try {
+                                                let res = await this.fetchFile(path);
+                                                res = await res.text();
+                                                let changed = await AsyncPrompt('Edit & upload', res);
+                                                if (changed !== null) {
+                                                    let data = new FormData();
+                                                    data.append('upload', changed);
+                                                    await this.uploadFormData(path, data);
+                                                }
+                                            } catch (e) {
+                                                popup(e);
+                                            }
+                                        }
+                                    }
+                                },
+                                {
+                                    tag: 'div',
+                                    class: 'icon cross fs_icon',
                                     style: { width: '17px', height: '17px', background: 'var(--error)' },
                                     events: {
                                         click: async () => {
@@ -466,7 +514,14 @@ export default class Settings {
     }
     async fetchFile(path) {
         try {
-            let res = await fetch(this.makeUrl('fetch', { path: path }), { signal: AbortSignal.timeout(timeout) });
+            return await fetch(this.makeUrl('fetch', { path: path }), { signal: AbortSignal.timeout(timeout) });
+        } catch (e) {
+            popup(e);
+        }
+    }
+    async downloadFile(path) {
+        try {
+            let res = await this.fetchFile(path);
             res = await res.blob();
 
             let link = document.createElement('a');
@@ -485,11 +540,17 @@ export default class Settings {
         this.stopPing();
         let data = new FormData();
         data.append('upload', file);
+        try {
+            await this.uploadFormData(path, data);
+        } catch (e) { }
+    }
+    async uploadFormData(path, data) {
         let ok = false;
         try {
             let res = await http_post(this.makeUrl('upload', { path: path }), data, (perc) => iconGradient(this.$upload, perc));
             if (res == 200) ok = true;
         } catch (e) { }
+
         iconFill(this.$upload, ok ? 'var(--font_tint)' : 'var(--error)');
         popup(ok ? 'Upload done' : 'Upload error', !ok);
         if (ok) this.parse(await this.send('fs'));

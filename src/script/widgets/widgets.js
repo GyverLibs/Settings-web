@@ -13,10 +13,12 @@ import ParagraphWidget from "./paragraph";
 import Button from "./button";
 import ConfirmWidget from "./confirm";
 import LedWidget from "./led";
+import NumberWidget from './number';
 
 export const WidgetList = {
     toggle: SwitchWidget,
     input: InputWidget,
+    number: NumberWidget,
     pass: PassWidget,
     select: SelectWidget,
     time: TimeWidget,

@@ -14,6 +14,10 @@ export default function Page(data, pages, widgets) {
             case 'menu': page.append(MenuWidget(obj.title, obj.content, page, pages, widgets)); break;
             case 'group': page.append(Group(obj.title, obj.content, page, pages, widgets)); break;
             default:
+                if (widgets.has(obj.id)) {
+                    document.dispatchEvent(new CustomEvent("dup_id", { detail: { widget: obj } }));
+                    break;
+                }
                 if (obj.type in WidgetList) {
                     let w = new (WidgetList[obj.type])(obj);
                     page.append(w.$root);

@@ -1,6 +1,6 @@
 .button {
     display: inline-block;
-    margin: 6px 0;
+    margin: 8px 10px;
     box-sizing: border-box;
     padding: 5px;
     background: var(--accent);

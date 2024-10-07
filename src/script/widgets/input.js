@@ -6,7 +6,7 @@ export default class InputWidget extends WidgetBase {
     empty = false;
     text = "";
 
-    constructor(data) {
+    constructor(data, oninput = null) {
         super(data);
 
         super.addOutput(Component.make('span', {
@@ -15,7 +15,7 @@ export default class InputWidget extends WidgetBase {
             var: 'out',
             events: {
                 click: async () => {
-                    let res = await AsyncPrompt(data.label, this.text);
+                    let res = await AsyncPrompt(data.label, this.text, oninput);
                     if (res !== null) {
                         this.sendEvent(encodeURIComponent(res));
                         this.update(res);

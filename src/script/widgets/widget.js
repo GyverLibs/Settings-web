@@ -22,7 +22,7 @@ export default class WidgetBase {
                         children: [
                             {
                                 tag: 'label',
-                                text: data.label,
+                                text: data.label ?? data.type,
                             },
                             {
                                 tag: 'sup',

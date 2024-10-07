@@ -29,6 +29,7 @@ export const codes = [
     'unit',
 
     'input',
+    'number',
     'pass',
     'select',
     'slider',

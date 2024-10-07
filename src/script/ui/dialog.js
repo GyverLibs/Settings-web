@@ -74,13 +74,16 @@ export function BaseDialog(label, content, actionOK, actionCancel, postRender = 
     if (postRender) postRender();
 }
 
-export function AsyncPrompt(label, value) {
+export function AsyncPrompt(label, value, oninput = null) {
     return new Promise(resolve => {
         let area = Component.make('textarea', {
             text: value,
             rows: 1,
             events: {
-                input: () => area.style.height = area.scrollHeight + "px",
+                input: () => {
+                    area.style.height = area.scrollHeight + "px";
+                    if (oninput) oninput(area);
+                },
             }
         });
 
