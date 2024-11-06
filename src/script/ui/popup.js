@@ -5,7 +5,7 @@ export default function popup(text, error = true) {
     let popup = Component.make('div', {
         class: 'popup',
         style: {
-            animation: 'fadeInOut 2.5s',
+            animation: 'fadeInOut 3.0s',
             background: error ? 'var(--error)' : 'var(--accent)',
         },
         text: text,

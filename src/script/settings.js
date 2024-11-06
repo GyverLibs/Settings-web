@@ -405,7 +405,15 @@ export default class Settings {
 
             case 'update':
                 for (let upd of packet.content) {
-                    if (this.widgets.has(upd.id)) this.widgets.get(upd.id).update(upd.value);
+                    switch (upd.type) {
+                        case 'notice': popup(upd.text, false); break;
+                        case 'alert': popup(upd.text, true); break;
+
+                        default:
+                            if (this.widgets.has(upd.id)) this.widgets.get(upd.id).update(upd.value);
+                            break;
+                    }
+
                 }
                 break;
 

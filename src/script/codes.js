@@ -27,6 +27,8 @@ export const codes = [
     'max',
     'step',
     'unit',
+    'color_on',
+    'color_off',
 
     'input',
     'number',
@@ -41,4 +43,6 @@ export const codes = [
     'paragraph',
     'confirm',
     'led',
+    'alert',
+    'notice',
 ];

@@ -4,9 +4,10 @@ import WidgetEvent from "./event";
 export default class WidgetBase {
     $root;
     $error;
+    data;
 
     constructor(data, makeWidget = true) {
-        this.id = data.id;
+        this.data = data;
         if (makeWidget) Component.make('div', {
             context: this,
             class: 'widget',
@@ -46,7 +47,7 @@ export default class WidgetBase {
     }
 
     sendEvent(value) {
-        this.$root.dispatchEvent(new WidgetEvent('set', this.id, value, this));
+        this.$root.dispatchEvent(new WidgetEvent('set', this.data.id, value, this));
     }
 
     setError() {

@@ -1,6 +1,7 @@
 import { Component } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import './led.css';
+import { intToColor } from "../utils";
 
 export default class LedWidget extends WidgetBase {
     constructor(data) {
@@ -16,6 +17,10 @@ export default class LedWidget extends WidgetBase {
     }
 
     update(value) {
-        this.$led.classList = 'led' + (value == '1' ? ' on' : '');
+        if (this.data.color_on) {
+            this.$led.style.setProperty('--color', intToColor(value == 1 ? this.data.color_on : this.data.color_off));
+        } else {
+            this.$led.classList = 'led' + (value == 1 ? ' on' : '');
+        }
     }
 }
