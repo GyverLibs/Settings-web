@@ -2,10 +2,11 @@ import { Component } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import './time.css';
 
+const gmt = new Date().getTimezoneOffset() * 60;
+
 class TimeWidgetBase extends WidgetBase {
     constructor(data, type) {
         super(data);
-        this.type = type;
 
         super.addOutput(Component.make('div', {
             context: this,
@@ -17,15 +18,14 @@ class TimeWidgetBase extends WidgetBase {
                     {
                         tag: 'input',
                         var: 'input',
-                        type: this.type,
+                        type: type,
                         class: 'date value',
                         step: 1,
                         events: {
                             change: () => {
-                                let unix = Math.floor(this.$input.valueAsNumber / 1000);
-                                this.sendEvent(unix);
-                                this.update(unix);
-                            },                        
+                                this.sendEvent(this.getUnix());
+                                this.update(this.getUnix());
+                            },
                             click: () => this.$input.showPicker(),
                         }
                     },
@@ -42,27 +42,37 @@ class TimeWidgetBase extends WidgetBase {
     }
 
     update(value) {
-        value = value ?? 0;
-        this.$input.value = this.unixToDate(value);
-        this.$out.innerText = this.unixToText(value);
+        value = this.unixToValue(value ?? 0);
+        this.$input.value = value;
+        this.$out.innerText = value.replace('T', ' ');
     }
 
-    unixToDate(value) {
-        value = new Date(value * 1000).toISOString();
-        switch (this.type) {
-            case 'date': return value.split('T')[0];
-            case 'time': return value.split('T')[1].split('.')[0];
-            case 'datetime-local': return value.split('.')[0];
-        }
+    getUnix() {
+        return Math.floor(this.$input.valueAsNumber / 1000) + gmt;
     }
-    unixToText(value) {
-        return this.unixToDate(value).replace('T', ' ');
+
+    getDateString(value) {
+        return new Date((value - gmt) * 1000).toISOString();
     }
+
+    unixToValue(value) { }
 }
 
 export class TimeWidget extends TimeWidgetBase {
     constructor(data) {
         super(data, 'time');
+    }
+
+    unixToValue(value) {
+        return this.getDateString(value).split('T')[1].split('.')[0];
+    }
+
+    getUnix() {
+        return Math.floor(this.$input.valueAsNumber / 1000);
+    }
+
+    getDateString(value) {
+        return new Date(value * 1000).toISOString();
     }
 }
 
@@ -70,10 +80,18 @@ export class DateWidget extends TimeWidgetBase {
     constructor(data) {
         super(data, 'date');
     }
+
+    unixToValue(value) {
+        return this.getDateString(value).split('T')[0];
+    }
 }
 
 export class DateTimeWidget extends TimeWidgetBase {
     constructor(data) {
         super(data, 'datetime-local');
+    }
+
+    unixToValue(value) {
+        return this.getDateString(value).split('.')[0];
     }
 }
