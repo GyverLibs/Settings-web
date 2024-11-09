@@ -1,13 +1,17 @@
 import { Component } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import './slider.css';
-import { AsyncConfirm, AsyncPrompt } from "../ui/dialog";
+import { AsyncPrompt } from "../ui/dialog";
+import { Config } from '../config';
+import Timer from "../timer";
 
 export default class SliderWidget extends WidgetBase {
-    timeout = 60;  // between sends
+    timer;
+    prev = null;
 
     constructor(data) {
         super(data);
+        this.timer = new Timer();
         this.unit = data.unit ?? '';
 
         super.addOutput(Component.make('span', {
@@ -37,15 +41,25 @@ export default class SliderWidget extends WidgetBase {
                 max: (data.max ?? 100) + '',
                 step: (data.step ?? 1) + '',
                 events: {
+                    change: () => {
+                        this.send();
+                    },
                     input: () => {
                         this.move();
-                        this.send();
+                        if (!this.timer.running()) {
+                            this.timer.start(() => this.send(), Config.sliderTout);
+                        }
                     },
                 }
             }
         }));
 
         this.update(data.value);
+    }
+
+    update(value) {
+        this.$slider.value = Number(value ?? 0) + '';
+        this.move();
     }
 
     move() {
@@ -55,25 +69,11 @@ export default class SliderWidget extends WidgetBase {
         this.$out.innerText = Number(s.value).toFixed(digs ? digs.length : 0) + (this.unit ? this.unit : '');
     }
 
-    update(value) {
-        this.$slider.value = Number(value ?? 0) + '';
-        this.move();
-    }
-
     send() {
-        if (this._tmr) {
-            this._buf = this.$slider.value;
-        } else {
-            this.sendEvent(this.$slider.value);
-            this._buf = null;
-
-            this._tmr = setTimeout(() => {
-                if (this._buf) this.sendEvent(this._buf);
-                this._tmr = null;
-            }, this.timeout);
+        this.timer.stop();
+        if (this.prev !== this.$slider.value) {
+            this.prev = this.$slider.value;
+            this.sendEvent(this.prev);
         }
     }
-
-    _tmr = null;
-    _buf = null;
 }

@@ -13,20 +13,20 @@ html {
 }
 
 body::-webkit-scrollbar {
-    display: none;
-    /* width: 7px; */
-    /* height: 7px; */
+    /* display: none; */
+    width: 7px;
+    height: 7px;
 }
 
 body::-webkit-scrollbar-track {
-    display: none;
-    /* background: #0000; */
+    /* display: none; */
+    background: #0000;
 }
 
 body::-webkit-scrollbar-thumb {
-    display: none;
-    /* background: var(--dark); */
-    /* border-radius: 4px; */
+    /* display: none; */
+    background: var(--dark);
+    border-radius: 4px;
 }
 
 .main {

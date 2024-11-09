@@ -1,14 +1,14 @@
 import { Component } from '@alexgyver/component';
-import Page from './page';
 import { Arrow, hash, http_post } from './utils';
-import popup from './ui/popup';
-import decodeBson from './bson';
 import { codes } from './codes';
-import unMap from './unmap';
 import { AsyncConfirm, AsyncPrompt } from './ui/dialog';
 import { changeRSSI, makeRSSI } from './ui/rssi';
+import { Config } from './config';
+import popup from './ui/popup';
+import decodeBson from './bson';
+import unMap from './unmap';
+import Page from './page';
 
-const timeout = 2000;
 const anim_s = '.11s';
 const anim_ms = 100;
 
@@ -32,7 +32,6 @@ export default class Settings {
     granted = false;
     firstBuild = true;
     auth = 0;
-    ping_prd = 2000;
 
     constructor() {
         this.$arrow = Arrow('left', 16, {
@@ -306,7 +305,7 @@ export default class Settings {
     async send(action, id = null, value = null) {
         let res = null;
         try {
-            res = await fetch(this.makeUrl('settings', { action: action, id: id, value: value }), { signal: AbortSignal.timeout(timeout) });
+            res = await fetch(this.makeUrl('settings', { action: action, id: id, value: value }), { signal: AbortSignal.timeout(Config.requestTout) });
         } catch (e) { }
 
         if (!res || !res.ok) return null;
@@ -352,13 +351,13 @@ export default class Settings {
 
     restartPing() {
         this.stopPing();
-        if (!this.ping_prd) return;
+        if (!Config.updateTout) return;
         this.ping_int = setInterval(async () => {
             const res = await this.send(this.offline ? 'load' : 'ping');
             this.parse(res);
             if (!res) this.authF = false;
             this.setOffline(!res);
-        }, this.ping_prd);
+        }, Config.updateTout);
     }
     stopPing() {
         if (this.ping_int) clearInterval(this.ping_int);
@@ -376,7 +375,6 @@ export default class Settings {
             case 'build':
                 this.renderUI(packet);
                 localStorage.setItem('cache', JSON.stringify(packet));
-                this.ping_prd = packet.ping;
                 this.restartPing();
 
                 if (!this.authF) {
@@ -425,6 +423,10 @@ export default class Settings {
     }
 
     renderUI(json) {
+        Config.updateTout = json.update_tout;
+        Config.requestTout = json.request_tout;
+        Config.sliderTout = json.slider_tout;
+
         this.$title.innerText = json.title ?? 'Settings';
         document.title = this.$title.innerText;
         let pages = [];
@@ -523,7 +525,7 @@ export default class Settings {
     }
     async fetchFile(path) {
         try {
-            return await fetch(this.makeUrl('fetch', { path: path }), { signal: AbortSignal.timeout(timeout) });
+            return await fetch(this.makeUrl('fetch', { path: path }), { signal: AbortSignal.timeout(Config.requestTout) });
         } catch (e) {
             popup(e);
         }
