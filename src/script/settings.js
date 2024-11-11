@@ -34,6 +34,8 @@ export default class Settings {
     auth = 0;
 
     constructor() {
+        console.log("Settings-web v" + SETTINGS_V);
+
         this.$arrow = Arrow('left', 16, {
             display: 'none',
             marginRight: '4px',
@@ -263,6 +265,11 @@ export default class Settings {
 
         if (localStorage.hasOwnProperty('auth')) {
             this.auth = Number(localStorage.getItem('auth'));
+        }
+
+        if (!localStorage.hasOwnProperty('version') || localStorage.getItem('version') != SETTINGS_V) {
+            localStorage.removeItem('cache');
+            localStorage.setItem('version', SETTINGS_V);
         }
 
         if (localStorage.hasOwnProperty('cache')) {
