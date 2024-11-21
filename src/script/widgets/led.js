@@ -7,10 +7,14 @@ export default class LedWidget extends WidgetBase {
     constructor(data) {
         super(data);
 
-        super.addOutput(Component.make('span', {
+        super.addOutput(Component.make('div', {
             context: this,
-            class: 'led',
-            var: 'led',
+            class: 'led_cont',
+            child: {
+                tag: 'span',
+                class: 'led',
+                var: 'led',
+            }
         }));
 
         this.update(data.value);

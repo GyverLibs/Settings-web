@@ -5,6 +5,7 @@ export const codes = [
     'group',
     'menu',
     'buttons',
+    'row',
 
     'build',
     'reload',

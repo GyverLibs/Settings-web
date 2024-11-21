@@ -6,13 +6,17 @@ export default class SwitchWidget extends WidgetBase {
     constructor(data) {
         super(data);
 
-        super.addOutput(Component.make('input', {
+        super.addOutput(Component.make('div', {
             context: this,
-            class: 'switch',
-            type: 'checkbox',
-            var: 'switch',
-            events: {
-                click: () => this.sendEvent(this.$switch.checked ? 1 : 0),
+            class: 'switch_cont',
+            child: {
+                tag: 'input',
+                class: 'switch',
+                type: 'checkbox',
+                var: 'switch',
+                events: {
+                    click: () => this.sendEvent(this.$switch.checked ? 1 : 0),
+                }
             }
         }));
 

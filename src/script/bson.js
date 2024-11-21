@@ -116,6 +116,7 @@ export default function decodeBson(b, codes = []) {
         if (bins.length) makeBins(obj);
         return obj;
     } catch (e) {
+        console.log(s);        
         throw new Error("JSON error")
     }
 }

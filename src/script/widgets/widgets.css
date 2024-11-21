@@ -4,13 +4,12 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    /* max-width: 80%; */
 }
 
 .value.active {
     cursor: pointer;
     text-align: right;
-    min-width: 100px;
+    min-width: 40px;
     min-height: 20px;
 }
 

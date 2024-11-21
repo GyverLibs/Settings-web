@@ -1,3 +1,4 @@
+/* PAGE */
 .page {
     padding-top: 10px;
     padding-bottom: 40px;
@@ -9,6 +10,50 @@
     margin-top: 0;
 }
 
+/* ROW */
+.row {
+    overflow: hidden;
+}
+
+.group_row {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    background: var(--tab);
+    border-radius: 10px;
+    padding: 0 10px;
+}
+
+.group_row>.widget {
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.group_row>.widget:has(.widget_label) {
+    width: 100%;
+    flex-shrink: 1;
+}
+
+.group_col>.row>.group_title span {
+    padding-bottom: 0px;
+}
+
+.page>.row>.group_row {
+    box-shadow: 0 0 10px var(--shadow);
+    margin: 0 10px;
+}
+
+.page>.row {
+    margin: 6px 0;
+}
+
+.group_row>.widget {
+    padding: 0;
+}
+
+/* GROUP */
 .group_title {
     display: flex;
     align-items: center;
@@ -16,26 +61,27 @@
 }
 
 .group_title span {
-    padding: 8px 0;
-    padding-left: 10px;
+    padding: 8px 10px;
     font-size: 17px;
     color: var(--font_tint);
 }
 
 .group {
-    margin: 20px 0;
+    margin: 15px 0;
 }
 
 .group_col {
     border-radius: 10px;
     background: var(--tab);
     box-shadow: 0 0 10px var(--shadow);
-    margin: 0 10px;
+    margin: 0 11px;
 }
 
+/* WIDGET */
 .widget {
     box-sizing: border-box;
     color: var(--font);
+    padding: 0 10px;
 }
 
 .widget_row {
@@ -43,8 +89,7 @@
     justify-content: space-between;
     align-items: center;
     height: 30px;
-    padding: 8px 12px;
-    overflow: hidden;
+    padding: 7px 0;
 }
 
 .widget_row label {
@@ -52,6 +97,7 @@
     font-size: 18px;
     white-space: nowrap;
     user-select: none;
+    margin-right: 8px;
     -webkit-user-select: none;
     -moz-user-select: none;
 }
@@ -70,16 +116,19 @@
     box-shadow: 0 0 10px var(--shadow);
 }
 
-.group_col>.widget {
+.group_col>.widget,
+.group_col>.row {
     border-bottom: 1px solid var(--back);
     border-top: 1px solid var(--back);
 }
 
-.group_col>.widget:first-child {
+.group_col>.widget:first-child,
+.group_col>.row:first-child {
     border-top: none;
 }
 
-.group_col>.widget:last-child {
+.group_col>.widget:last-child,
+.group_col>.row:last-child {
     border-bottom: none;
 }
 

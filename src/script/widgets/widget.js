@@ -19,9 +19,10 @@ export default class WidgetBase {
                 children: [
                     {
                         tag: 'div',
-                        style: 'padding-right: 8px',
+                        // style: 'padding-right: 8px',
                         children: [
-                            {
+                            (data.label === null) ? null : {
+                                class: 'widget_label',
                                 tag: 'label',
                                 text: data.label ?? data.type,
                             },

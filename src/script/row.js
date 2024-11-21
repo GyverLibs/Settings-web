@@ -1,15 +1,14 @@
 import { Component } from "@alexgyver/component";
-import MenuWidget from "./widgets/menu";
 import { checkAndAppend } from "./utils";
-import Row from "./row";
+import MenuWidget from "./widgets/menu";
 
-export default function Group(title, data, parent, pages, widgets) {
+export default function Row(title, data, parent, pages, widgets) {
     if (!data.length) return document.createDocumentFragment();
 
     let ctx = {};
-    let group = Component.make('div', {
+    let row = Component.make('div', {
         context: ctx,
-        class: 'group',
+        class: 'row',
         children: [
             !title ? null : {
                 tag: 'div',
@@ -21,20 +20,22 @@ export default function Group(title, data, parent, pages, widgets) {
             },
             {
                 tag: 'div',
-                class: 'group_col',
-                var: 'group_col',
+                class: 'group_row',
+                var: 'group_row',
             }
         ]
     });
 
     for (let obj of data) {
+        if (!obj.label || !obj.label.length) obj.label = null;
         switch (obj.type) {
-            case 'menu': ctx.$group_col.append(MenuWidget(obj.title, obj.content, parent, pages, widgets)); break;
-            case 'row': ctx.$group_col.append(Row(obj.title, obj.content, parent, pages, widgets)); break;
+            case 'menu': ctx.$group_row.append(MenuWidget(obj.title, obj.content, parent, pages, widgets)); break;
+            case 'group': break;
+            case 'row': break;
             default:
-                checkAndAppend(widgets, ctx.$group_col, obj);
+                checkAndAppend(widgets, ctx.$group_row, obj);
                 break;
         }
     }
-    return group;
+    return row;
 };

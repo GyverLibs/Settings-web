@@ -1,3 +1,5 @@
+const dev_url = 'http://192.168.1.54';
+
 const path = require('path');
 const webpack = require("webpack");
 const PACKAGE = require('./package.json');
@@ -39,6 +41,7 @@ module.exports = {
         }),
         new webpack.DefinePlugin({
             SETTINGS_V: JSON.stringify(PACKAGE.version),
+            SETTINGS_DEV_URL: JSON.stringify(dev_url),
         }),
     ],
 

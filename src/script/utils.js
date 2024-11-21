@@ -1,4 +1,15 @@
 import { Component } from "@alexgyver/component";
+import { WidgetList } from "./widgets/widgets";
+
+export function checkAndAppend(widgets, parent, obj) {
+    if (widgets.has(obj.id)) {
+        document.dispatchEvent(new CustomEvent("dup_id", { detail: { widget: obj } }));
+    } else if (obj.type in WidgetList) {
+        let w = new (WidgetList[obj.type])(obj);
+        parent.append(w.$root);
+        widgets.set(obj.id, w);
+    }
+}
 
 export function intToColor(int) {
     return "#" + Number(int).toString(16).padStart(6, '0');
