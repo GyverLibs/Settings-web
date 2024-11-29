@@ -2,7 +2,7 @@
     display: inline-block;
     margin: 8px 10px;
     box-sizing: border-box;
-    padding: 5px;
+    padding: 8px 5px;
     background: var(--accent);
     display: flex;
     align-items: center;

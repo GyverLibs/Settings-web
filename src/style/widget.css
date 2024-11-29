@@ -1,7 +1,7 @@
 /* PAGE */
 .page {
     padding-top: 10px;
-    padding-bottom: 40px;
+    padding-bottom: 50px;
     width: 100%;
     position: absolute;
 }
@@ -27,7 +27,7 @@
 }
 
 .group_row>.widget {
-    overflow: hidden;
+    /* overflow: hidden; */
     flex-shrink: 0;
 }
 

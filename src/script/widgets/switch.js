@@ -1,6 +1,7 @@
 import { Component } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import './switch.css';
+import { intToColor } from "../utils";
 
 export default class SwitchWidget extends WidgetBase {
     constructor(data) {
@@ -14,6 +15,7 @@ export default class SwitchWidget extends WidgetBase {
                 class: 'switch',
                 type: 'checkbox',
                 var: 'switch',
+                style: data.color ? `--accent: ${intToColor(data.color)}` : '',
                 events: {
                     click: () => this.sendEvent(this.$switch.checked ? 1 : 0),
                 }

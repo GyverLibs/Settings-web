@@ -4,6 +4,7 @@ import './slider.css';
 import { AsyncPrompt } from "../ui/dialog";
 import { Config } from '../config';
 import Timer from "../timer";
+import { intToColor } from "../utils";
 
 export default class SliderWidget extends WidgetBase {
     timer;
@@ -28,7 +29,7 @@ export default class SliderWidget extends WidgetBase {
                 }
             }
         }));
-
+        
         super.addChild(Component.make('div', {
             context: this,
             class: 'slider_cont',
@@ -37,6 +38,7 @@ export default class SliderWidget extends WidgetBase {
                 type: 'range',
                 class: 'slider',
                 var: 'slider',
+                style: data.color ? `--accent: ${intToColor(data.color)}` : '',
                 min: (data.min ?? 0) + '',
                 max: (data.max ?? 100) + '',
                 step: (data.step ?? 1) + '',

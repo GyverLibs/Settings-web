@@ -194,9 +194,15 @@ export default class Settings {
                     tag: 'div',
                     class: 'main_col',
                     var: 'main_col'
-                }
-            ]
+                },
+            ],
         });
+
+        Component.make('span', {
+            parent: document.body,
+            class: 'footer',
+            html: 'Made with <a href="https://github.com/GyverLibs/Settings" target="_blank">Settings</a> Arduino library by AlexGyver',
+        })
 
         this.$main_col.addEventListener("menuclick", (e) => {
             window.scrollTo(0, 0);
