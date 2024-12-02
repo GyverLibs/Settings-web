@@ -5,9 +5,9 @@ import { AsyncConfirm, AsyncPrompt } from './ui/dialog';
 import { changeRSSI, makeRSSI } from './ui/rssi';
 import { Config } from './config';
 import popup from './ui/popup';
-import decodeBson from './bson';
 import unMap from './unmap';
 import Page from './page';
+import decodeBson from '@alexgyver/bson';
 
 const anim_s = '.11s';
 const anim_ms = 100;
