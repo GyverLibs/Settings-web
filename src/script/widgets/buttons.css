@@ -10,3 +10,8 @@
     border-radius: 0 0 10px 10px;
     margin: 0;
 }
+
+.group_row>.buttons {
+    background: var(--tab);
+    padding: 0;
+}
