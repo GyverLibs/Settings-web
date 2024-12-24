@@ -78,8 +78,10 @@ body::-webkit-scrollbar-thumb {
     display: block;
     font-size: 13px;
     font-style: italic;
-    height: 20px;
-    margin-top: -20px;
+    margin-top: 18px;
+    opacity: 0.7;
+    /* height: 20px; */
+    /* margin-top: -20px; */
 }
 
 .footer a {

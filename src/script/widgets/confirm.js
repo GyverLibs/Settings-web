@@ -3,7 +3,7 @@ import WidgetBase from "./widget";
 
 export default class ConfirmWidget extends WidgetBase {
     constructor(data) {
-        super(data, false);
+        super(data, false, false);
         this.text = data.label ?? 'Confirm';
         this.$root = document.createElement('div');
         this.$root.style = 'display: none';

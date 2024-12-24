@@ -1,15 +1,15 @@
 import { Component } from "@alexgyver/component";
 import WidgetBase from "./widget";
-import './paragraph.css';
+import './log.css';
 
-export default class ParagraphWidget extends WidgetBase {
+export default class LogWidget extends WidgetBase {
     constructor(data) {
         super(data, !!data.label);
 
         super.addChild(Component.make('p', {
             context: this,
+            class: 'log',
             var: 'out',
-            class: 'paragraph',
         }));
 
         this.update(data.value);

@@ -23,7 +23,7 @@
     overflow: hidden;
     background: var(--tab);
     border-radius: 10px;
-    padding: 0 10px;
+    padding: 6px 10px;
 }
 
 .group_row>.widget {
@@ -81,7 +81,8 @@
 .widget {
     box-sizing: border-box;
     color: var(--font);
-    padding: 0 10px;
+    padding: 6px 10px;
+    display: flow-root;
 }
 
 .widget_row {
@@ -89,7 +90,7 @@
     justify-content: space-between;
     align-items: center;
     height: 30px;
-    padding: 7px 0;
+    /* padding: 7px 0; */
 }
 
 .widget_row label {

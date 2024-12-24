@@ -1,5 +1,6 @@
 export const codes = [
     'id',
+    'id2',
     'type',
     'content',
     'group',
@@ -20,11 +21,13 @@ export const codes = [
     'used',
     'total',
     'rssi',
+    'custom_hash',
 
     'label',
     'title',
     'text',
     'value',
+    'data',
     'color',
     'min',
     'max',
@@ -38,6 +41,7 @@ export const codes = [
     'pass',
     'select',
     'slider',
+    'slider2',
     'toggle',
     'time',
     'date',
@@ -48,4 +52,5 @@ export const codes = [
     'led',
     'alert',
     'notice',
+    'log',
 ];

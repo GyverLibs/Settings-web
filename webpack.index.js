@@ -1,3 +1,4 @@
+const cfg = require('./webpack.config.js');
 const path = require('path');
 const webpack = require("webpack");
 const PACKAGE = require('./package.json');
@@ -22,7 +23,12 @@ module.exports = {
         minimize: true,
         minimizer: [
             new CssMinimizerPlugin(),
-            new TerserPlugin(),
+            new TerserPlugin({
+                terserOptions: {
+                    keep_classnames: cfg.keep_classnames,
+                    keep_fnames: cfg.keep_fnames,
+                },
+            }),
         ],
     },
 

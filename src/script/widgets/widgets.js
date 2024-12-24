@@ -14,6 +14,8 @@ import Button from "./button";
 import ConfirmWidget from "./confirm";
 import LedWidget from "./led";
 import NumberWidget from './number';
+import LogWidget from './log';
+import Slider2Widget from './slider2';
 
 export const WidgetList = {
     toggle: SwitchWidget,
@@ -25,6 +27,7 @@ export const WidgetList = {
     date: DateWidget,
     datetime: DateTimeWidget,
     slider: SliderWidget,
+    slider2: Slider2Widget,
     label: LabelWidget,
     color: ColorWidget,
     buttons: ButtonsWidget,
@@ -32,4 +35,5 @@ export const WidgetList = {
     paragraph: ParagraphWidget,
     confirm: ConfirmWidget,
     led: LedWidget,
+    log: LogWidget,
 }

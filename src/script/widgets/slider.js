@@ -4,7 +4,7 @@ import './slider.css';
 import { AsyncPrompt } from "../ui/dialog";
 import { Config } from '../config';
 import Timer from "../timer";
-import { intToColor } from "../utils";
+import { intToColor, parseFloatNoNaN } from "../utils";
 
 export default class SliderWidget extends WidgetBase {
     timer;
@@ -21,7 +21,7 @@ export default class SliderWidget extends WidgetBase {
             class: 'value active',
             events: {
                 click: async () => {
-                    let res = await AsyncPrompt(data.label, this.$slider.value);
+                    let res = await AsyncPrompt(data.label ?? data.type, this.$slider.value, (area) => area.value = parseFloatNoNaN(area.value) + '');
                     if (res) {
                         this.update(res);
                         this.send();
@@ -29,7 +29,7 @@ export default class SliderWidget extends WidgetBase {
                 }
             }
         }));
-        
+
         super.addChild(Component.make('div', {
             context: this,
             class: 'slider_cont',

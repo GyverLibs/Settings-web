@@ -6,13 +6,13 @@ export default class WidgetBase {
     $error;
     data;
 
-    constructor(data, makeWidget = true) {
+    constructor(data, makeRow = true, makeWidget = true) {
         this.data = data;
         if (makeWidget) Component.make('div', {
             context: this,
             class: 'widget',
             var: 'root',
-            child: {
+            child: !makeRow ? null : {
                 tag: 'div',
                 class: 'widget_row',
                 var: 'row',

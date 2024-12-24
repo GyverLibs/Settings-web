@@ -1,5 +1,5 @@
 import { Component } from '@alexgyver/component';
-import { Arrow, hash, http_post } from './utils';
+import { Arrow, hash, http_post, intToColor } from './utils';
 import { codes } from './codes';
 import { AsyncConfirm, AsyncPrompt } from './ui/dialog';
 import { changeRSSI, makeRSSI } from './ui/rssi';
@@ -8,9 +8,13 @@ import popup from './ui/popup';
 import unMap from './unmap';
 import Page from './page';
 import decodeBson from '@alexgyver/bson';
+import LS from './ls';
+import { WidgetList } from './widgets/widgets';
+import WidgetBase from './widgets/widget';
 
 const anim_s = '.11s';
 const anim_ms = 100;
+const filefetch_tout = 3000;
 
 function iconGradient(icon, perc) {
     icon.style.background = 'none';
@@ -20,6 +24,8 @@ function iconFill(icon, color) {
     icon.style.background = 'none';
     icon.style.backgroundColor = color;
 }
+
+class Foo { }
 
 export default class Settings {
     pageStack = [];
@@ -96,99 +102,110 @@ export default class Settings {
                 },
                 {
                     tag: 'div',
-                    class: 'group_col hidden',
+                    class: 'hidden',
                     var: 'main_menu',
                     style: { marginTop: '10px' },
                     children: [
                         {
                             tag: 'div',
-                            class: 'menu_icons',
+                            class: 'group_col',
                             children: [
                                 {
                                     tag: 'div',
-                                    class: 'menu_icon',
-                                    child: {
-                                        tag: 'div',
-                                        class: 'icon moon',
-                                        title: 'Dark mode',
-                                        events: {
-                                            click: () => {
-                                                document.body.classList.toggle('theme_dark');
-                                                localStorage.setItem('dark', document.body.classList.contains('theme_dark') ? 1 : 0);
-                                            },
-                                        }
-                                    }
-                                },
-                                {
+                                    class: 'menu_icons',
+                                    children: [
+                                        {
+                                            tag: 'div',
+                                            class: 'menu_icon',
+                                            child: {
+                                                tag: 'div',
+                                                class: 'icon moon',
+                                                title: 'Dark mode',
+                                                events: {
+                                                    click: () => {
+                                                        document.body.classList.toggle('theme_dark');
+                                                        LS.set('dark', document.body.classList.contains('theme_dark') ? 1 : 0);
+                                                    },
+                                                }
+                                            }
+                                        },
+                                        {
 
+                                            tag: 'div',
+                                            class: 'menu_icon',
+                                            child: {
+                                                tag: 'div',
+                                                class: 'icon key',
+                                                title: 'Auth',
+                                                var: 'auth',
+                                            }
+                                        },
+                                        {
+                                            tag: 'input',
+                                            type: 'file',
+                                            var: 'upload_ota',
+                                            style: 'display: none',
+                                            accept: '.bin',
+                                            events: {
+                                                change: () => this.uploadOta(this.$upload_ota.files[0]),
+                                            }
+                                        },
+                                        {
+                                            tag: 'div',
+                                            class: 'menu_icon drop_area',
+                                            events: {
+                                                drop: (e) => this.uploadOta(e.dataTransfer.files[0]),
+                                            },
+                                            child: {
+                                                tag: 'div',
+                                                class: 'icon cloud',
+                                                title: 'OTA',
+                                                var: 'ota',
+                                                events: {
+                                                    click: () => this.$upload_ota.click(),
+                                                }
+                                            }
+                                        },
+                                        {
+                                            tag: 'input',
+                                            type: 'file',
+                                            var: 'upload_file',
+                                            style: 'display: none',
+                                            events: {
+                                                change: () => this.uploadFile(this.$upload_file.files[0]),
+                                            }
+                                        },
+                                        {
+                                            tag: 'div',
+                                            class: 'menu_icon drop_area',
+                                            events: {
+                                                drop: (e) => this.uploadFile(e.dataTransfer.files[0]),
+                                            },
+                                            child: {
+                                                tag: 'div',
+                                                class: 'icon upload',
+                                                title: 'Upload',
+                                                var: 'upload',
+                                                events: {
+                                                    click: () => this.$upload_file.click(),
+                                                }
+                                            }
+                                        },
+                                    ]
+                                },
+                                {
                                     tag: 'div',
-                                    class: 'menu_icon',
-                                    child: {
-                                        tag: 'div',
-                                        class: 'icon key',
-                                        title: 'Auth',
-                                        var: 'auth',
-                                    }
-                                },
-                                {
-                                    tag: 'input',
-                                    type: 'file',
-                                    var: 'upload_ota',
-                                    style: 'display: none',
-                                    accept: '.bin',
-                                    events: {
-                                        change: () => this.uploadOta(this.$upload_ota.files[0]),
-                                    }
-                                },
-                                {
-                                    tag: 'div',
-                                    class: 'menu_icon drop_area',
-                                    events: {
-                                        drop: (e) => this.uploadOta(e.dataTransfer.files[0]),
-                                    },
-                                    child: {
-                                        tag: 'div',
-                                        class: 'icon cloud',
-                                        title: 'OTA',
-                                        var: 'ota',
-                                        events: {
-                                            click: () => this.$upload_ota.click(),
-                                        }
-                                    }
-                                },
-                                {
-                                    tag: 'input',
-                                    type: 'file',
-                                    var: 'upload_file',
-                                    style: 'display: none',
-                                    events: {
-                                        change: () => this.uploadFile(this.$upload_file.files[0]),
-                                    }
-                                },
-                                {
-                                    tag: 'div',
-                                    class: 'menu_icon drop_area',
-                                    events: {
-                                        drop: (e) => this.uploadFile(e.dataTransfer.files[0]),
-                                    },
-                                    child: {
-                                        tag: 'div',
-                                        class: 'icon upload',
-                                        title: 'Upload',
-                                        var: 'upload',
-                                        events: {
-                                            click: () => this.$upload_file.click(),
-                                        }
-                                    }
-                                },
+                                    class: 'fs_cont',
+                                    var: 'fs',
+                                }
                             ]
                         },
                         {
-                            tag: 'div',
-                            class: 'fs_cont',
-                            var: 'fs',
+                            tag: 'span',
+                            class: 'footer',
+                            var: 'footer',
                         }
-                    ]
+                    ],
                 },
                 {
                     tag: 'div',
@@ -198,11 +215,19 @@ export default class Settings {
             ],
         });
 
-        Component.make('span', {
-            parent: document.body,
-            class: 'footer',
-            html: 'Made with <a href="https://github.com/GyverLibs/Settings" target="_blank">Settings</a> Arduino library by AlexGyver',
-        })
+        const gita = '<a href="https://github.com/GyverLibs/Settings" target="_blank">Settings</a>';
+        let copyr = '';
+        switch (navigator.language || navigator.userLanguage) {
+            case 'ru-RU': case 'ru': copyr = `Работает на библиотеке ${gita} от AlexGyver`; break;
+            default: copyr = `Powered by ${gita} Arduino library by AlexGyver`; break;
+        }
+        this.$footer.innerHTML = copyr;
+
+        // Component.make('span', {
+        //     parent: document.body,
+        //     class: 'footer',
+        //     html: 'Made with <a href="https://github.com/GyverLibs/Settings" target="_blank">Settings</a> Arduino library by AlexGyver',
+        // })
 
         this.$main_col.addEventListener("menuclick", (e) => {
             window.scrollTo(0, 0);
@@ -263,23 +288,24 @@ export default class Settings {
             }, false);
         });
 
-        if (localStorage.hasOwnProperty('dark')) {
-            if (Number(localStorage.getItem('dark'))) {
+        if (LS.has('dark')) {
+            if (Number(LS.get('dark'))) {
                 document.body.classList.add('theme_dark');
             }
         }
 
-        if (localStorage.hasOwnProperty('auth')) {
-            this.auth = Number(localStorage.getItem('auth'));
+        if (LS.has('auth')) {
+            this.auth = Number(LS.get('auth'));
         }
 
-        if (!localStorage.hasOwnProperty('version') || localStorage.getItem('version') != SETTINGS_V) {
-            localStorage.removeItem('cache');
-            localStorage.setItem('version', SETTINGS_V);
+        if (!LS.has('version') || LS.get('version') != SETTINGS_V) {
+            LS.remove('cache');
+            LS.set('version', SETTINGS_V);
         }
 
-        if (localStorage.hasOwnProperty('cache')) {
-            this.renderUI(JSON.parse(localStorage.getItem('cache')));
+        if (LS.has('cache')) {
+            if (LS.has('custom_hash')) this.registerCustom(LS.get('custom'));
+            this.renderUI(JSON.parse(LS.get('cache')));
         }
 
         this.load();
@@ -290,6 +316,41 @@ export default class Settings {
         });
     }
 
+    registerCustom(js) {
+        let res = js.split(/(class[a-zA-Z\s_\.]*?{)/sg);
+        res.shift();
+        if (!res.length || res.length % 2 != 0) {
+            popup('Custom JS parsing error');
+            return;
+        }
+
+        let classes = [];
+        for (let i = 0; i < res.length; i++) {
+            classes.push(res[i] + res[++i]);
+        }
+
+        const list = {
+            WidgetBase: WidgetBase,
+            Component: Component,
+            AsyncPrompt: AsyncPrompt,
+            AsyncConfirm: AsyncConfirm,
+            popup: popup,
+            intToColor: intToColor,
+        };
+        let sheet = document.head.appendChild(document.createElement('style')).sheet;
+
+        for (let cls of classes) {
+            try {
+                Object.keys(list).forEach(x => cls = cls.replaceAll(x, '__list.' + x));
+                let clsname = cls.match(/class\s*(\S*)/)[1];
+                WidgetList[clsname] = new Function('__list', `return (${cls})`)(list);
+                if (WidgetList[clsname].css) sheet.insertRule(WidgetList[clsname].css);
+            } catch (e) {
+                popup(e);
+            }
+        }
+    }
+
     updateCache(id, value) {
         function repl(obj) {
             for (let k in obj) {
@@ -298,17 +359,17 @@ export default class Settings {
             if (obj.id === id) obj.value = value;
         }
 
-        if (localStorage.hasOwnProperty('cache')) {
+        if (LS.has('cache')) {
             id = parseInt(id, 16);
-            let packet = JSON.parse(localStorage.getItem('cache'));
+            let packet = JSON.parse(LS.get('cache'));
             repl(packet);
-            localStorage.setItem('cache', JSON.stringify(packet));
+            LS.set('cache', JSON.stringify(packet));
         }
     }
 
     async load() {
         const res = await this.send('load');
-        this.parse(res);
+        await this.parse(res);
         if (!res) {
             this.setOffline(true);
             this.restartPing();
@@ -367,7 +428,7 @@ export default class Settings {
         if (!Config.updateTout) return;
         this.ping_int = setInterval(async () => {
             const res = await this.send(this.offline ? 'load' : 'ping');
-            this.parse(res);
+            await this.parse(res);
             if (!res) this.authF = false;
             this.setOffline(!res);
         }, Config.updateTout);
@@ -381,13 +442,31 @@ export default class Settings {
         if (offline) changeRSSI(this.$rssi, 0);
     }
 
-    parse(packet) {
+    async parse(packet) {
         if (!packet) return;
 
         switch (packet.type) {
             case 'build':
+                if (packet.custom_hash) {
+                    if (!LS.has('custom_hash') || packet.custom_hash != LS.get('custom_hash')) {
+                        try {
+                            let js = await fetch(this.makeUrl('custom.js'), { signal: AbortSignal.timeout(filefetch_tout) });
+                            js = await js.text();
+                            if (js) {
+                                LS.set('custom_hash', packet.custom_hash);
+                                LS.set('custom', js);
+                                window.location.reload();
+                            }
+                        } catch (e) {
+                            popup(e);
+                        }
+                    }
+                } else {
+                    LS.remove('custom_hash');
+                }
+
                 this.renderUI(packet);
-                localStorage.setItem('cache', JSON.stringify(packet));
+                LS.set('cache', JSON.stringify(packet));
                 this.restartPing();
 
                 if (!this.authF) {
@@ -401,7 +480,7 @@ export default class Settings {
                         this.$auth.addEventListener('click', async () => {
                             let res = await AsyncPrompt('Password', '');
                             if (res !== null) {
-                                localStorage.setItem('auth', hash(res));
+                                LS.set('auth', hash(res));
                                 window.location.reload();
                             }
                         });
@@ -421,10 +500,11 @@ export default class Settings {
                         case 'alert': popup(upd.text, true); break;
 
                         default:
-                            if (this.widgets.has(upd.id)) this.widgets.get(upd.id).update(upd.value);
+                            if (this.widgets.has(upd.id)) {
+                                this.widgets.get(upd.id).update(upd.data);
+                            }
                             break;
                     }
-
                 }
                 break;
 

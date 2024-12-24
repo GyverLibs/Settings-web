@@ -11,6 +11,11 @@ export function checkAndAppend(widgets, parent, obj) {
     }
 }
 
+export function parseFloatNoNaN(str) {
+    let f = parseFloat(str);
+    return isNaN(f) ? 0 : f;
+}
+
 export function intToColor(int) {
     return "#" + Number(int).toString(16).padStart(6, '0');
 }

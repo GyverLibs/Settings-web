@@ -1,0 +1,25 @@
+.log {
+    padding: 6px;
+    margin: 5px 0;
+    max-height: 100px;
+    overflow: auto;
+    border-radius: 5px;
+    font-size: 16px;
+    font-family: 'Courier New', Courier, monospace;
+    color: var(--accent);
+    background: var(--back);
+}
+
+.log::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+
+.log::-webkit-scrollbar-track {
+    background: #0000;
+}
+
+.log::-webkit-scrollbar-thumb {
+    background: var(--dark);
+    border-radius: 4px;
+}

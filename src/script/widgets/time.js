@@ -23,6 +23,7 @@ class TimeWidgetBase extends WidgetBase {
                         step: 1,
                         events: {
                             change: () => {
+                                if (!this.$input.value) this.update(0);
                                 this.sendEvent(this.getUnix());
                                 this.update(this.getUnix());
                             },

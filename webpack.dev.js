@@ -1,5 +1,4 @@
-const dev_url = 'http://192.168.1.54';
-
+const cfg = require('./webpack.config.js');
 const path = require('path');
 const webpack = require("webpack");
 const PACKAGE = require('./package.json');
@@ -41,7 +40,7 @@ module.exports = {
         }),
         new webpack.DefinePlugin({
             SETTINGS_V: JSON.stringify(PACKAGE.version),
-            SETTINGS_DEV_URL: JSON.stringify(dev_url),
+            SETTINGS_DEV_URL: JSON.stringify(cfg.dev_url),
         }),
     ],
 
@@ -54,7 +53,7 @@ module.exports = {
 
     watchOptions: {
         poll: 1000,
-        ignored: '/node_modules/',
+        // ignored: '/node_modules/',
     },
 
     mode: 'development',
