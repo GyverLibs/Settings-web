@@ -191,6 +191,22 @@ export default class Settings {
                                                 }
                                             }
                                         },
+                                        {
+                                            tag: 'div',
+                                            class: 'menu_icon',
+                                            child: {
+                                                tag: 'div',
+                                                class: 'icon create',
+                                                title: 'Create',
+                                                var: 'create',
+                                                events: {
+                                                    click: async () => {
+                                                        let path = await AsyncPrompt('Create file', '/');
+                                                        if (path) this.parse(await this.send('create', 0, path));
+                                                    }
+                                                }
+                                            }
+                                        },
                                     ]
                                 },
                                 {
@@ -613,8 +629,7 @@ export default class Settings {
     }
 
     async removeFile(path) {
-        let res = await this.send('remove', 0, path);
-        this.parse(res);
+        this.parse(await this.send('remove', 0, path));
     }
     async fetchFile(path) {
         try {

@@ -125,8 +125,9 @@ export default class Slider2Widget extends WidgetBase {
 
     move() {
         let s1 = this.$slider1, s2 = this.$slider2;
-        let p1 = (Number(s1.value) / Number(s1.max)) * 100;
-        let p2 = (Number(s2.value) / Number(s1.max)) * 100;
+        let map = (x) => (Number(x) - Number(s1.min)) * 100 / (Number(s1.max) - Number(s1.min));
+        let p1 = map(s1.value);
+        let p2 = map(s2.value);
         this.$track.style.background = `linear-gradient(to right, var(--dark) ${p1}% , ${this.color} ${p1}% , ${this.color} ${p2}%, var(--dark) ${p2}%)`;
         let digs = s1.step.toString().split('.')[1];
 
