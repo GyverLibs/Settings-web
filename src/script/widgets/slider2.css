@@ -30,12 +30,16 @@
     background-color: transparent;
 }
 
-.slider2::-webkit-slider-runnable-track {
+.slider2::-webkit-slider-runnable-track,
+.slider2::-moz-range-runnable-track {
     -webkit-appearance: none;
     height: 5px;
 }
 
-.slider2::-webkit-slider-thumb {
+.slider2::-webkit-slider-thumb,
+.slider2::-moz-range-thumb {
+    outline: none;
+    border: none;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -49,6 +53,7 @@
     pointer-events: auto;
 }
 
-.slider2::-webkit-slider-thumb:hover {
+.slider2::-webkit-slider-thumb:hover,
+.slider2::-moz-range-thumb:hover {
     box-shadow: 0 2px 10px 2px #00000032;
 }
