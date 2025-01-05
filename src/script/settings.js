@@ -25,8 +25,6 @@ function iconFill(icon, color) {
     icon.style.backgroundColor = color;
 }
 
-class Foo { }
-
 export default class Settings {
     pageStack = [];
     widgets = new unMap();
@@ -38,6 +36,8 @@ export default class Settings {
     granted = false;
     firstBuild = true;
     auth = 0;
+
+    //#region constructor
 
     constructor() {
         console.log("Settings-web v" + SETTINGS_V);
@@ -231,19 +231,7 @@ export default class Settings {
             ],
         });
 
-        const gita = '<a href="https://github.com/GyverLibs/Settings" target="_blank">Settings</a>';
-        let copyr = '';
-        switch (navigator.language || navigator.userLanguage) {
-            case 'ru-RU': case 'ru': copyr = `Работает на библиотеке ${gita} от AlexGyver`; break;
-            default: copyr = `Powered by ${gita} Arduino library by AlexGyver`; break;
-        }
-        this.$footer.innerHTML = copyr;
-
-        // Component.make('span', {
-        //     parent: document.body,
-        //     class: 'footer',
-        //     html: 'Made with <a href="https://github.com/GyverLibs/Settings" target="_blank">Settings</a> Arduino library by AlexGyver',
-        // })
+        this.renderFooter();
 
         this.$main_col.addEventListener("menuclick", (e) => {
             window.scrollTo(0, 0);
@@ -332,6 +320,8 @@ export default class Settings {
         });
     }
 
+    //#region methods
+
     registerCustom(js) {
         let res = js.split(/(class[a-zA-Z\s_\.]*?{)/sg);
         res.shift();
@@ -392,22 +382,6 @@ export default class Settings {
         }
     }
 
-    async send(action, id = null, value = null) {
-        let res = null;
-        try {
-            res = await fetch(this.makeUrl('settings', { action: action, id: id, value: value }), { signal: AbortSignal.timeout(Config.requestTout) });
-        } catch (e) { }
-
-        if (!res || !res.ok) return null;
-
-        try {
-            return decodeBson(new Uint8Array(await res.arrayBuffer()), codes);
-        } catch (e) {
-            popup(e);
-        }
-        return null;
-    }
-
     back() {
         let dialogs = document.querySelectorAll('.dialog_back');
         if (dialogs.length) {
@@ -439,6 +413,38 @@ export default class Settings {
         }
     }
 
+    //#region network
+
+    async send(action, id = null, value = null) {
+        let res = null;
+        try {
+            res = await fetch(this.makeUrl('settings', { action: action, id: id, value: value }), { signal: AbortSignal.timeout(Config.requestTout) });
+        } catch (e) { }
+
+        if (!res || !res.ok) return null;
+
+        try {
+            return decodeBson(new Uint8Array(await res.arrayBuffer()), codes);
+        } catch (e) {
+            popup(e);
+        }
+        return null;
+    }
+    makeUrl(cmd, params = {}) {
+        let base_url = window.location.origin;
+        if (typeof SETTINGS_DEV_URL === 'string') base_url = SETTINGS_DEV_URL;
+
+        if (this.auth) params.auth = this.auth.toString(16);
+        let url = base_url + '/' + cmd;
+        let first = true;
+        for (let p in params) {
+            if (params[p] === null) continue;
+            url += first ? '?' : '&';
+            first = false;
+            url += (p + '=' + params[p]);
+        }
+        return url;
+    }
     restartPing() {
         this.stopPing();
         if (!Config.updateTout) return;
@@ -457,6 +463,8 @@ export default class Settings {
         this.offline = offline;
         if (offline) changeRSSI(this.$rssi, 0);
     }
+
+    //#region render
 
     async parse(packet) {
         if (!packet) return;
@@ -536,6 +544,7 @@ export default class Settings {
         Config.requestTout = json.request_tout;
         Config.sliderTout = json.slider_tout;
 
+        this.renderFooter(json.proj_name, json.proj_link);
         this.$title.innerText = json.title ?? 'Settings';
         document.title = this.$title.innerText;
         let pages = [];
@@ -546,6 +555,27 @@ export default class Settings {
         pages[0].style.display = 'block';
         this.$main_col.style.minHeight = pages[0].offsetHeight + 'px';
     }
+    renderFooter(pname, plink) {
+        let isRU = () => {
+            switch (navigator.language || navigator.userLanguage) {
+                case 'ru-RU': case 'ru': return true;
+            }
+            return false;
+        }
+
+        let copyr = '';
+        if (pname) {
+            copyr = isRU() ? 'Проект ' : 'Project ';
+            copyr += plink ? `<a href="${plink}" target="_blank">${pname}</a>` : `${pname}`;
+            copyr += '. ';
+        }
+
+        const gita = '<a href="https://github.com/GyverLibs/Settings" target="_blank">Settings</a>';
+        copyr += isRU() ? `Работает на библиотеке ${gita} от AlexGyver` : `Powered by ${gita} Arduino library by AlexGyver`;
+        this.$footer.innerHTML = copyr;
+    }
+
+    //#region FS
     renderFS(packet) {
         this.$fs.replaceChildren();
         if (packet.error) {
@@ -695,20 +725,5 @@ export default class Settings {
         iconFill(this.$ota, ok ? 'var(--font_tint)' : 'var(--error)');
         popup(ok ? 'OTA done' : 'OTA error', !ok);
         this.restartPing();
-    }
-    makeUrl(cmd, params = {}) {
-        let base_url = window.location.origin;
-        if (typeof SETTINGS_DEV_URL === 'string') base_url = SETTINGS_DEV_URL;
-
-        if (this.auth) params.auth = this.auth.toString(16);
-        let url = base_url + '/' + cmd;
-        let first = true;
-        for (let p in params) {
-            if (params[p] === null) continue;
-            url += first ? '?' : '&';
-            first = false;
-            url += (p + '=' + params[p]);
-        }
-        return url;
     }
 };

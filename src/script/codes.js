@@ -53,4 +53,6 @@ export const codes = [
     'alert',
     'notice',
     'log',
+    'proj_name',
+    'proj_link',
 ];
