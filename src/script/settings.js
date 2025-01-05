@@ -1,5 +1,5 @@
 import { Component } from '@alexgyver/component';
-import { Arrow, hash, http_post, intToColor } from './utils';
+import { Arrow, fetchTimeout, hash, http_post, intToColor } from './utils';
 import { codes } from './codes';
 import { AsyncConfirm, AsyncPrompt } from './ui/dialog';
 import { changeRSSI, makeRSSI } from './ui/rssi';
@@ -11,6 +11,7 @@ import decodeBson from '@alexgyver/bson';
 import LS from './ls';
 import { WidgetList } from './widgets/widgets';
 import WidgetBase from './widgets/widget';
+import { lang } from './lang';
 
 const anim_s = '.11s';
 const anim_ms = 100;
@@ -120,7 +121,6 @@ export default class Settings {
                                             child: {
                                                 tag: 'div',
                                                 class: 'icon moon',
-                                                title: 'Dark mode',
                                                 events: {
                                                     click: () => {
                                                         document.body.classList.toggle('theme_dark');
@@ -130,13 +130,11 @@ export default class Settings {
                                             }
                                         },
                                         {
-
                                             tag: 'div',
                                             class: 'menu_icon',
                                             child: {
                                                 tag: 'div',
                                                 class: 'icon key',
-                                                title: 'Auth',
                                                 var: 'auth',
                                             }
                                         },
@@ -184,7 +182,7 @@ export default class Settings {
                                             child: {
                                                 tag: 'div',
                                                 class: 'icon upload',
-                                                title: 'Upload',
+                                                title: lang.upload,
                                                 var: 'upload',
                                                 events: {
                                                     click: () => this.$upload_file.click(),
@@ -197,11 +195,11 @@ export default class Settings {
                                             child: {
                                                 tag: 'div',
                                                 class: 'icon create',
-                                                title: 'Create',
+                                                title: lang.create,
                                                 var: 'create',
                                                 events: {
                                                     click: async () => {
-                                                        let path = await AsyncPrompt('Create file', '/');
+                                                        let path = await AsyncPrompt(lang.create, '/');
                                                         if (path) this.parse(await this.send('create', 0, path));
                                                     }
                                                 }
@@ -418,7 +416,7 @@ export default class Settings {
     async send(action, id = null, value = null) {
         let res = null;
         try {
-            res = await fetch(this.makeUrl('settings', { action: action, id: id, value: value }), { signal: AbortSignal.timeout(Config.requestTout) });
+            res = await fetchTimeout(this.makeUrl('settings', { action: action, id: id, value: value }), Config.requestTout);
         } catch (e) { }
 
         if (!res || !res.ok) return null;
@@ -474,7 +472,7 @@ export default class Settings {
                 if (packet.custom_hash) {
                     if (!LS.has('custom_hash') || packet.custom_hash != LS.get('custom_hash')) {
                         try {
-                            let js = await fetch(this.makeUrl('custom.js'), { signal: AbortSignal.timeout(filefetch_tout) });
+                            let js = await fetchTimeout(this.makeUrl('custom.js'), Config.requestTout);
                             js = await js.text();
                             if (js) {
                                 LS.set('custom_hash', packet.custom_hash);
@@ -556,22 +554,13 @@ export default class Settings {
         this.$main_col.style.minHeight = pages[0].offsetHeight + 'px';
     }
     renderFooter(pname, plink) {
-        let isRU = () => {
-            switch (navigator.language || navigator.userLanguage) {
-                case 'ru-RU': case 'ru': return true;
-            }
-            return false;
-        }
-
         let copyr = '';
         if (pname) {
-            copyr = isRU() ? 'Проект ' : 'Project ';
+            copyr = lang.project + ' ';
             copyr += plink ? `<a href="${plink}" target="_blank">${pname}</a>` : `${pname}`;
             copyr += '. ';
         }
-
-        const gita = '<a href="https://github.com/GyverLibs/Settings" target="_blank">Settings</a>';
-        copyr += isRU() ? `Работает на библиотеке ${gita} от AlexGyver` : `Powered by ${gita} Arduino library by AlexGyver`;
+        copyr += lang.powered + ` <a href="https://github.com/GyverLibs/Settings" target="_blank">Settings</a> v${SETTINGS_V}`;
         this.$footer.innerHTML = copyr;
     }
 
@@ -617,7 +606,7 @@ export default class Settings {
                                             try {
                                                 let res = await this.fetchFile(path);
                                                 res = await res.text();
-                                                let changed = await AsyncPrompt('Edit & upload', res);
+                                                let changed = await AsyncPrompt(lang.edit, res);
                                                 if (changed !== null) {
                                                     let data = new FormData();
                                                     let blob = new Blob([changed]);
@@ -636,7 +625,7 @@ export default class Settings {
                                     style: { width: '17px', height: '17px', background: 'var(--error)' },
                                     events: {
                                         click: async () => {
-                                            if (await AsyncConfirm("Remove " + path + "?")) {
+                                            if (await AsyncConfirm(`${lang.remove} ${path}?`)) {
                                                 this.removeFile(path);
                                             }
                                         }
@@ -653,7 +642,7 @@ export default class Settings {
                 style: {
                     backgroundImage: `linear-gradient(90deg,var(--accent) ${packet.used / packet.total * 100}%, var(--shadow_light) 0%)`,
                 },
-                text: 'Used: ' + `${(packet.used / 1000).toFixed(2)}/${(packet.total / 1000).toFixed(2)} kB [${Math.round(packet.used / packet.total * 100)}%]`,
+                text: lang.used + `: ${(packet.used / 1000).toFixed(2)}/${(packet.total / 1000).toFixed(2)} kB [${Math.round(packet.used / packet.total * 100)}%]`,
             });
         }
     }
@@ -663,7 +652,7 @@ export default class Settings {
     }
     async fetchFile(path) {
         try {
-            return await fetch(this.makeUrl('fetch', { path: path }), { signal: AbortSignal.timeout(Config.requestTout) });
+            return await fetchTimeout(this.makeUrl('fetch', { path: path }), filefetch_tout);
         } catch (e) {
             popup(e);
         }

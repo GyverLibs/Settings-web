@@ -53,3 +53,11 @@ export function http_post(url, data, progress) {
         xhr.send(data);
     });
 }
+
+export async function fetchTimeout(url, timeout = 5000) {
+    const controller = new AbortController();
+    const tmr = setTimeout(() => controller.abort(), timeout);
+    const response = await fetch(url, { signal: controller.signal });
+    clearTimeout(tmr);
+    return response;
+}

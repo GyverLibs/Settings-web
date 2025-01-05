@@ -41,19 +41,19 @@ module.exports = {
                     "css-loader"
                 ]
             },
-            {
-                test: /\.(?:js|mjs|cjs)$/,
-                exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        targets: "defaults",
-                        presets: [
-                            ['@babel/preset-env']
-                        ]
-                    }
-                }
-            }
+            // {
+            //     test: /\.(?:js|mjs|cjs)$/,
+            //     exclude: /node_modules/,
+            //     use: {
+            //         loader: 'babel-loader',
+            //         options: {
+            //             targets: "last 5 years",
+            //             presets: [
+            //                 ['@babel/preset-env']
+            //             ]
+            //         }
+            //     }
+            // }
         ]
     },
 

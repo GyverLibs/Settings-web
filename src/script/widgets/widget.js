@@ -1,5 +1,6 @@
 import { Component } from "@alexgyver/component";
 import WidgetEvent from "./event";
+import { lang } from "../lang";
 
 export default class WidgetBase {
     $root;
@@ -29,7 +30,7 @@ export default class WidgetBase {
                             {
                                 tag: 'sup',
                                 class: 'error_sup',
-                                text: 'Error!',
+                                text: lang.error,
                                 var: 'error',
                             }
                         ]
