@@ -43,6 +43,9 @@ export default class Settings {
     constructor() {
         console.log("Settings-web v" + SETTINGS_V);
 
+        this.base_url = window.location.origin;
+        if (typeof SETTINGS_DEV_URL === 'string') this.base_url = SETTINGS_DEV_URL;
+
         this.$arrow = Arrow('left', 16, {
             display: 'none',
             marginRight: '4px',
@@ -250,16 +253,8 @@ export default class Settings {
         });
 
         this.$main_col.addEventListener("widget_event", async (e) => {
-            let res = null;
-            switch (e.data.action) {
-                case 'click':
-                    res = await this.send('click', e.data.id);
-                    break;
-                case 'set':
-                    res = await this.send('set', e.data.id, e.data.value);
-                    this.updateCache(e.data.id, e.data.value);
-                    break;
-            }
+            let res = await this.send(e.data.action, e.data.id, e.data.value);
+            if (e.data.action == 'set') this.updateCache(e.data.id, e.data.value);
             this.parse(res);
             if (res === null) e.data.widget.setError();
         });
@@ -315,6 +310,15 @@ export default class Settings {
         // должно быть в конце
         document.addEventListener('dup_id', (e) => {
             popup(`Duplicated widget ID: ${e.detail.widget.id} [${e.detail.widget.type}]`);
+        });
+
+        window.addEventListener("beforeunload", async () => {
+            await this.send('unfocus');
+        });
+
+        document.addEventListener('changeHeight', (e) => {
+            let fadein = this.pageStack[this.pageStack.length - 1].page;
+            this.$main_col.style.minHeight = fadein.offsetHeight + 'px';
         });
     }
 
@@ -372,7 +376,7 @@ export default class Settings {
     }
 
     async load() {
-        const res = await this.send('load');
+        const res = await this.send('load', 0, ((new Date).getTime() / 1000 | 0).toString(16));
         await this.parse(res);
         if (!res) {
             this.setOffline(true);
@@ -429,11 +433,8 @@ export default class Settings {
         return null;
     }
     makeUrl(cmd, params = {}) {
-        let base_url = window.location.origin;
-        if (typeof SETTINGS_DEV_URL === 'string') base_url = SETTINGS_DEV_URL;
-
         if (this.auth) params.auth = this.auth.toString(16);
-        let url = base_url + '/' + cmd;
+        let url = this.base_url + '/' + cmd;
         let first = true;
         for (let p in params) {
             if (params[p] === null) continue;
@@ -523,7 +524,8 @@ export default class Settings {
 
                         default:
                             if (this.widgets.has(upd.id)) {
-                                this.widgets.get(upd.id).update(upd.data);
+                                if ('data' in upd) this.widgets.get(upd.id).update(upd.data);
+                                if ('color' in upd) this.widgets.get(upd.id).updateColor(upd.color);
                             }
                             break;
                     }
@@ -541,14 +543,19 @@ export default class Settings {
         Config.updateTout = json.update_tout;
         Config.requestTout = json.request_tout;
         Config.sliderTout = json.slider_tout;
+        document.querySelector(':root').style.setProperty('--accent', intToColor(json.color));
 
         this.renderFooter(json.proj_name, json.proj_link);
         this.$title.innerText = json.title ?? 'Settings';
         document.title = this.$title.innerText;
         let pages = [];
         this.widgets = new unMap();
-        Page(json.content, pages, this.widgets);
+        Page(json.content, pages, this);
         this.$main_col.replaceChildren(...pages);
+        if (!pages.length) {
+            popup("No data");
+            return;
+        }
         this.pageStack = [{ page: pages[0], title: json.title }];
         pages[0].style.display = 'block';
         this.$main_col.style.minHeight = pages[0].offsetHeight + 'px';
@@ -672,7 +679,7 @@ export default class Settings {
     }
     async uploadFile(file) {
         this.$upload_file.value = "";
-        let path = await AsyncPrompt("Upload", '/' + file.name);
+        let path = await AsyncPrompt(lang.upload, '/' + file.name);
         if (!path) return;
 
         this.stopPing();
@@ -690,13 +697,13 @@ export default class Settings {
         } catch (e) { }
 
         iconFill(this.$upload, ok ? 'var(--font_tint)' : 'var(--error)');
-        popup(ok ? 'Upload done' : 'Upload error', !ok);
+        popup(ok ? lang.upl_done : lang.upl_error, !ok);
         if (ok) this.parse(await this.send('fs'));
         this.restartPing();
     }
     async uploadOta(file) {
         if (!file.name.endsWith(this.$upload_ota.accept)) return;
-        if (!await AsyncConfirm("Update firmware?")) return;
+        if (!await AsyncConfirm(lang.ota)) return;
         this.stopPing();
         this.offline = true;
 
@@ -712,7 +719,7 @@ export default class Settings {
         } catch (e) { }
 
         iconFill(this.$ota, ok ? 'var(--font_tint)' : 'var(--error)');
-        popup(ok ? 'OTA done' : 'OTA error', !ok);
+        popup(ok ? lang.ota_done : lang.ota_error, !ok);
         this.restartPing();
     }
 };

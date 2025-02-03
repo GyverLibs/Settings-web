@@ -21,7 +21,7 @@ export default class SliderWidget extends WidgetBase {
             class: 'value active',
             events: {
                 click: async () => {
-                    let res = await AsyncPrompt(data.label ?? data.type, this.$slider.value, (area) => area.value = parseFloatNoNaN(area.value) + '');
+                    let res = await AsyncPrompt(data.label ?? data.type, this.$slider.value, (v) => parseFloatNoNaN(v));
                     if (res) {
                         this.update(res);
                         this.send();

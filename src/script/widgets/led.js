@@ -27,4 +27,7 @@ export default class LedWidget extends WidgetBase {
             this.$led.classList = 'led' + (value == 1 ? ' on' : '');
         }
     }
+    updateColor(value) {
+        this.$led.style.setProperty('--color', intToColor(value));
+    }
 }

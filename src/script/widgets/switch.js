@@ -9,7 +9,6 @@ export default class SwitchWidget extends WidgetBase {
 
         super.addOutput(Component.make('div', {
             context: this,
-            class: 'switch_cont',
             child: {
                 tag: 'input',
                 class: 'switch',
@@ -27,5 +26,8 @@ export default class SwitchWidget extends WidgetBase {
 
     update(value) {
         this.$switch.checked = Number(value ?? 0);
+    }
+    updateColor(value) {
+        this.$switch.style.setProperty('--accent', intToColor(value));
     }
 }

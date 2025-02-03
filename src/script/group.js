@@ -3,7 +3,7 @@ import MenuWidget from "./widgets/menu";
 import { checkAndAppend } from "./utils";
 import Row from "./row";
 
-export default function Group(title, data, parent, pages, widgets) {
+export default function Group(title, data, parent, pages, sets) {
     if (!data.length) return document.createDocumentFragment();
 
     let ctx = {};
@@ -29,10 +29,10 @@ export default function Group(title, data, parent, pages, widgets) {
 
     for (let obj of data) {
         switch (obj.type) {
-            case 'menu': ctx.$group_col.append(MenuWidget(obj.title, obj.content, parent, pages, widgets)); break;
-            case 'row': ctx.$group_col.append(Row(obj.title, obj.content, parent, pages, widgets)); break;
+            case 'menu': ctx.$group_col.append(MenuWidget(obj.title, obj.content, parent, pages, sets)); break;
+            case 'row': ctx.$group_col.append(Row(obj, parent, pages, sets)); break;
             default:
-                checkAndAppend(widgets, ctx.$group_col, obj);
+                checkAndAppend(sets, ctx.$group_col, obj);
                 break;
         }
     }

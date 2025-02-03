@@ -2,11 +2,11 @@ import { Component } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import './time.css';
 
-const gmt = new Date().getTimezoneOffset() * 60;
-
 class TimeWidgetBase extends WidgetBase {
     constructor(data, type) {
         super(data);
+
+        this.gmt = (data.zone !== undefined ? -data.zone : new Date().getTimezoneOffset()) * 60;
 
         super.addOutput(Component.make('div', {
             context: this,
@@ -49,11 +49,11 @@ class TimeWidgetBase extends WidgetBase {
     }
 
     getUnix() {
-        return Math.floor(this.$input.valueAsNumber / 1000) + gmt;
+        return Math.floor(this.$input.valueAsNumber / 1000) + this.gmt;
     }
 
     getDateString(value) {
-        return new Date((value - gmt) * 1000).toISOString();
+        return new Date((value - this.gmt) * 1000).toISOString();
     }
 
     unixToValue(value) { }

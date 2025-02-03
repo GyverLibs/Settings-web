@@ -1,5 +1,4 @@
 .button {
-    display: inline-block;
     margin: 8px 10px;
     box-sizing: border-box;
     padding: 8px 5px;
@@ -20,16 +19,60 @@
     filter: brightness(0.8);
 }
 
-.buttons>.button {
-    margin: 4px;
-    width: 100%;
-}
-
 .group_col>.button {
     margin: 8px 5px;
 }
 
+.buttons>.button {
+    margin: 5px;
+    width: 100%;
+}
+
+.buttons {
+    /* background: var(--back); */
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    padding: 6px;
+}
+
 .group_col>.button:last-child {
+    box-shadow: inset 0 3px 5px var(--shadow);
     border-radius: 0 0 10px 10px;
     margin: 0;
+}
+
+.group_col>.buttons:last-child:not(:only-child)>.button {
+    box-shadow: inset 0 3px 5px var(--shadow);
+    border-radius: 0;
+    margin: 0;
+}
+
+.group_col>.buttons:last-child:not(:only-child)>.button:first-child {
+    border-bottom-left-radius: 10px;
+}
+
+.group_col>.buttons:last-child:not(:only-child)>.button:last-child {
+    border-bottom-right-radius: 10px;
+}
+
+.group_col>.buttons:last-child:not(:only-child) {
+    background: var(--back);
+    box-shadow: inset 0 0 10px var(--shadow);
+    padding: 0;
+    gap: 2px;
+}
+
+.group_col>.buttons:last-child {
+    gap: 5px;
+}
+
+.group_row>.buttons {
+    background: var(--tab);
+    padding: 0;
+}
+
+.group_row>.button {
+    margin: 0;
+    width: 100%;
 }

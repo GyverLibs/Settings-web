@@ -1,0 +1,29 @@
+.tabs {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow-x: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    /* height: 35px; */
+}
+
+.tabs.dragging {
+    scroll-behavior: auto;
+}
+
+.tab {
+    display: inline-block;
+    color: var(--font);
+    padding: 7px 11px;
+    text-wrap: nowrap;
+    font-size: 19px;
+    user-select: none;
+    cursor: pointer;
+    border-radius: 15px;
+}
+
+.tab.active {
+    background: var(--accent);
+    color: var(--font_inv);
+}

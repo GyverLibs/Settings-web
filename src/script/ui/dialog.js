@@ -43,9 +43,9 @@ export function BaseDialog(label, content, actionOK, actionCancel, postRender = 
                                 class: 'button',
                                 text: 'OK',
                                 events: {
-                                    click: () => {
-                                        actionOK();
-                                        dialog.destroy();
+                                    click: async () => {
+                                        let res = await actionOK();
+                                        if (res || res == undefined) dialog.destroy();
                                     },
                                 },
                             },
@@ -74,7 +74,7 @@ export function BaseDialog(label, content, actionOK, actionCancel, postRender = 
     if (postRender) postRender();
 }
 
-export function AsyncPrompt(label, value, oninput = null) {
+export function AsyncPrompt(label, value, oninput = null, onconfirm = null) {
     return new Promise(resolve => {
         let area = Component.make('textarea', {
             text: value,
@@ -82,16 +82,25 @@ export function AsyncPrompt(label, value, oninput = null) {
             events: {
                 input: () => {
                     area.style.height = area.scrollHeight + "px";
-                    if (oninput) oninput(area);
+                    if (oninput) area.value = oninput(area.value) + '';
                 },
             }
         });
 
-        BaseDialog(label, area, () => resolve(area.value), () => resolve(null), () => {
-            area.focus();
-            area.setSelectionRange(area.value.length, area.value.length);  // cursor end
-            area.style.height = area.scrollHeight + "px";
-        });
+        BaseDialog(label, area,
+            async () => {
+                if (!onconfirm || await onconfirm(area.value)) {
+                    resolve(area.value);
+                    return true;
+                }
+                return false;
+            },
+            () => resolve(null),
+            () => {
+                area.focus();
+                area.setSelectionRange(area.value.length, area.value.length);  // cursor end
+                area.style.height = area.scrollHeight + "px";
+            });
     });
 }
 

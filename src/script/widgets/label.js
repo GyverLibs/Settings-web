@@ -22,4 +22,8 @@ export default class LabelWidget extends WidgetBase {
         if (this.data.step) this.$out.innerText = (value ?? 0).toFixed(this.data.step) + '';
         else this.$out.innerText = (value ?? '') + '';
     }
+
+    updateColor(value) {
+        this.$out.style.color = intToColor(value);
+    }
 }

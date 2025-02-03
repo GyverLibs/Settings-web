@@ -1,6 +1,7 @@
 import { Component } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import './log.css';
+import { waitFrame } from "../utils";
 
 export default class LogWidget extends WidgetBase {
     constructor(data) {
@@ -10,12 +11,29 @@ export default class LogWidget extends WidgetBase {
             context: this,
             class: 'log',
             var: 'out',
+            events: {
+                scroll: () => {
+                    if (!this.#lock) {
+                        this.#auto = this.$out.scrollTop + this.$out.clientHeight == this.$out.scrollHeight;
+                    }
+                }
+            }
         }));
 
         this.update(data.value);
     }
 
-    update(value) {
+    async update(value) {
         this.$out.innerText = value ?? '';
+        await waitFrame();
+        if (this.#auto) {
+            this.#lock = true;
+            this.$out.scrollTop = this.$out.scrollHeight;
+            await waitFrame();
+            this.#lock = false;
+        }
     }
+
+    #auto = true;
+    #lock = true;
 }

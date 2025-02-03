@@ -8,6 +8,12 @@ export const settings_lang = {
         create: 'Create file',
         upload: 'Upload file',
         error: 'Error',
+        ota_done: 'OTA done',
+        ota_error: 'OTA error',
+        upl_done: 'Upload done',
+        upl_error: 'Upload error',
+        upload: 'Upload?',
+        ota: 'Update firmware?',
     },
     ru: {
         used: 'Занято',
@@ -18,6 +24,12 @@ export const settings_lang = {
         create: 'Создать файл',
         upload: 'Загрузить файл',
         error: 'Ошибка',
+        ota_done: 'OTA завершено',
+        ota_error: 'Ошибка OTA',
+        upl_done: 'Загрузка завершена',
+        upl_error: 'Ошибка загрузки',
+        upload: 'Загрузить?',
+        ota: 'Обновить прошивку?',
     }
 };
 

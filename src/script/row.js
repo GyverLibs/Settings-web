@@ -1,10 +1,27 @@
 import { Component } from "@alexgyver/component";
 import { checkAndAppend } from "./utils";
 import MenuWidget from "./widgets/menu";
+import ButtonsWidget from "./widgets/buttons";
 
-export default function Row(title, data, parent, pages, widgets) {
+export default function Row(obj, parent, pages, sets) {
+    let title = obj.title
+    let data = obj.content;
     if (!data.length) return document.createDocumentFragment();
 
+    // only buttons
+    // let only_btns = true;
+    // for (let obj of data) {
+    //     if (obj.type != 'button') {
+    //         only_btns = false;
+    //         break;
+    //     }
+    // }
+    // if (only_btns) {
+    //     let btns = new ButtonsWidget(obj);
+    //     return btns.$root;
+    // }
+
+    // any widgets
     let ctx = {};
     let row = Component.make('div', {
         context: ctx,
@@ -20,7 +37,7 @@ export default function Row(title, data, parent, pages, widgets) {
             },
             {
                 tag: 'div',
-                class: 'group_row',
+                class: 'group_row ' + (obj.divtype ?? 'default'),
                 var: 'group_row',
             }
         ]
@@ -28,12 +45,13 @@ export default function Row(title, data, parent, pages, widgets) {
 
     for (let obj of data) {
         if (!obj.label || !obj.label.length) obj.label = null;
+
         switch (obj.type) {
-            case 'menu': ctx.$group_row.append(MenuWidget(obj.title, obj.content, parent, pages, widgets)); break;
+            case 'menu': ctx.$group_row.append(MenuWidget(obj.title, obj.content, parent, pages, sets)); break;
             case 'group': break;
             case 'row': break;
             default:
-                checkAndAppend(widgets, ctx.$group_row, obj);
+                checkAndAppend(sets, ctx.$group_row, obj);
                 break;
         }
     }

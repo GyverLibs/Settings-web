@@ -16,6 +16,10 @@ import LedWidget from "./led";
 import NumberWidget from './number';
 import LogWidget from './log';
 import Slider2Widget from './slider2';
+import HTMLWidget from './html';
+import ImageWidget from './image';
+import StreamWidget from './stream';
+import TabsWidget from './tabs';
 
 export const WidgetList = {
     toggle: SwitchWidget,
@@ -36,4 +40,8 @@ export const WidgetList = {
     confirm: ConfirmWidget,
     led: LedWidget,
     log: LogWidget,
+    html: HTMLWidget,
+    image: ImageWidget,
+    stream: StreamWidget,
+    tabs: TabsWidget,
 }

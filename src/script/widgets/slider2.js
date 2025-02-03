@@ -27,7 +27,7 @@ export default class Slider2Widget extends WidgetBase {
                     class: 'value active',
                     events: {
                         click: async () => {
-                            let res = await AsyncPrompt(data.label ?? data.type, this.$slider1.value, (area) => area.value = parseFloatNoNaN(area.value) + '');
+                            let res = await AsyncPrompt(data.label ?? data.type, this.$slider1.value, (v) => parseFloatNoNaN(v));
                             if (res) {
                                 this.update([res, this.$slider2.value]);
                                 this.send();
@@ -46,7 +46,7 @@ export default class Slider2Widget extends WidgetBase {
                     class: 'value active',
                     events: {
                         click: async () => {
-                            let res = await AsyncPrompt(data.label ?? data.type, this.$slider2.value, (area) => area.value = parseFloatNoNaN(area.value) + '');
+                            let res = await AsyncPrompt(data.label ?? data.type, this.$slider2.value, (v) => parseFloatNoNaN(v));
                             if (res) {
                                 this.update([this.$slider1.value, res]);
                                 this.send();

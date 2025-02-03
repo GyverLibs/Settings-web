@@ -15,10 +15,12 @@ export default class Button {
             },
             child: {
                 tag: 'div',
+                style: 'text-align: center',
                 children: [
                     {
                         tag: 'span',
-                        text: data.label ?? 'Button'
+                        text: data.label ?? 'Button',
+                        var: 'btext',
                     },
                     {
                         tag: 'sup',
@@ -28,10 +30,24 @@ export default class Button {
                     }
                 ],
             },
-            events: {
-                click: () => this.$root.dispatchEvent(new WidgetEvent('click', this.id, null, this)),
-            }
         });
+
+        if (data.button_hold) {
+            this.$root.onmousedown = () => this._press(1);
+            this.$root.ontouchstart = () => this._press(1);
+            document.addEventListener("mouseup", () => this._press(0));
+            document.addEventListener("touchend", () => this._press(0));
+        } else {
+            this.$root.onclick = () => this._dispatch(1);
+        }
+    }
+
+    update(value) {
+        this.$btext.innerText = value;
+    }
+
+    updateColor(value) {
+        this.$root.style.background = intToColor(value);
     }
 
     setError() {
@@ -40,4 +56,22 @@ export default class Button {
             if (this.$error) this.$error.style.display = 'none';
         }, 2500);
     }
+
+    _press(val) {
+        if (val) {
+            this.#pressed = 1;
+            this._dispatch(1);
+        } else {
+            if (this.#pressed) {
+                this.#pressed = 0;
+                this._dispatch(0);
+            }
+        }
+    }
+
+    _dispatch(val) {
+        this.$root.dispatchEvent(new WidgetEvent('click', this.id, val, this));
+    }
+
+    #pressed = 0;
 }

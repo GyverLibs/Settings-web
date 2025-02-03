@@ -4,6 +4,7 @@
     appearance: none;
     width: 52px;
     height: 30px;
+    top: 1px;
     display: inline-block;
     position: relative;
     border-radius: 15px;

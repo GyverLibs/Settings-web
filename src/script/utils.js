@@ -1,13 +1,14 @@
 import { Component } from "@alexgyver/component";
 import { WidgetList } from "./widgets/widgets";
 
-export function checkAndAppend(widgets, parent, obj) {
-    if (widgets.has(obj.id)) {
+export function checkAndAppend(sets, parent, obj) {
+    if (sets.widgets.has(obj.id)) {
         document.dispatchEvent(new CustomEvent("dup_id", { detail: { widget: obj } }));
     } else if (obj.type in WidgetList) {
+        obj.sets = sets;
         let w = new (WidgetList[obj.type])(obj);
         parent.append(w.$root);
-        widgets.set(obj.id, w);
+        sets.widgets.set(obj.id, w);
     }
 }
 
@@ -60,4 +61,13 @@ export async function fetchTimeout(url, timeout = 5000) {
     const response = await fetch(url, { signal: controller.signal });
     clearTimeout(tmr);
     return response;
+}
+
+export function waitFrame() {
+    return new Promise(requestAnimationFrame);
+}
+
+export async function wait2Frame() {
+    await waitFrame();
+    await waitFrame();
 }

@@ -60,4 +60,5 @@ export default class WidgetBase {
     }
 
     update(value) { }
+    updateColor(value) { }
 }

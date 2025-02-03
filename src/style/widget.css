@@ -12,7 +12,7 @@
 
 /* ROW */
 .row {
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 .group_row {
@@ -20,14 +20,14 @@
     gap: 10px;
     justify-content: space-between;
     align-items: center;
-    overflow: hidden;
-    background: var(--tab);
+    /* overflow: hidden; */
+    /* background: var(--tab); */
     border-radius: 10px;
-    padding: 6px 10px;
+    padding: 7px 10px;
 }
 
 .group_row>.widget {
-    /* overflow: hidden; */
+    overflow: hidden;
     flex-shrink: 0;
 }
 
@@ -40,17 +40,48 @@
     padding-bottom: 0px;
 }
 
-.page>.row>.group_row {
-    box-shadow: 0 0 10px var(--shadow);
-    margin: 0 10px;
-}
-
 .page>.row {
     margin: 6px 0;
 }
 
+/* default */
+.page>.row>.group_row {
+    box-shadow: 0 0 10px var(--shadow);
+    background: var(--tab);
+    margin: 0 10px;
+}
+
 .group_row>.widget {
     padding: 0;
+}
+
+/* line */
+.page>.row>.group_row.line {
+    padding: 0;
+    gap: 0;
+}
+
+.page>.row>.group_row.line>.widget {
+    padding: 7px 10px;
+}
+
+.page>.row>.group_row.line>.widget:not(:first-child) {
+    border-left: 2px solid var(--back);
+}
+
+/* block */
+.page>.row>.group_row.block {
+    box-shadow: none;
+    background: none;
+    padding: 0;
+    gap: 6px;
+}
+
+.page>.row>.group_row.block>.widget {
+    box-shadow: 0 0 10px var(--shadow);
+    background: var(--tab);
+    padding: 7px 10px;
+    border-radius: 10px;
 }
 
 /* GROUP */
@@ -89,7 +120,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 30px;
+    height: 32px;
     /* padding: 7px 0; */
 }
 

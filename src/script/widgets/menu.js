@@ -3,10 +3,10 @@ import Page from "../page";
 import { Arrow } from "../utils";
 import WidgetBase from "./widget";
 
-export default function MenuWidget(title, data, parent, pages, widgets) {
+export default function MenuWidget(title, data, parent, pages, sets) {
     if (!data.length) return document.createDocumentFragment();
 
-    let page = Page(data, pages, widgets);
+    let page = Page(data, pages, sets);
     let widget = new WidgetBase({ label: title });
     widget.addOutput(Arrow('right', 20));
 
