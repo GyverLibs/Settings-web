@@ -2,17 +2,11 @@ import { Component } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import './slider.css';
 import { AsyncPrompt } from "../ui/dialog";
-import { Config } from '../config';
-import Timer from "../timer";
 import { intToColor, parseFloatNoNaN } from "../utils";
 
 export default class SliderWidget extends WidgetBase {
-    timer;
-    prev = null;
-
     constructor(data) {
         super(data);
-        this.timer = new Timer();
         this.unit = data.unit ?? '';
 
         super.addOutput(Component.make('span', {
@@ -48,9 +42,7 @@ export default class SliderWidget extends WidgetBase {
                     },
                     input: () => {
                         this.move();
-                        if (!this.timer.running()) {
-                            this.timer.start(() => this.send(), Config.sliderTout);
-                        }
+                        this.send();
                     },
                 }
             }
@@ -72,10 +64,6 @@ export default class SliderWidget extends WidgetBase {
     }
 
     send() {
-        this.timer.stop();
-        if (this.prev !== this.$slider.value) {
-            this.prev = this.$slider.value;
-            this.sendEvent(this.prev);
-        }
+        this.sendEvent(this.$slider.value);
     }
 }

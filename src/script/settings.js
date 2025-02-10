@@ -12,6 +12,7 @@ import LS from './ls';
 import { WidgetList } from './widgets/widgets';
 import WidgetBase from './widgets/widget';
 import { lang } from './lang';
+import parseTable from './table';
 
 const anim_s = '.11s';
 const anim_ms = 100;
@@ -39,12 +40,10 @@ export default class Settings {
     auth = 0;
 
     //#region constructor
-
     constructor() {
         console.log("Settings-web v" + SETTINGS_V);
 
-        this.base_url = window.location.origin;
-        if (typeof SETTINGS_DEV_URL === 'string') this.base_url = SETTINGS_DEV_URL;
+        this.base_url = (typeof SETTINGS_DEV_URL === 'string') ? SETTINGS_DEV_URL : window.location.origin;
 
         this.$arrow = Arrow('left', 16, {
             display: 'none',
@@ -322,8 +321,7 @@ export default class Settings {
         });
     }
 
-    //#region methods
-
+    //#region registerCustom
     registerCustom(js) {
         let res = js.split(/(class[a-zA-Z\s_\.]*?{)/sg);
         res.shift();
@@ -345,20 +343,21 @@ export default class Settings {
             popup: popup,
             intToColor: intToColor,
         };
-        let sheet = document.head.appendChild(document.createElement('style')).sheet;
-
+        
+        let style = document.head.appendChild(document.createElement('style'));
         for (let cls of classes) {
             try {
                 Object.keys(list).forEach(x => cls = cls.replaceAll(x, '__list.' + x));
                 let clsname = cls.match(/class\s*(\S*)/)[1];
                 WidgetList[clsname] = new Function('__list', `return (${cls})`)(list);
-                if (WidgetList[clsname].css) sheet.insertRule(WidgetList[clsname].css);
+                if (WidgetList[clsname].css) style.textContent += WidgetList[clsname].css + '\r\n';
             } catch (e) {
                 popup(e);
             }
         }
     }
 
+    //#region updateCache
     updateCache(id, value) {
         function repl(obj) {
             for (let k in obj) {
@@ -375,8 +374,9 @@ export default class Settings {
         }
     }
 
+    //#region load
     async load() {
-        const res = await this.send('load', 0, ((new Date).getTime() / 1000 | 0).toString(16));
+        let res = await this.send('load', 0, ((new Date).getTime() / 1000 | 0).toString(16));
         await this.parse(res);
         if (!res) {
             this.setOffline(true);
@@ -384,6 +384,7 @@ export default class Settings {
         }
     }
 
+    //#region back
     back() {
         let dialogs = document.querySelectorAll('.dialog_back');
         if (dialogs.length) {
@@ -415,8 +416,7 @@ export default class Settings {
         }
     }
 
-    //#region network
-
+    //#region send
     async send(action, id = null, value = null) {
         let res = null;
         try {
@@ -432,6 +432,8 @@ export default class Settings {
         }
         return null;
     }
+
+    //#region makeUrl
     makeUrl(cmd, params = {}) {
         if (this.auth) params.auth = this.auth.toString(16);
         let url = this.base_url + '/' + cmd;
@@ -444,9 +446,12 @@ export default class Settings {
         }
         return url;
     }
+
+    //#region restartPing
     restartPing() {
         this.stopPing();
         if (!Config.updateTout) return;
+
         this.ping_int = setInterval(async () => {
             const res = await this.send(this.offline ? 'load' : 'ping');
             await this.parse(res);
@@ -454,17 +459,20 @@ export default class Settings {
             this.setOffline(!res);
         }, Config.updateTout);
     }
+
+    //#region stopPing
     stopPing() {
         if (this.ping_int) clearInterval(this.ping_int);
         this.ping_int = null;
     }
+
+    //#region setOffline
     setOffline(offline) {
         this.offline = offline;
         if (offline) changeRSSI(this.$rssi, 0);
     }
 
-    //#region render
-
+    //#region parse
     async parse(packet) {
         if (!packet) return;
 
@@ -539,6 +547,7 @@ export default class Settings {
         if (packet.rssi) changeRSSI(this.$rssi, packet.rssi);
     }
 
+    //#region renderUI
     renderUI(json) {
         Config.updateTout = json.update_tout;
         Config.requestTout = json.request_tout;
@@ -560,6 +569,8 @@ export default class Settings {
         pages[0].style.display = 'block';
         this.$main_col.style.minHeight = pages[0].offsetHeight + 'px';
     }
+
+    //#region renderFooter
     renderFooter(pname, plink) {
         let copyr = '';
         if (pname) {
@@ -571,7 +582,7 @@ export default class Settings {
         this.$footer.innerHTML = copyr;
     }
 
-    //#region FS
+    //#region renderFS
     renderFS(packet) {
         this.$fs.replaceChildren();
         if (packet.error) {
@@ -654,6 +665,7 @@ export default class Settings {
         }
     }
 
+    //#region FS
     async removeFile(path) {
         this.parse(await this.send('remove', 0, path));
     }
@@ -666,12 +678,24 @@ export default class Settings {
     }
     async downloadFile(path) {
         try {
-            let res = await this.fetchFile(path);
-            res = await res.blob();
-
             let link = document.createElement('a');
-            link.href = window.URL.createObjectURL(res);
-            link.download = path.split('/').slice(-1);
+            let name = path.split('/').slice(-1)[0];
+            let res = await this.fetchFile(path);
+
+            if (name.endsWith('.tbl')) {
+                name = name.split('.tbl')[0] + '.csv';
+                let table = parseTable(await res.arrayBuffer());
+                table = table.map(row => row.join(';')).join('\r\n').replaceAll('.', ',');
+                let enc = new TextEncoder();
+                let bytes = enc.encode(table);
+                let blob = new Blob([bytes], { type: "text/plain" });
+                link.href = window.URL.createObjectURL(blob);
+            } else {
+                res = await res.blob();
+                link.href = window.URL.createObjectURL(res);
+            }
+
+            link.download = name;
             link.click();
         } catch (e) {
             popup(e);

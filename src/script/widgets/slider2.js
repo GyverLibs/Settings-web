@@ -1,22 +1,18 @@
 import { Component } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import { AsyncPrompt } from "../ui/dialog";
-import { Config } from '../config';
-import Timer from "../timer";
 import { intToColor, parseFloatNoNaN } from "../utils";
 import './slider2.css';
-import WidgetEvent from "./event";
+import DelaySend from "../DelaySend";
 
 export default class Slider2Widget extends WidgetBase {
-    timer;
-    prev1 = null;
-    prev2 = null;
 
     constructor(data) {
         super(data);
-        this.timer = new Timer();
         this.unit = data.unit ?? '';
         this.color = data.color ? intToColor(data.color) : 'var(--accent)';
+        this.sender1 = new DelaySend(this.$root, this.data.id, this);
+        this.sender2 = new DelaySend(this.$root, this.data.id2, this);
 
         super.addOutput(Component.make('div', {
             context: this,
@@ -30,7 +26,7 @@ export default class Slider2Widget extends WidgetBase {
                             let res = await AsyncPrompt(data.label ?? data.type, this.$slider1.value, (v) => parseFloatNoNaN(v));
                             if (res) {
                                 this.update([res, this.$slider2.value]);
-                                this.send();
+                                this.sender1.send(this.$slider1.value);
                             }
                         }
                     }
@@ -49,7 +45,7 @@ export default class Slider2Widget extends WidgetBase {
                             let res = await AsyncPrompt(data.label ?? data.type, this.$slider2.value, (v) => parseFloatNoNaN(v));
                             if (res) {
                                 this.update([this.$slider1.value, res]);
-                                this.send();
+                                this.sender2.send(this.$slider2.value);
                             }
                         }
                     }
@@ -82,9 +78,7 @@ export default class Slider2Widget extends WidgetBase {
                         input: () => {
                             this.check1();
                             this.move();
-                            if (!this.timer.running()) {
-                                this.timer.start(() => this.send(), Config.sliderTout);
-                            }
+                            this.sender1.send(this.$slider1.value);
                         },
                     }
                 },
@@ -95,9 +89,7 @@ export default class Slider2Widget extends WidgetBase {
                         input: () => {
                             this.check2();
                             this.move();
-                            if (!this.timer.running()) {
-                                this.timer.start(() => this.send(), Config.sliderTout);
-                            }
+                            this.sender2.send(this.$slider2.value);
                         },
                     }
                 }
@@ -136,17 +128,5 @@ export default class Slider2Widget extends WidgetBase {
         }
         this.$out1.innerText = makeOut(s1);
         this.$out2.innerText = makeOut(s2) + (this.unit ? this.unit : '');
-    }
-
-    send() {
-        this.timer.stop();
-        if (this.prev1 !== this.$slider1.value) {
-            this.prev1 = this.$slider1.value;
-            this.$root.dispatchEvent(new WidgetEvent('set', this.data.id, this.prev1, this));
-        }
-        if (this.prev2 !== this.$slider2.value) {
-            this.prev2 = this.$slider2.value;
-            this.$root.dispatchEvent(new WidgetEvent('set', this.data.id2, this.prev2, this));
-        }
     }
 }

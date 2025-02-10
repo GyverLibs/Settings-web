@@ -1,6 +1,6 @@
 import { Component } from "@alexgyver/component";
-import WidgetEvent from "./event";
 import { lang } from "../lang";
+import DelaySend from "../DelaySend";
 
 export default class WidgetBase {
     $root;
@@ -38,6 +38,7 @@ export default class WidgetBase {
                 ]
             }
         });
+        this.sender = new DelaySend(this.$root, this.data.id, this);
     }
 
     addOutput(out) {
@@ -49,7 +50,7 @@ export default class WidgetBase {
     }
 
     sendEvent(value) {
-        this.$root.dispatchEvent(new WidgetEvent('set', this.data.id, value, this));
+        this.sender.send(value);
     }
 
     setError() {
