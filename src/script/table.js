@@ -12,6 +12,7 @@ export default function parseTable(buffer) {
                 case 1: return signed ? new Int8Array(val) : new Uint8Array(val);
                 case 2: return signed ? new Int16Array(val) : new Uint16Array(val);
                 case 4: return signed ? new Int32Array(val) : new Uint32Array(val);
+                case 8: return signed ? new BigInt64Array(val) : new BigUint64Array(val);
             }
         }
 
@@ -46,6 +47,6 @@ export default function parseTable(buffer) {
     let cols = parse('u1');
     let rows = parse('u2');
     let types = parse(Array(cols).fill('u1'));
-    types = types.map(t => [null, 'i1', 'u1', 'i2', 'u2', 'i4', 'u4', 'f'][t]);
+    types = types.map(t => [null, 'i1', 'u1', 'i2', 'u2', 'i4', 'u4', 'f', 'i8', 'u8'][t]);
     return [...Array(rows).keys()].map(x => parse(types));
 }

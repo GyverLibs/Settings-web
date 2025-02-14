@@ -46,12 +46,12 @@
 
 .dialog textarea {
     display: block;
-    max-height: 350px;
+    max-height: 500px;
     width: 100%;
     box-sizing: border-box;
     margin-top: 10px;
     margin-bottom: 5px;
-    resize: none;
+    resize: vertical;
     overflow-y: scroll;
     background: var(--back);
     color: var(--font);
@@ -74,6 +74,6 @@
 }
 
 .dialog textarea::-webkit-scrollbar-thumb {
-    background: var(--dark);
+    background: var(--font_tint);
     border-radius: 4px;
 }

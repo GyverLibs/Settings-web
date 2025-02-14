@@ -1,5 +1,5 @@
 import { Config } from "./config";
-import WidgetEvent from "./widgets/event";
+import WidgetEvent from "./widgets/wevent";
 
 export default class DelaySend {
     constructor(el, id, widget) {

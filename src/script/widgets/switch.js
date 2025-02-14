@@ -1,7 +1,7 @@
 import { Component } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import './switch.css';
-import { intToColor } from "../utils";
+import { intToColor } from "@alexgyver/utils";
 
 export default class SwitchWidget extends WidgetBase {
     constructor(data) {

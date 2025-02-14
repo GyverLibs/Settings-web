@@ -1,13 +1,30 @@
 .log {
     padding: 6px;
     margin: 5px 0;
-    max-height: 100px;
+    height: 150px;
     overflow: auto;
     border-radius: 5px;
     font-size: 16px;
     font-family: 'Courier New', Courier, monospace;
     color: var(--accent);
     background: var(--back);
+    resize: vertical;
+}
+
+.log p {
+    margin: 0;
+}
+
+.log .info {
+    color: var(--font);
+}
+
+.log .err {
+    color: red;
+}
+
+.log .warn {
+    color: rgb(255, 162, 0);
 }
 
 .log::-webkit-scrollbar {
@@ -20,6 +37,6 @@
 }
 
 .log::-webkit-scrollbar-thumb {
-    background: var(--dark);
+    background: var(--font_tint);
     border-radius: 4px;
 }

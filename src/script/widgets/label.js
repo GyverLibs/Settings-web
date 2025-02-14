@@ -1,6 +1,6 @@
 import { Component } from "@alexgyver/component";
 import WidgetBase from "./widget";
-import { intToColor } from "../utils";
+import { intToColor } from "@alexgyver/utils";
 
 export default class LabelWidget extends WidgetBase {
     constructor(data) {

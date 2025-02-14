@@ -2,7 +2,7 @@ import { Component } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import './slider.css';
 import { AsyncPrompt } from "../ui/dialog";
-import { intToColor, parseFloatNoNaN } from "../utils";
+import { intToColor, parseFloatNoNaN } from "@alexgyver/utils";
 
 export default class SliderWidget extends WidgetBase {
     constructor(data) {

@@ -12,7 +12,6 @@ class TimeWidgetBase extends WidgetBase {
             context: this,
             class: 'input_cont',
             child: {
-                tag: 'div',
                 class: 'date_block',
                 children: [
                     {

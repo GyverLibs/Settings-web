@@ -3,7 +3,7 @@ export default class WidgetEvent extends Event {
         super("widget_event", { bubbles: true });
         this.data = {
             action: action,
-            id: id.toString(16),
+            id: id,
             value: value,
             widget: widget,
         };

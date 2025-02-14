@@ -1,8 +1,8 @@
 import { Component } from "@alexgyver/component";
-import { Arrow } from "../utils";
 import WidgetBase from "./widget";
 import { DialogCont } from "../ui/dialog";
 import './select.css';
+import { Arrow } from "../ui/misc";
 
 function SelectDialog(options, selected) {
     return new Promise(resolve => {
@@ -18,10 +18,8 @@ function SelectDialog(options, selected) {
                 },
             },
             child: {
-                tag: 'div',
                 class: 'dialog_cont',
                 child: {
-                    tag: 'div',
                     class: 'dialog select',
                     children: options.map((x, i) => Component.make('div',
                         {

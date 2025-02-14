@@ -1,8 +1,8 @@
 import { Component } from "@alexgyver/component";
 import MenuWidget from "./widgets/menu";
 import Group from "./group";
-import { checkAndAppend } from "./utils";
 import Row from "./row";
+import { checkAndAppend } from "./ui/misc";
 
 export default function Page(data, pages, sets) {
     if (!data.length) return document.createDocumentFragment();

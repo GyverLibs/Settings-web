@@ -1,7 +1,7 @@
 import { Component } from "@alexgyver/component";
 import MenuWidget from "./widgets/menu";
-import { checkAndAppend } from "./utils";
 import Row from "./row";
+import { checkAndAppend } from "./ui/misc";
 
 export default function Group(title, data, parent, pages, sets) {
     if (!data.length) return document.createDocumentFragment();
@@ -12,7 +12,6 @@ export default function Group(title, data, parent, pages, sets) {
         class: 'group',
         children: [
             !title ? null : {
-                tag: 'div',
                 class: 'group_title',
                 child: {
                     tag: 'span',
@@ -20,7 +19,6 @@ export default function Group(title, data, parent, pages, sets) {
                 }
             },
             {
-                tag: 'div',
                 class: 'group_col',
                 var: 'group_col',
             }

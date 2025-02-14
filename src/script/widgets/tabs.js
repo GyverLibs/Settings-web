@@ -1,7 +1,7 @@
 import { Component } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import './tabs.css';
-import { waitFrame } from "../utils";
+import { waitRender } from "@alexgyver/utils";
 
 export default class TabsWidget extends WidgetBase {
     constructor(data) {
@@ -14,7 +14,6 @@ export default class TabsWidget extends WidgetBase {
             var: 'tabs',
             children: this.options.map((x, i) => {
                 return {
-                    tag: 'div',
                     class: 'tab',
                     text: x.trim(),
                     events: {
@@ -40,9 +39,9 @@ export default class TabsWidget extends WidgetBase {
             this.$tabs.classList.remove('dragging');
         });
 
-        waitFrame().then(() => {
-            this.$tabs.scrollLeft = this.$tabs.scrollWidth * data.value / this.options.length - this.$tabs.clientWidth / 2;
-        });
+        waitRender(this.$tabs, tabs => {
+            tabs.scrollLeft = tabs.scrollWidth * data.value / this.options.length - tabs.clientWidth / 2;
+        })
 
         this.update(data.value);
     }

@@ -23,10 +23,8 @@ export function BaseDialog(label, content, actionOK, actionCancel, postRender = 
 
     Component.config(dialog.$root, {
         child: {
-            tag: 'div',
             class: 'dialog_cont',
             child: {
-                tag: 'div',
                 class: 'dialog',
                 children: [
                     {
@@ -35,11 +33,9 @@ export function BaseDialog(label, content, actionOK, actionCancel, postRender = 
                     },
                     content,
                     {
-                        tag: 'div',
                         class: 'dialog_btns',
                         children: [
                             {
-                                tag: 'div',
                                 class: 'button',
                                 text: 'OK',
                                 events: {
@@ -50,11 +46,9 @@ export function BaseDialog(label, content, actionOK, actionCancel, postRender = 
                                 },
                             },
                             {
-                                tag: 'div',
                                 style: 'width: 20px',
                             },
                             {
-                                tag: 'div',
                                 class: 'button',
                                 style: 'background: var(--error)',
                                 text: 'Cancel',

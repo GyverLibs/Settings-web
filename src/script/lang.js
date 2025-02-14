@@ -14,6 +14,7 @@ export const settings_lang = {
         upl_error: 'Upload error',
         upload: 'Upload?',
         ota: 'Update firmware?',
+        fetch_err: "Fetch error",
     },
     ru: {
         used: 'Занято',
@@ -30,6 +31,7 @@ export const settings_lang = {
         upl_error: 'Ошибка загрузки',
         upload: 'Загрузить?',
         ota: 'Обновить прошивку?',
+        fetch_err: "Ошибка скачивания",
     }
 };
 

@@ -20,6 +20,8 @@ import HTMLWidget from './html';
 import ImageWidget from './image';
 import StreamWidget from './stream';
 import TabsWidget from './tabs';
+import { PlotRunWidget, PlotStockWidget, PlotTimeWidget, PlotWidget } from "./plot";
+import JoyWidget from './joystick';
 
 export const WidgetList = {
     toggle: SwitchWidget,
@@ -44,4 +46,9 @@ export const WidgetList = {
     image: ImageWidget,
     stream: StreamWidget,
     tabs: TabsWidget,
+    plot_run: PlotRunWidget,
+    plot_stack: PlotStockWidget,
+    plot: PlotWidget,
+    plot_time: PlotTimeWidget,
+    joystick: JoyWidget,
 }

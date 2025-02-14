@@ -1,9 +1,9 @@
 import { Component } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import { AsyncPrompt } from "../ui/dialog";
-import { intToColor, parseFloatNoNaN } from "../utils";
 import './slider2.css';
 import DelaySend from "../DelaySend";
+import { intToColor, parseFloatNoNaN } from "@alexgyver/utils";
 
 export default class Slider2Widget extends WidgetBase {
 
@@ -67,7 +67,6 @@ export default class Slider2Widget extends WidgetBase {
             class: 'slider2_cont',
             children: [
                 {
-                    tag: 'div',
                     class: 'track',
                     var: 'track',
                 },

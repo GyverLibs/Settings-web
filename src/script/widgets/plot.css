@@ -1,0 +1,11 @@
+.plot {
+    height: 300px;
+    width: 100%;
+    overflow: hidden;
+    resize: vertical;
+    border-radius: 10px;
+}
+
+.svp {
+    --back: var(--tab) !important;
+}

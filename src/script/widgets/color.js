@@ -1,6 +1,6 @@
 import { Component } from "@alexgyver/component";
 import WidgetBase from "./widget";
-import { intToColor } from "../utils";
+import { intToColor } from "@alexgyver/utils";
 import './color.css';
 
 export default class ColorWidget extends WidgetBase {
@@ -11,11 +11,9 @@ export default class ColorWidget extends WidgetBase {
             context: this,
             class: 'input_cont',
             child: {
-                tag: 'div',
                 class: 'color_block',
                 children: [
                     {
-                        tag: 'div',
                         class: 'color_out',
                         var: 'out',
                     },

@@ -1,5 +1,4 @@
 import { Component } from '@alexgyver/component';
-import { Arrow, fetchTimeout, hash, http_post, intToColor } from './utils';
 import { codes } from './codes';
 import { AsyncConfirm, AsyncPrompt } from './ui/dialog';
 import { changeRSSI, makeRSSI } from './ui/rssi';
@@ -8,15 +7,19 @@ import popup from './ui/popup';
 import unMap from './unmap';
 import Page from './page';
 import decodeBson from '@alexgyver/bson';
-import LS from './ls';
 import { WidgetList } from './widgets/widgets';
 import WidgetBase from './widgets/widget';
 import { lang } from './lang';
 import parseTable from './table';
+import WSRequest from './wsrequest';
+import renderInfoRow from './ui/info';
+import { encodeText, fetchTimeout, hash, httpPost, intToColor, LS, waitFrame } from '@alexgyver/utils';
+import { Arrow } from './ui/misc';
 
 const anim_s = '.11s';
 const anim_ms = 100;
 const filefetch_tout = 3000;
+const ping_prd = 2500;
 
 function iconGradient(icon, perc) {
     icon.style.background = 'none';
@@ -30,7 +33,8 @@ function iconFill(icon, color) {
 export default class Settings {
     pageStack = [];
     widgets = new unMap();
-    ping_int = null;
+    ping_t = null;
+    update_t = null;
     offline = false;
     transOn = null;
     transOut = null;
@@ -38,6 +42,7 @@ export default class Settings {
     granted = false;
     firstBuild = true;
     auth = 0;
+    rssi = 0;
 
     //#region constructor
     constructor() {
@@ -56,14 +61,11 @@ export default class Settings {
             class: 'main',
             children: [
                 {
-                    tag: 'div',
                     class: 'header',
                     children: [
                         {
-                            tag: 'div',
                             children: [
                                 {
-                                    tag: 'div',
                                     class: 'nav',
                                     children: [
                                         this.$arrow,
@@ -74,15 +76,19 @@ export default class Settings {
                                     ]
                                 },
                                 {
-                                    tag: 'div',
                                     class: 'rssi',
                                     var: 'rssi',
                                     html: makeRSSI(),
+                                },
+                                {
+                                    tag: 'span',
+                                    class: 'ws',
+                                    var: 'ws',
+                                    text: 'WS',
                                 }
                             ]
                         },
                         {
-                            tag: 'div',
                             class: 'icon bars menubutton',
                             var: 'menubutton',
                             events: {
@@ -92,11 +98,12 @@ export default class Settings {
                                     this.$main_col.classList.toggle('hidden');
                                     this.$main_menu.classList.toggle('hidden');
                                     if (this.$main_menu.classList.contains('hidden')) {
-                                        this.parse(await this.send('load'));
                                         this.$menubutton.classList = 'icon bars menubutton';
+                                        this.restartUpdates();
                                     } else {
-                                        this.parse(await this.send('fs'));
                                         this.$menubutton.classList = 'icon cross menubutton';
+                                        this.stopUpdates();
+                                        await this.requset('fs');
                                     }
                                 },
                             }
@@ -104,38 +111,31 @@ export default class Settings {
                     ]
                 },
                 {
-                    tag: 'div',
                     class: 'hidden',
                     var: 'main_menu',
                     style: { marginTop: '10px' },
                     children: [
                         {
-                            tag: 'div',
                             class: 'group_col',
                             children: [
                                 {
-                                    tag: 'div',
                                     class: 'menu_icons',
                                     children: [
                                         {
-                                            tag: 'div',
                                             class: 'menu_icon',
                                             child: {
-                                                tag: 'div',
                                                 class: 'icon moon',
                                                 events: {
                                                     click: () => {
                                                         document.body.classList.toggle('theme_dark');
-                                                        LS.set('dark', document.body.classList.contains('theme_dark') ? 1 : 0);
+                                                        LS.set('dark', document.body.classList.contains('theme_dark'));
                                                     },
                                                 }
                                             }
                                         },
                                         {
-                                            tag: 'div',
                                             class: 'menu_icon',
                                             child: {
-                                                tag: 'div',
                                                 class: 'icon key',
                                                 var: 'auth',
                                             }
@@ -151,13 +151,11 @@ export default class Settings {
                                             }
                                         },
                                         {
-                                            tag: 'div',
                                             class: 'menu_icon drop_area',
                                             events: {
                                                 drop: (e) => this.uploadOta(e.dataTransfer.files[0]),
                                             },
                                             child: {
-                                                tag: 'div',
                                                 class: 'icon cloud',
                                                 title: 'OTA',
                                                 var: 'ota',
@@ -176,13 +174,11 @@ export default class Settings {
                                             }
                                         },
                                         {
-                                            tag: 'div',
                                             class: 'menu_icon drop_area',
                                             events: {
                                                 drop: (e) => this.uploadFile(e.dataTransfer.files[0]),
                                             },
                                             child: {
-                                                tag: 'div',
                                                 class: 'icon upload',
                                                 title: lang.upload,
                                                 var: 'upload',
@@ -192,17 +188,15 @@ export default class Settings {
                                             }
                                         },
                                         {
-                                            tag: 'div',
                                             class: 'menu_icon',
                                             child: {
-                                                tag: 'div',
                                                 class: 'icon create',
                                                 title: lang.create,
                                                 var: 'create',
                                                 events: {
                                                     click: async () => {
                                                         let path = await AsyncPrompt(lang.create, '/');
-                                                        if (path) this.parse(await this.send('create', 0, path));
+                                                        if (path) await this.requset('create', 0, path);
                                                     }
                                                 }
                                             }
@@ -210,11 +204,21 @@ export default class Settings {
                                     ]
                                 },
                                 {
-                                    tag: 'div',
                                     class: 'fs_cont',
                                     var: 'fs',
                                 }
                             ]
+                        },
+                        {
+                            class: 'group',
+                            child: {
+                                class: 'group_col',
+                                children: [
+                                    renderInfoRow(this, 'Uptime', 'uptime_i'),
+                                    renderInfoRow(this, 'Start', 'start_i'),
+                                    renderInfoRow(this, 'RSSI', 'rssi_i'),
+                                ]
+                            },
                         },
                         {
                             tag: 'span',
@@ -224,7 +228,6 @@ export default class Settings {
                     ],
                 },
                 {
-                    tag: 'div',
                     class: 'main_col',
                     var: 'main_col'
                 },
@@ -233,31 +236,14 @@ export default class Settings {
 
         this.renderFooter();
 
-        this.$main_col.addEventListener("menuclick", (e) => {
-            window.scrollTo(0, 0);
-            e.detail.page.style.display = 'block';
-            e.detail.page.style.animation = 'shiftLeft ' + anim_s;
-            e.detail.parent.style.animation = 'fadeOut ' + anim_s;
-            this.$main_col.style.minHeight = Math.max(e.detail.parent.offsetHeight, e.detail.page.offsetHeight) + 'px';
-
-            setTimeout(() => {
-                e.detail.parent.style.display = 'none';
-                this.$main_col.style.minHeight = e.detail.page.offsetHeight + 'px';
-            }, anim_ms);
-
-            this.pageStack.push({ page: e.detail.page, title: e.detail.label });
-            this.$title.innerText = e.detail.label;
-            this.$title.style.cursor = 'pointer';
-            this.$arrow.style.display = 'block';
-        });
-
+        //#region events
         this.$main_col.addEventListener("widget_event", async (e) => {
-            let res = await this.send(e.data.action, e.data.id, e.data.value);
             if (e.data.action == 'set') this.updateCache(e.data.id, e.data.value);
-            this.parse(res);
+            let res = await this.requset(e.data.action, e.data.id, e.data.value);
             if (res === null) e.data.widget.setError();
         });
 
+        this.$main_col.addEventListener("menuclick", (e) => this.menuclick(e.detail));
         this.$arrow.addEventListener('click', () => this.back());
         this.$title.addEventListener('click', () => this.back());
 
@@ -284,25 +270,29 @@ export default class Settings {
             }, false);
         });
 
-        if (LS.has('dark')) {
-            if (Number(LS.get('dark'))) {
-                document.body.classList.add('theme_dark');
-            }
-        }
-
-        if (LS.has('auth')) {
-            this.auth = Number(LS.get('auth'));
-        }
-
-        if (!LS.has('version') || LS.get('version') != SETTINGS_V) {
+        if (!LS.has('SETTINGS_V') || LS.get('SETTINGS_V') !== SETTINGS_V) {
             LS.remove('cache');
-            LS.set('version', SETTINGS_V);
+            LS.remove('custom');
+            LS.remove('custom_hash');
+            LS.set('SETTINGS_V', SETTINGS_V);
         }
+
+        if (LS.has('dark') && LS.get('dark')) document.body.classList.add('theme_dark');
+
+        if (LS.has('auth')) this.auth = LS.get('auth');
 
         if (LS.has('cache')) {
-            if (LS.has('custom_hash')) this.registerCustom(LS.get('custom'));
-            this.renderUI(JSON.parse(LS.get('cache')));
+            if (LS.has('custom')) this.registerCustom(LS.get('custom'));
+            this.fromCache = true;
+            this.renderUI(LS.get('cache'));
         }
+
+        this.wsr = new WSRequest();
+        this.wsr.ws.onchange = (s) => {
+            if (s) this.stopUpdates();
+            this.$ws.style.display = s ? 'unset' : 'none'
+        }
+        this.wsr.ondata = (d) => this.parse(d);
 
         this.load();
 
@@ -312,12 +302,7 @@ export default class Settings {
         });
 
         window.addEventListener("beforeunload", async () => {
-            await this.send('unfocus');
-        });
-
-        document.addEventListener('changeHeight', (e) => {
-            let fadein = this.pageStack[this.pageStack.length - 1].page;
-            this.$main_col.style.minHeight = fadein.offsetHeight + 'px';
+            await this.requset('unfocus');
         });
     }
 
@@ -343,7 +328,7 @@ export default class Settings {
             popup: popup,
             intToColor: intToColor,
         };
-        
+
         let style = document.head.appendChild(document.createElement('style'));
         for (let cls of classes) {
             try {
@@ -367,138 +352,119 @@ export default class Settings {
         }
 
         if (LS.has('cache')) {
-            id = parseInt(id, 16);
-            let packet = JSON.parse(LS.get('cache'));
+            let packet = LS.get('cache');
             repl(packet);
-            LS.set('cache', JSON.stringify(packet));
+            LS.set('cache', packet);
         }
     }
 
-    //#region load
+    //#region timers
+    restartPing() {
+        this.stopPing();
+        this.ping_t = setTimeout(() => this.requset('ping'), ping_prd);
+    }
+    stopPing() {
+        clearTimeout(this.ping_t);
+    }
+
+    restartUpdates() {
+        this.stopUpdates();
+        if (Config.updateTout && !this.wsr.opened) {
+            this.update_t = setInterval(() => this.requset('update'), Config.updateTout);
+        }
+    }
+    stopUpdates() {
+        clearInterval(this.update_t);
+    }
+
+    startReload() {
+        if (!this.reload) this.reload = setTimeout(() => {
+            this.reload = null;
+            if (!this.offline) {
+                this.offline = true;
+                this.authF = false;
+                this.stopUpdates();
+                this.wsr.ws.reset();
+            }
+            this.load();
+        }, ping_prd);
+    }
+    stopReload() {
+        clearTimeout(this.reload);
+        this.reload = null;
+        this.offline = false;
+    }
+
+    //#region requset
     async load() {
-        let res = await this.send('load', 0, ((new Date).getTime() / 1000 | 0).toString(16));
-        await this.parse(res);
-        if (!res) {
-            this.setOffline(true);
-            this.restartPing();
-        }
+        await this.requset('load', 0, ((new Date).getTime() / 1000 | 0).toString(16));
     }
 
-    //#region back
-    back() {
-        let dialogs = document.querySelectorAll('.dialog_back');
-        if (dialogs.length) {
-            dialogs[dialogs.length - 1].remove();
+    async requset(action, id = null, value = null) {
+        this.restartPing();
+        let packet;
+
+        if (this.wsr.ws.connected() && action != 'load') {
+            packet = await this.wsr.request(this.auth, action, id, value, Config.requestTout);
+            if (!packet) this.wsr.ws.reset();
+        } else {
+            if (id !== null) id = id.toString(16);
+            packet = await fetchTimeout(this.makeUrl('settings', { action: action, id: id, value: value }), Config.requestTout);
+            if (packet) packet = new Uint8Array(await packet.arrayBuffer());
+        }
+
+        if (packet) {
+            this.parse(packet);
+            if (!this.offline) this.stopReload();
+        } else {
+            this.startReload();
+            this.stopPing();
+            changeRSSI(this.$rssi, 0);
+        }
+        return packet;
+    }
+
+    async parse(packet) {
+        try {
+            packet = decodeBson(packet, codes);
+        } catch (e) {
+            popup(e);
             return;
         }
 
-        if (this.pageStack.length > 1) {
-            window.scrollTo(0, 0);
-            let right = this.pageStack.pop().page;
-            right.style.animation = 'shiftRight ' + anim_s;
-
-            let fadein = this.pageStack[this.pageStack.length - 1].page;
-            fadein.style.display = 'block';
-            fadein.style.animation = 'fadeIn ' + anim_s;
-            this.$main_col.style.minHeight = Math.max(fadein.offsetHeight, right.offsetHeight) + 'px';
-
-            setTimeout(() => {
-                right.style.display = 'none';
-                this.$main_col.style.minHeight = fadein.offsetHeight + 'px';
-            }, anim_ms);
-
-            this.$title.innerText = this.pageStack[this.pageStack.length - 1].title;
-            this.$arrow.style.display = 'block';
-        }
-        if (this.pageStack.length == 1) {
-            this.$arrow.style.display = 'none';
-            this.$title.style.cursor = 'default';
-        }
-    }
-
-    //#region send
-    async send(action, id = null, value = null) {
-        let res = null;
-        try {
-            res = await fetchTimeout(this.makeUrl('settings', { action: action, id: id, value: value }), Config.requestTout);
-        } catch (e) { }
-
-        if (!res || !res.ok) return null;
-
-        try {
-            return decodeBson(new Uint8Array(await res.arrayBuffer()), codes);
-        } catch (e) {
-            popup(e);
-        }
-        return null;
-    }
-
-    //#region makeUrl
-    makeUrl(cmd, params = {}) {
-        if (this.auth) params.auth = this.auth.toString(16);
-        let url = this.base_url + '/' + cmd;
-        let first = true;
-        for (let p in params) {
-            if (params[p] === null) continue;
-            url += first ? '?' : '&';
-            first = false;
-            url += (p + '=' + params[p]);
-        }
-        return url;
-    }
-
-    //#region restartPing
-    restartPing() {
-        this.stopPing();
-        if (!Config.updateTout) return;
-
-        this.ping_int = setInterval(async () => {
-            const res = await this.send(this.offline ? 'load' : 'ping');
-            await this.parse(res);
-            if (!res) this.authF = false;
-            this.setOffline(!res);
-        }, Config.updateTout);
-    }
-
-    //#region stopPing
-    stopPing() {
-        if (this.ping_int) clearInterval(this.ping_int);
-        this.ping_int = null;
-    }
-
-    //#region setOffline
-    setOffline(offline) {
-        this.offline = offline;
-        if (offline) changeRSSI(this.$rssi, 0);
-    }
-
-    //#region parse
-    async parse(packet) {
-        if (!packet) return;
+        if (packet.rssi) this.rssi = packet.rssi;
+        changeRSSI(this.$rssi, this.rssi);
 
         switch (packet.type) {
             case 'build':
+                this.wsr.clear();
+                this.restartUpdates();
+                this.stopReload();
+
+                if (packet.ws_port) this.wsr.init(this.base_url, packet.ws_port);
+
                 if (packet.custom_hash) {
                     if (!LS.has('custom_hash') || packet.custom_hash != LS.get('custom_hash')) {
-                        try {
-                            let js = await fetchTimeout(this.makeUrl('custom.js'), Config.requestTout);
-                            js = await js.text();
+                        let res = await fetchTimeout(this.makeUrl('custom.js'), Config.requestTout);
+                        if (res) {
+                            let js = await res.text();
                             if (js) {
-                                LS.set('custom_hash', packet.custom_hash);
                                 LS.set('custom', js);
+                                LS.set('custom_hash', packet.custom_hash);
                                 window.location.reload();
                             }
-                        } catch (e) {
-                            popup(e);
+                        } else {
+                            popup('Custom load error');
                         }
                     }
                 } else {
+                    LS.remove('custom');
                     LS.remove('custom_hash');
                 }
 
+                this.fromCache = false;
                 this.renderUI(packet);
-                LS.set('cache', JSON.stringify(packet));
-                this.restartPing();
+                LS.set('cache', packet);
 
                 if (!this.authF) {
                     this.authF = true;
@@ -508,13 +474,13 @@ export default class Settings {
                         this.$ota.style.display = this.granted ? 'inline-block' : 'none';
                         this.$upload.style.display = this.granted ? 'inline-block' : 'none';
                         if (!this.granted && this.firstBuild) popup('Unauthorized');
-                        this.$auth.addEventListener('click', async () => {
+                        this.$auth.onclick = async () => {
                             let res = await AsyncPrompt('Password', '');
                             if (res !== null) {
                                 LS.set('auth', hash(res));
                                 window.location.reload();
                             }
-                        });
+                        };
                     } else {
                         this.$auth.style.backgroundColor = 'var(--font_tint)';
                         this.granted = true;
@@ -543,16 +509,28 @@ export default class Settings {
             case 'fs':
                 this.renderFS(packet);
                 break;
+
+            case 'reload':
+                setTimeout(() => {
+                    this.load();
+                }, 1);
+                break;
         }
-        if (packet.rssi) changeRSSI(this.$rssi, packet.rssi);
     }
 
-    //#region renderUI
+    //#region UI
     renderUI(json) {
         Config.updateTout = json.update_tout;
         Config.requestTout = json.request_tout;
         Config.sliderTout = json.slider_tout;
-        document.querySelector(':root').style.setProperty('--accent', intToColor(json.color));
+        document.body.style.setProperty('--accent', intToColor(json.color));
+
+        json.rssi && (this.$rssi_i.innerText = json.rssi + '%');
+        const s = json.uptime;
+        const d = new Date();
+        const utc = d.getTime() - (d.getTimezoneOffset() * 60000);
+        this.$uptime_i.innerText = Math.floor(s / 86400) + ':' + new Date(s * 1000).toISOString().slice(11, 19);
+        this.$start_i.innerText = new Date(utc - s * 1000).toISOString().split('.')[0].replace('T', ' ');
 
         this.renderFooter(json.proj_name, json.proj_link);
         this.$title.innerText = json.title ?? 'Settings';
@@ -568,9 +546,69 @@ export default class Settings {
         this.pageStack = [{ page: pages[0], title: json.title }];
         pages[0].style.display = 'block';
         this.$main_col.style.minHeight = pages[0].offsetHeight + 'px';
+        this.observe(pages[0]);
     }
 
-    //#region renderFooter
+    back() {
+        let dialogs = document.querySelectorAll('.dialog_back');
+        if (dialogs.length) {
+            dialogs[dialogs.length - 1].remove();
+            return;
+        }
+
+        if (this.pageStack.length > 1) {
+            window.scrollTo(0, 0);
+            let right = this.pageStack.pop().page;
+            right.style.animation = 'shiftRight ' + anim_s;
+
+            let fadein = this.pageStack[this.pageStack.length - 1].page;
+            fadein.style.display = 'block';
+            fadein.style.animation = 'fadeIn ' + anim_s;
+            this.$main_col.style.minHeight = Math.max(fadein.offsetHeight, right.offsetHeight) + 'px';
+
+            setTimeout(() => {
+                right.style.display = 'none';
+                this.$main_col.style.minHeight = fadein.offsetHeight + 'px';
+                this.observe(fadein);
+            }, anim_ms);
+
+            this.$title.innerText = this.pageStack[this.pageStack.length - 1].title;
+            this.$arrow.style.display = 'block';
+        }
+        if (this.pageStack.length == 1) {
+            this.$arrow.style.display = 'none';
+            this.$title.style.cursor = 'default';
+        }
+    }
+
+    menuclick(e) {
+        window.scrollTo(0, 0);
+        e.page.style.display = 'block';
+        e.page.style.animation = 'shiftLeft ' + anim_s;
+        e.parent.style.animation = 'fadeOut ' + anim_s;
+        this.$main_col.style.minHeight = Math.max(e.parent.offsetHeight, e.page.offsetHeight) + 'px';
+
+        setTimeout(() => {
+            e.parent.style.display = 'none';
+            this.$main_col.style.minHeight = e.page.offsetHeight + 'px';
+            this.observe(e.page);
+        }, anim_ms);
+
+        this.pageStack.push({ page: e.page, title: e.label });
+        this.$title.innerText = e.label;
+        this.$title.style.cursor = 'pointer';
+        this.$arrow.style.display = 'block';
+    }
+
+    observe(page) {
+        if (this._resizer) this._resizer.disconnect();
+        this._resizer = new ResizeObserver(async () => {
+            await waitFrame();
+            this.$main_col.style.minHeight = page.offsetHeight + 'px';
+        });
+        this._resizer.observe(page);
+    }
+
     renderFooter(pname, plink) {
         let copyr = '';
         if (pname) {
@@ -606,7 +644,6 @@ export default class Settings {
                             }
                         },
                         {
-                            tag: 'div',
                             class: 'fs_row',
                             style: { padding: '0' },
                             children: [
@@ -616,7 +653,6 @@ export default class Settings {
                                     text: (size / 1024).toFixed(1) + 'k',
                                 },
                                 {
-                                    tag: 'div',
                                     class: 'icon edit fs_icon',
                                     style: { background: 'var(--accent)' },
                                     events: {
@@ -638,7 +674,6 @@ export default class Settings {
                                     }
                                 },
                                 {
-                                    tag: 'div',
                                     class: 'icon cross fs_icon',
                                     style: { width: '17px', height: '17px', background: 'var(--error)' },
                                     events: {
@@ -667,14 +702,15 @@ export default class Settings {
 
     //#region FS
     async removeFile(path) {
-        this.parse(await this.send('remove', 0, path));
+        await this.requset('remove', 0, path);
     }
     async fetchFile(path) {
-        try {
-            return await fetchTimeout(this.makeUrl('fetch', { path: path }), filefetch_tout);
-        } catch (e) {
-            popup(e);
-        }
+        this.stopPing();
+        let res = await fetchTimeout(this.makeUrl('fetch', { path: path }), filefetch_tout);
+        this.restartPing();
+
+        if (!res) popup(lang.fetch_err);
+        return res;
     }
     async downloadFile(path) {
         try {
@@ -686,8 +722,7 @@ export default class Settings {
                 name = name.split('.tbl')[0] + '.csv';
                 let table = parseTable(await res.arrayBuffer());
                 table = table.map(row => row.join(';')).join('\r\n').replaceAll('.', ',');
-                let enc = new TextEncoder();
-                let bytes = enc.encode(table);
+                let bytes = encodeText(table);
                 let blob = new Blob([bytes], { type: "text/plain" });
                 link.href = window.URL.createObjectURL(blob);
             } else {
@@ -706,30 +741,26 @@ export default class Settings {
         let path = await AsyncPrompt(lang.upload, '/' + file.name);
         if (!path) return;
 
-        this.stopPing();
         let data = new FormData();
         data.append('upload', file);
-        try {
-            await this.uploadFormData(path, data);
-        } catch (e) { }
+        this.uploadFormData(path, data);
     }
     async uploadFormData(path, data) {
         let ok = false;
+
+        this.stopPing();
         try {
-            let res = await http_post(this.makeUrl('upload', { path: path }), data, (perc) => iconGradient(this.$upload, perc));
-            if (res == 200) ok = true;
+            ok = await httpPost(this.makeUrl('upload', { path: path }), data, (perc) => iconGradient(this.$upload, perc));
         } catch (e) { }
+        this.restartPing();
 
         iconFill(this.$upload, ok ? 'var(--font_tint)' : 'var(--error)');
         popup(ok ? lang.upl_done : lang.upl_error, !ok);
-        if (ok) this.parse(await this.send('fs'));
-        this.restartPing();
+        if (ok) await this.requset('fs');
     }
     async uploadOta(file) {
         if (!file.name.endsWith(this.$upload_ota.accept)) return;
         if (!await AsyncConfirm(lang.ota)) return;
-        this.stopPing();
-        this.offline = true;
 
         this.$upload_ota.value = "";
 
@@ -737,13 +768,27 @@ export default class Settings {
         data.append('ota', file);
         let ok = false;
 
+        this.stopPing();
         try {
-            let res = await http_post(this.makeUrl('ota'), data, (perc) => iconGradient(this.$ota, perc));
-            if (res == 200) ok = true;
+            ok = await httpPost(this.makeUrl('ota'), data, (perc) => iconGradient(this.$ota, perc));
         } catch (e) { }
+        this.startReload();
 
         iconFill(this.$ota, ok ? 'var(--font_tint)' : 'var(--error)');
         popup(ok ? lang.ota_done : lang.ota_error, !ok);
-        this.restartPing();
+    }
+
+    //#region utils
+    makeUrl(cmd, params = {}) {
+        if (this.auth) params.auth = this.auth.toString(16);
+        let url = this.base_url + '/' + cmd;
+        let first = true;
+        for (let p in params) {
+            if (params[p] === null) continue;
+            url += first ? '?' : '&';
+            first = false;
+            url += (p + '=' + params[p]);
+        }
+        return url;
     }
 };

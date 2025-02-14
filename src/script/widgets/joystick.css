@@ -1,0 +1,12 @@
+.joy {
+    cursor: pointer;
+}
+
+.ring {
+    fill: none;
+    stroke: var(--accent);
+}
+
+.ring.active {
+    stroke-width: 2;
+}

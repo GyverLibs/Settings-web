@@ -1,7 +1,7 @@
 import { Component } from "@alexgyver/component";
-import { intToColor } from "../utils";
-import WidgetEvent from "./event";
+import WidgetEvent from "./wevent";
 import './button.css';
+import { intToColor } from "@alexgyver/utils";
 
 export default class Button {
     constructor(data) {
@@ -14,7 +14,6 @@ export default class Button {
                 background: data.color ? intToColor(data.color) : 'var(--accent)',
             },
             child: {
-                tag: 'div',
                 style: 'text-align: center',
                 children: [
                     {

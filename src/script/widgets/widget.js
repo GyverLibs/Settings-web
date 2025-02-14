@@ -14,12 +14,10 @@ export default class WidgetBase {
             class: 'widget',
             var: 'root',
             child: !makeRow ? null : {
-                tag: 'div',
                 class: 'widget_row',
                 var: 'row',
                 children: [
                     {
-                        tag: 'div',
                         // style: 'padding-right: 8px',
                         children: [
                             (data.label === null) ? null : {
@@ -54,6 +52,7 @@ export default class WidgetBase {
     }
 
     setError() {
+        if (!this.$error) return;
         this.$error.style.display = 'inline';
         setTimeout(() => {
             if (this.$error) this.$error.style.display = 'none';

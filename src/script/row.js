@@ -1,7 +1,6 @@
 import { Component } from "@alexgyver/component";
-import { checkAndAppend } from "./utils";
 import MenuWidget from "./widgets/menu";
-import ButtonsWidget from "./widgets/buttons";
+import { checkAndAppend } from "./ui/misc";
 
 export default function Row(obj, parent, pages, sets) {
     let title = obj.title
@@ -28,7 +27,6 @@ export default function Row(obj, parent, pages, sets) {
         class: 'row',
         children: [
             !title ? null : {
-                tag: 'div',
                 class: 'group_title',
                 child: {
                     tag: 'span',
@@ -36,7 +34,6 @@ export default function Row(obj, parent, pages, sets) {
                 }
             },
             {
-                tag: 'div',
                 class: 'group_row ' + (obj.divtype ?? 'default'),
                 var: 'group_row',
             }

@@ -1,4 +1,4 @@
-import { parseFloatNoNaN } from "../utils";
+import { parseFloatNoNaN } from "@alexgyver/utils";
 import InputWidget from "./input";
 
 export default class NumberWidget extends InputWidget {

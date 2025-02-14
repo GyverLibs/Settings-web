@@ -23,8 +23,5 @@ export default class ImageWidget extends WidgetBase {
             if (!value.startsWith('/')) value = '/' + value;
             this.$out.src = this.data.sets.makeUrl('fetch', { path: value });
         }
-        this.$out.onload = () => {
-            document.dispatchEvent(new CustomEvent("changeHeight"));
-        }
     }
 }
