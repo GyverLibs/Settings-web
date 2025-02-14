@@ -4,7 +4,7 @@ export default class WidgetEvent extends Event {
         this.data = {
             action: action,
             id: id,
-            value: value,
+            value: value + '',
             widget: widget,
         };
     }

@@ -1,6 +1,6 @@
 .select {
     max-height: 350px;
-    overflow-y: scroll;
+    overflow-y: auto;
     padding: 0;
 }
 
@@ -30,4 +30,18 @@
 
 .option.active {
     background: var(--accent) !important;
+}
+
+.select .hidden {
+    display: none;
+}
+
+.select .title {
+    padding: 6px 8px;
+    cursor: default;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 14px;
+    background: var(--back);
+    color: var(--font_tint);
 }

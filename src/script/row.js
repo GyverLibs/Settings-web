@@ -34,7 +34,7 @@ export default function Row(obj, parent, pages, sets) {
                 }
             },
             {
-                class: 'group_row ' + (obj.divtype ?? 'default'),
+                class: ['group_row', (obj.divtype ?? 'default')],
                 var: 'group_row',
             }
         ]
