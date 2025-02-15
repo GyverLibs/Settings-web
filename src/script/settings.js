@@ -13,7 +13,7 @@ import { lang } from './lang';
 import parseTable from './table';
 import WSRequest from './wsrequest';
 import renderInfoRow from './ui/info';
-import { encodeText, fetchTimeout, hash, httpPost, intToColor, LS, waitFrame } from '@alexgyver/utils';
+import { encodeText, fetchTimeout, hash, httpPost, intToColor, last, LS, waitFrame } from '@alexgyver/utils';
 import { Arrow } from './ui/misc';
 
 const anim_s = '.11s';
@@ -128,7 +128,9 @@ export default class Settings {
                                                 events: {
                                                     click: () => {
                                                         document.body.classList.toggle('theme_dark');
-                                                        LS.set('dark', document.body.classList.contains('theme_dark'));
+                                                        let dark = document.body.classList.contains('theme_dark');
+                                                        LS.set('dark', dark);
+                                                        Array.from(document.querySelectorAll('.plot')).map(p => p.dispatchEvent(new CustomEvent("dark_change", { detail: { dark: dark } })));
                                                     },
                                                 }
                                             }
@@ -561,7 +563,7 @@ export default class Settings {
             let right = this.pageStack.pop().page;
             right.style.animation = 'shiftRight ' + anim_s;
 
-            let fadein = this.pageStack[this.pageStack.length - 1].page;
+            let fadein = last(this.pageStack).page;
             fadein.style.display = 'block';
             fadein.style.animation = 'fadeIn ' + anim_s;
             this.$main_col.style.minHeight = Math.max(fadein.offsetHeight, right.offsetHeight) + 'px';
@@ -572,7 +574,7 @@ export default class Settings {
                 this.observe(fadein);
             }, anim_ms);
 
-            this.$title.innerText = this.pageStack[this.pageStack.length - 1].title;
+            this.$title.innerText = last(this.pageStack).title;
             this.$arrow.style.display = 'block';
         }
         if (this.pageStack.length == 1) {

@@ -26,6 +26,7 @@ class PlotBase extends WidgetBase {
                     period: data.period,
                 });
             this.update(data.value);
+            this.$out.addEventListener('dark_change', e => this.plot.setConfig({ dark: e.detail.dark }));
         });
     }
 

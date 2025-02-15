@@ -11,11 +11,11 @@ export default function Group(title, data, parent, pages, sets) {
         context: ctx,
         class: 'group',
         children: [
-            !title ? null : {
+            !!title && {
                 class: 'group_title',
                 child: {
                     tag: 'span',
-                    text: title ?? ''
+                    text: title,
                 }
             },
             {

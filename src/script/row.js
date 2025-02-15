@@ -26,11 +26,11 @@ export default function Row(obj, parent, pages, sets) {
         context: ctx,
         class: 'row',
         children: [
-            !title ? null : {
+            !!title && {
                 class: 'group_title',
                 child: {
                     tag: 'span',
-                    text: title ?? ''
+                    text: title,
                 }
             },
             {

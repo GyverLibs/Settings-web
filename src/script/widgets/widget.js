@@ -13,14 +13,14 @@ export default class WidgetBase {
             context: this,
             class: 'widget',
             var: 'root',
-            child: !makeRow ? null : {
+            child: makeRow && {
                 class: 'widget_row',
                 var: 'row',
                 children: [
                     {
                         // style: 'padding-right: 8px',
                         children: [
-                            (data.label === null) ? null : {
+                            (data.label !== null) && {
                                 class: 'widget_label',
                                 tag: 'label',
                                 text: data.label ?? data.type,
