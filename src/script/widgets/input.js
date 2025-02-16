@@ -27,7 +27,7 @@ export default class InputWidget extends WidgetBase {
                 click: async () => {
                     let res = await AsyncPrompt(data.label ?? data.type, this.text, oninput, onconfirm);
                     if (res !== null) {
-                        this.sendEvent(encodeURIComponent(res));
+                        this.sendEvent(res);
                         this.update(res);
                     }
                 }

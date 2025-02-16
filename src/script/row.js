@@ -2,7 +2,7 @@ import { Component } from "@alexgyver/component";
 import MenuWidget from "./widgets/menu";
 import { checkAndAppend } from "./ui/misc";
 
-export default function Row(obj, parent, pages, sets) {
+export default function Row(obj, cur, sets) {
     let title = obj.title
     let data = obj.content;
     if (!data.length) return document.createDocumentFragment();
@@ -44,7 +44,7 @@ export default function Row(obj, parent, pages, sets) {
         if (!obj.label || !obj.label.length) obj.label = null;
 
         switch (obj.type) {
-            case 'menu': ctx.$group_row.append(MenuWidget(obj.title, obj.content, parent, pages, sets)); break;
+            case 'menu': ctx.$group_row.append(MenuWidget(obj.title, obj.content, cur, sets)); break;
             case 'group': break;
             case 'row': break;
             default:

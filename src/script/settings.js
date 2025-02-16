@@ -245,7 +245,6 @@ export default class Settings {
             if (res === null) e.data.widget.setError();
         });
 
-        this.$main_col.addEventListener("menuclick", (e) => this.menuclick(e.detail));
         this.$arrow.addEventListener('click', () => this.back());
         this.$title.addEventListener('click', () => this.back());
 
@@ -411,6 +410,7 @@ export default class Settings {
             if (!packet) this.wsr.ws.reset();
         } else {
             if (id !== null) id = id.toString(16);
+            if (value !== null) value = encodeURIComponent(value);
             packet = await fetchTimeout(this.makeUrl('settings', { action: action, id: id, value: value }), Config.requestTout);
             if (packet) packet = new Uint8Array(await packet.arrayBuffer());
         }
@@ -535,20 +535,33 @@ export default class Settings {
         this.$start_i.innerText = new Date(utc - s * 1000).toISOString().split('.')[0].replace('T', ' ');
 
         this.renderFooter(json.proj_name, json.proj_link);
-        this.$title.innerText = json.title ?? 'Settings';
-        document.title = this.$title.innerText;
-        let pages = [];
+        if (!json.title) json.title = 'Settings';
+        document.title = json.title;
+
+        let pagesJSON = JSON.stringify(this.pages);
+        this.pages = [];
         this.widgets = new unMap();
-        Page(json.content, pages, this);
-        this.$main_col.replaceChildren(...pages);
-        if (!pages.length) {
+        Page(-1, json.content, json.title, this);
+        this.$main_col.replaceChildren(...this.pages.map(p => p.page));
+
+        if (!this.pages.length) {
+            this.pageStack = [];
             popup("No data");
             return;
         }
-        this.pageStack = [{ page: pages[0], title: json.title }];
-        pages[0].style.display = 'block';
-        this.$main_col.style.minHeight = pages[0].offsetHeight + 'px';
-        this.observe(pages[0]);
+
+        let cur = 0;
+        if (JSON.stringify(this.pages) === pagesJSON && this.pageStack.length) {
+            cur = last(this.pageStack).index;
+        } else {
+            this.pageStack = [];
+        }
+
+        let p = this.pages[cur].page;
+        this.$title.innerText = this.pages[cur].title;
+        p.style.display = 'block';
+        this.$main_col.style.minHeight = p.offsetHeight + 'px';
+        this.observe(p);
     }
 
     back() {
@@ -557,49 +570,52 @@ export default class Settings {
             dialogs[dialogs.length - 1].remove();
             return;
         }
-
-        if (this.pageStack.length > 1) {
+        if (this.pageStack.length) {
             window.scrollTo(0, 0);
-            let right = this.pageStack.pop().page;
+            let e = this.pageStack.pop();
+            let right = this.pages[e.index].page;
             right.style.animation = 'shiftRight ' + anim_s;
 
-            let fadein = last(this.pageStack).page;
+            let fadein = this.pages[e.parent].page;
             fadein.style.display = 'block';
             fadein.style.animation = 'fadeIn ' + anim_s;
             this.$main_col.style.minHeight = Math.max(fadein.offsetHeight, right.offsetHeight) + 'px';
+
+            this.$title.innerText = this.pages[e.parent].title;
+            this.$arrow.style.display = 'block';
 
             setTimeout(() => {
                 right.style.display = 'none';
                 this.$main_col.style.minHeight = fadein.offsetHeight + 'px';
                 this.observe(fadein);
             }, anim_ms);
-
-            this.$title.innerText = last(this.pageStack).title;
-            this.$arrow.style.display = 'block';
         }
-        if (this.pageStack.length == 1) {
+        if (!this.pageStack.length) {
             this.$arrow.style.display = 'none';
             this.$title.style.cursor = 'default';
         }
     }
 
-    menuclick(e) {
+    openPage(e) {
+        this.pageStack.push(e);
+        let page = this.pages[e.index].page;
+        let parent = this.pages[e.parent].page;
+
         window.scrollTo(0, 0);
-        e.page.style.display = 'block';
-        e.page.style.animation = 'shiftLeft ' + anim_s;
-        e.parent.style.animation = 'fadeOut ' + anim_s;
-        this.$main_col.style.minHeight = Math.max(e.parent.offsetHeight, e.page.offsetHeight) + 'px';
+        page.style.display = 'block';
+        page.style.animation = 'shiftLeft ' + anim_s;
+        parent.style.animation = 'fadeOut ' + anim_s;
+        this.$main_col.style.minHeight = Math.max(parent.offsetHeight, page.offsetHeight) + 'px';
 
-        setTimeout(() => {
-            e.parent.style.display = 'none';
-            this.$main_col.style.minHeight = e.page.offsetHeight + 'px';
-            this.observe(e.page);
-        }, anim_ms);
-
-        this.pageStack.push({ page: e.page, title: e.label });
-        this.$title.innerText = e.label;
+        this.$title.innerText = this.pages[e.index].title;
         this.$title.style.cursor = 'pointer';
         this.$arrow.style.display = 'block';
+
+        setTimeout(() => {
+            parent.style.display = 'none';
+            this.$main_col.style.minHeight = page.offsetHeight + 'px';
+            this.observe(page);
+        }, anim_ms);
     }
 
     observe(page) {

@@ -36,7 +36,7 @@ class PlotBase extends WidgetBase {
             if (!res) return;
             if (value.endsWith('.csv')) {
                 value = await res.text();
-                return value.split(/\r?\n/).map(row => row.split(/;|,/).map(Number));
+                return value.trim().split(/\r?\n/).map(row => row.split(/;|,/).map(Number));
             } else {
                 value = await res.arrayBuffer();
             }
