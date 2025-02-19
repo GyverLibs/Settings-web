@@ -239,7 +239,7 @@ export default class Settings {
         this.renderFooter();
 
         //#region events
-        this.$main_col.addEventListener("widget_event", async (e) => {
+        document.addEventListener("widget_event", async (e) => {
             if (e.data.action == 'set') this.updateCache(e.data.id, e.data.value);
             let res = await this.requset(e.data.action, e.data.id, e.data.value);
             if (res === null) e.data.widget.setError();
@@ -514,6 +514,7 @@ export default class Settings {
 
             case 'reload':
                 setTimeout(() => {
+                    if (packet.force) this.pageStack = [];
                     this.load();
                 }, 1);
                 break;

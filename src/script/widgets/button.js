@@ -69,7 +69,7 @@ export default class Button {
     }
 
     _dispatch(val) {
-        this.$root.dispatchEvent(new WidgetEvent('click', this.id, val, this));
+        document.dispatchEvent(new WidgetEvent('click', this.id, val, this));
     }
 
     #pressed = 0;

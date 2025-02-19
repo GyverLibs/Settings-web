@@ -2,8 +2,7 @@ import { Config } from "./config";
 import WidgetEvent from "./widgets/wevent";
 
 export default class DelaySend {
-    constructor(el, id, widget) {
-        this.el = el;
+    constructor(id, widget) {
         this.id = id;
         this.widget = widget;
     }
@@ -29,6 +28,6 @@ export default class DelaySend {
         }, Config.sliderTout);
     }
     _send(value) {
-        if (this.el) this.el.dispatchEvent(new WidgetEvent('set', this.id, value, this.widget));
+        document.dispatchEvent(new WidgetEvent('set', this.id, value, this.widget));
     }
 }

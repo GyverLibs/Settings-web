@@ -9,34 +9,38 @@ export default class WidgetBase {
 
     constructor(data, makeRow = true, makeWidget = true) {
         this.data = data;
-        if (makeWidget) Component.make('div', {
-            context: this,
-            class: 'widget',
-            var: 'root',
-            child: makeRow && {
-                class: 'widget_row',
-                var: 'row',
-                children: [
-                    {
-                        // style: 'padding-right: 8px',
-                        children: [
-                            (data.label !== null) && {
-                                class: 'widget_label',
-                                tag: 'label',
-                                text: data.label ?? data.type,
-                            },
-                            {
-                                tag: 'sup',
-                                class: 'error_sup',
-                                text: lang.error,
-                                var: 'error',
-                            }
-                        ]
-                    }
-                ]
-            }
-        });
-        this.sender = new DelaySend(this.$root, this.data.id, this);
+        if (makeWidget) {
+            Component.make('div', {
+                context: this,
+                class: 'widget',
+                var: 'root',
+                child: makeRow && {
+                    class: 'widget_row',
+                    var: 'row',
+                    children: [
+                        {
+                            // style: 'padding-right: 8px',
+                            children: [
+                                (data.label !== null) && {
+                                    class: 'widget_label',
+                                    tag: 'label',
+                                    text: data.label ?? data.type,
+                                },
+                                {
+                                    tag: 'sup',
+                                    class: 'error_sup',
+                                    text: lang.error,
+                                    var: 'error',
+                                }
+                            ]
+                        }
+                    ]
+                }
+            });
+        } else {
+            this.$root = document.createDocumentFragment();
+        }
+        this.sender = new DelaySend(this.data.id, this);
     }
 
     addOutput(out) {

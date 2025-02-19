@@ -77,4 +77,5 @@ export const codes = [
     'uptime',
     'joystick',
     'center',
+    'force',
 ];
