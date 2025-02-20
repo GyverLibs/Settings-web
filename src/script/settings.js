@@ -19,7 +19,7 @@ import { Arrow } from './ui/misc';
 const anim_s = '.11s';
 const anim_ms = 100;
 const filefetch_tout = 3000;
-const ping_prd = 2500;
+const reload_tout = 3000;
 
 function iconGradient(icon, perc) {
     icon.style.background = 'none';
@@ -362,7 +362,7 @@ export default class Settings {
     //#region timers
     restartPing() {
         this.stopPing();
-        this.ping_t = setTimeout(() => this.requset('ping'), ping_prd);
+        if (Config.pingPrd) this.ping_t = setTimeout(() => this.requset('ping'), Config.pingPrd);
     }
     stopPing() {
         clearTimeout(this.ping_t);
@@ -388,7 +388,7 @@ export default class Settings {
                 this.wsr.ws.reset();
             }
             this.load();
-        }, ping_prd);
+        }, reload_tout);
     }
     stopReload() {
         clearTimeout(this.reload);
@@ -525,7 +525,7 @@ export default class Settings {
     renderUI(json) {
         Config.updateTout = json.update_tout;
         Config.requestTout = json.request_tout;
-        Config.sliderTout = json.slider_tout;
+        Config.sliderTout = json.send_tout;
         document.body.style.setProperty('--accent', intToColor(json.color));
 
         json.rssi && (this.$rssi_i.innerText = json.rssi + '%');
