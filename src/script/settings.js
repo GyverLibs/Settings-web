@@ -224,8 +224,8 @@ export default class Settings {
                         },
                         {
                             tag: 'span',
-                            class: 'footer',
                             var: 'footer',
+                            style: `text-align: center;display: block;font-size: 13px;font-style: italic;margin-top: 18px;opacity: 0.7;`,
                         }
                     ],
                 },
@@ -632,10 +632,10 @@ export default class Settings {
         let copyr = '';
         if (pname) {
             copyr = lang.project + ' ';
-            copyr += plink ? `<a href="${plink}" target="_blank">${pname}</a>` : `${pname}`;
+            copyr += plink ? `<a style="color: var(--accent)" href="${plink}" target="_blank">${pname}</a>` : `${pname}`;
             copyr += '. ';
         }
-        copyr += lang.powered + ` <a href="https://github.com/GyverLibs/Settings" target="_blank">Settings</a> v${SETTINGS_V}`;
+        copyr += lang.powered + ` <a style="color: var(--accent)" href="https://github.com/GyverLibs/Settings" target="_blank">Settings</a> v${SETTINGS_V}`;
         this.$footer.innerHTML = copyr;
     }
 

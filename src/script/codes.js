@@ -79,4 +79,5 @@ export const codes = [
     'joystick',
     'center',
     'force',
+    'link',
 ];

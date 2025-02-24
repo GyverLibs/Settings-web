@@ -73,21 +73,6 @@ body::-webkit-scrollbar-thumb {
     display: none;
 }
 
-.footer {
-    text-align: center;
-    display: block;
-    font-size: 13px;
-    font-style: italic;
-    margin-top: 18px;
-    opacity: 0.7;
-    /* height: 20px; */
-    /* margin-top: -20px; */
-}
-
-.footer a {
-    color: var(--accent);
-}
-
 .header .ws {
     display: none;
     top: -21px;
