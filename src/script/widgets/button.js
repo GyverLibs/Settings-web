@@ -1,7 +1,7 @@
 import { Component } from "@alexgyver/component";
 import WidgetEvent from "./wevent";
 import './button.css';
-import { intToColor } from "@alexgyver/utils";
+import { intToColor, isTouch } from "@alexgyver/utils";
 
 export default class Button {
     constructor(data) {
@@ -32,10 +32,13 @@ export default class Button {
         });
 
         if (data.button_hold) {
-            this.$root.onmousedown = () => this._press(1);
-            this.$root.ontouchstart = () => this._press(1);
-            document.addEventListener("mouseup", () => this._press(0));
-            document.addEventListener("touchend", () => this._press(0));
+            if (isTouch()) {
+                this.$root.ontouchstart = () => this._press(1);
+                document.addEventListener("touchend", () => this._press(0));
+            } else {
+                this.$root.onmousedown = () => this._press(1);
+                document.addEventListener("mouseup", () => this._press(0));
+            }
         } else {
             this.$root.onclick = () => this._dispatch(1);
         }
