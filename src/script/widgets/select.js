@@ -69,14 +69,14 @@ export default class SelectWidget extends WidgetBase {
             let res = data.text.matchAll(/\[(.+?)\]([^\[]+)/g);
             if (res) {
                 for (let g of res) {
-                    let opts = g[2].split(';');
+                    let opts = g[2].trim().split(/;|\n/);
                     if (!last(opts)) opts.pop();
                     groups.push({ title: g[1], opts: opts });
                     this.options.push(...opts);
                 }
             }
         } else {
-            this.options = data.text.split(';');
+            this.options = data.text.trim().split(/;|\n/);
             if (!last(this.options)) this.options.pop();
             groups.push({ title: '', opts: this.options });
         }

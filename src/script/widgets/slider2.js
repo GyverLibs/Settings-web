@@ -3,7 +3,7 @@ import WidgetBase from "./widget";
 import { AsyncPrompt } from "../ui/dialog";
 import './slider2.css';
 import DelaySend from "../DelaySend";
-import { intToColor, parseFloatNoNaN } from "@alexgyver/utils";
+import { findFloat, intToColor } from "@alexgyver/utils";
 
 export default class Slider2Widget extends WidgetBase {
 
@@ -23,7 +23,7 @@ export default class Slider2Widget extends WidgetBase {
                     class: 'value active',
                     events: {
                         click: async () => {
-                            let res = await AsyncPrompt(data.label ?? data.type, this.$slider1.value, (v) => parseFloatNoNaN(v));
+                            let res = await AsyncPrompt(data.label ?? data.type, this.$slider1.value, (v) => findFloat(v));
                             if (res) {
                                 this.update([res, this.$slider2.value]);
                                 this.sender1.send(this.$slider1.value);
@@ -42,7 +42,7 @@ export default class Slider2Widget extends WidgetBase {
                     class: 'value active',
                     events: {
                         click: async () => {
-                            let res = await AsyncPrompt(data.label ?? data.type, this.$slider2.value, (v) => parseFloatNoNaN(v));
+                            let res = await AsyncPrompt(data.label ?? data.type, this.$slider2.value, (v) => findFloat(v));
                             if (res) {
                                 this.update([this.$slider1.value, res]);
                                 this.sender2.send(this.$slider2.value);

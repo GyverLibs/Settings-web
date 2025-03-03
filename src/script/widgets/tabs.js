@@ -6,9 +6,9 @@ import { waitRender } from "@alexgyver/utils";
 export default class TabsWidget extends WidgetBase {
     constructor(data) {
         super(data, false);
-        let t = data.text;
+        let t = data.text.trim();
         if (t.endsWith(';')) t = t.slice(0, -1);
-        this.options = t.split(';');
+        this.options = t.split(/;|\n/);
 
         this.addChild(Component.make('div', {
             context: this,

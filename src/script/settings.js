@@ -645,7 +645,7 @@ export default class Settings {
         if (packet.error) {
             this.$fs.append(Component.make('div', { class: 'fs_error', text: packet.error }));
         } else {
-            let fs = packet.content.split(';');
+            let fs = packet.content.trim().split('\n');
             for (let ps of fs) {
                 ps = ps.split(':');
                 let path = ps[0];
@@ -708,13 +708,17 @@ export default class Settings {
                     ],
                 });
             }
+
+            let flash_back = packet.total ? (`linear-gradient(90deg,var(--accent) ${packet.used / packet.total * 100}%, var(--shadow_light) 0%)`) : `linear-gradient(var(--error),var(--error))`;
+            let flash_text = packet.total ? (lang.used + `: ${(packet.used / 1000).toFixed(2)}/${(packet.total / 1000).toFixed(2)} kB [${Math.round(packet.used / packet.total * 100)}%]`) : 'FS Error';
+
             Component.make('div', {
                 parent: this.$fs,
                 class: 'fs_info',
                 style: {
-                    backgroundImage: `linear-gradient(90deg,var(--accent) ${packet.used / packet.total * 100}%, var(--shadow_light) 0%)`,
+                    backgroundImage: flash_back,
                 },
-                text: lang.used + `: ${(packet.used / 1000).toFixed(2)}/${(packet.total / 1000).toFixed(2)} kB [${Math.round(packet.used / packet.total * 100)}%]`,
+                text: flash_text,
             });
         }
     }

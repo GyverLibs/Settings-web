@@ -5,9 +5,11 @@ import { AsyncConfirm, AsyncPrompt } from "../ui/dialog";
 export default class InputWidget extends WidgetBase {
     empty = false;
     text = "";
+    title;
 
     constructor(data, oninput = null, onconfirm = null) {
         super(data);
+        this.title = data.label ?? data.type;
 
         if (!oninput) oninput = (v) => data.maxlen ? v.slice(0, data.maxlen) : v;
 
@@ -25,7 +27,7 @@ export default class InputWidget extends WidgetBase {
             var: 'out',
             events: {
                 click: async () => {
-                    let res = await AsyncPrompt(data.label ?? data.type, this.text, oninput, onconfirm);
+                    let res = await AsyncPrompt(this.title, this.text, oninput, onconfirm);
                     if (res !== null) {
                         this.sendEvent(res);
                         this.update(res);
