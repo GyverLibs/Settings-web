@@ -1,6 +1,5 @@
 export const settings_lang = {
     en: {
-        used: 'Used',
         project: 'Project',
         powered: 'Powered by',
         remove: 'Remove',
@@ -17,7 +16,6 @@ export const settings_lang = {
         fetch_err: "Fetch error",
     },
     ru: {
-        used: 'Занято',
         project: 'Проект',
         powered: 'Работает на библиотеке',
         remove: 'Удалить',

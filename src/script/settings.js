@@ -710,7 +710,7 @@ export default class Settings {
             }
 
             let flash_back = packet.total ? (`linear-gradient(90deg,var(--accent) ${packet.used / packet.total * 100}%, var(--shadow_light) 0%)`) : `linear-gradient(var(--error),var(--error))`;
-            let flash_text = packet.total ? (lang.used + `: ${(packet.used / 1000).toFixed(2)}/${(packet.total / 1000).toFixed(2)} kB [${Math.round(packet.used / packet.total * 100)}%]`) : 'FS Error';
+            let flash_text = packet.total ? (`Flash: ${(packet.used / 1000).toFixed(2)}/${(packet.total / 1000).toFixed(2)} kB [${Math.round(packet.used / packet.total * 100)}%]`) : 'FS Error';
 
             Component.make('div', {
                 parent: this.$fs,

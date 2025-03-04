@@ -80,4 +80,5 @@ export const codes = [
     'center',
     'force',
     'link',
+    'table',
 ];

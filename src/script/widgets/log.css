@@ -1,14 +1,18 @@
 .log {
     padding: 6px;
     margin: 5px 0;
-    height: 150px;
     overflow: auto;
     border-radius: 5px;
     font-size: 16px;
     font-family: 'Courier New', Courier, monospace;
     color: var(--accent);
     background: var(--back);
+    max-height: 300px;
     resize: vertical;
+}
+
+.log[style*="height"] {
+    max-height: unset;
 }
 
 .log p {
