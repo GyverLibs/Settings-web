@@ -1,26 +1,13 @@
 import { Component } from "@alexgyver/component";
-import MenuWidget from "./widgets/menu";
-import { checkAndAppend } from "./ui/misc";
+import MenuWidget from "../widgets/menu";
+import { checkAndAppend } from "./append";
+import Buttons from "./buttons";
 
 export default function Row(obj, cur, sets) {
     let title = obj.title
     let data = obj.content;
     if (!data.length) return document.createDocumentFragment();
 
-    // only buttons
-    // let only_btns = true;
-    // for (let obj of data) {
-    //     if (obj.type != 'button') {
-    //         only_btns = false;
-    //         break;
-    //     }
-    // }
-    // if (only_btns) {
-    //     let btns = new ButtonsWidget(obj);
-    //     return btns.$root;
-    // }
-
-    // any widgets
     let ctx = {};
     let row = Component.make('div', {
         context: ctx,
@@ -45,8 +32,10 @@ export default function Row(obj, cur, sets) {
 
         switch (obj.type) {
             case 'menu': ctx.$group_row.append(MenuWidget(obj.title, obj.content, cur, sets)); break;
-            case 'group': break;
-            case 'row': break;
+            case 'buttons': ctx.$group_row.append(Buttons(obj, cur, sets)); break;
+            case 'row': ctx.$group_row.append(Row(obj, cur, sets)); break;
+            case 'group':
+                break;
             default:
                 checkAndAppend(sets, ctx.$group_row, obj);
                 break;

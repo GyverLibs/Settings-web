@@ -1,17 +1,19 @@
 import { Component } from "@alexgyver/component";
 import WidgetEvent from "./wevent";
 import './button.css';
-import { intToColor, isTouch } from "@alexgyver/utils";
+import { contrastColor, intToColor, isTouch } from "@alexgyver/utils";
 
 export default class Button {
     constructor(data) {
         this.id = data.id;
+        let col = ('color' in data) ? intToColor(data.color) : 'var(--accent)';
         Component.make('div', {
             context: this,
             var: 'root',
             class: 'button',
             style: {
-                background: data.color ? intToColor(data.color) : 'var(--accent)',
+                background: col,
+                color: contrastColor(col, 150),
             },
             child: {
                 style: 'text-align: center',
@@ -49,7 +51,9 @@ export default class Button {
     }
 
     updateColor(value) {
-        this.$root.style.background = intToColor(value);
+        let col = intToColor(value);
+        this.$root.style.background = col;
+        this.$root.style.color = contrastColor(col, 150);
     }
 
     setError() {

@@ -11,7 +11,7 @@ export default class LabelWidget extends WidgetBase {
             var: 'out',
             class: 'value bold',
             style: {
-                color: data.color ? intToColor(data.color) : 'var(--font_tint)',
+                color: ('color' in data) ? intToColor(data.color) : 'var(--font_tint)',
             }
         }));
 

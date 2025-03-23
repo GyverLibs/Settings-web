@@ -1,5 +1,5 @@
 import { Component } from "@alexgyver/component";
-import Page from "../page";
+import Page from "../cont/page";
 import WidgetBase from "./widget";
 import { Arrow } from "../ui/misc";
 

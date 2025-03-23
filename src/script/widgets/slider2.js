@@ -10,7 +10,7 @@ export default class Slider2Widget extends WidgetBase {
     constructor(data) {
         super(data);
         this.unit = data.unit ?? '';
-        this.color = data.color ? intToColor(data.color) : 'var(--accent)';
+        this.color = ('color' in data) ? intToColor(data.color) : 'var(--accent)';
         this.sender1 = new DelaySend(this.data.id, this);
         this.sender2 = new DelaySend(this.data.id2, this);
 

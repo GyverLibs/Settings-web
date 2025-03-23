@@ -5,7 +5,7 @@ import { changeRSSI, makeRSSI } from './ui/rssi';
 import { Config } from './config';
 import popup from './ui/popup';
 import unMap from './unmap';
-import Page from './page';
+import Page from './cont/page';
 import decodeBson from '@alexgyver/bson';
 import { WidgetList } from './widgets/widgets';
 import WidgetBase from './widgets/widget';

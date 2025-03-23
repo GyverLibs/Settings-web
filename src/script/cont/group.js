@@ -1,7 +1,8 @@
 import { Component } from "@alexgyver/component";
-import MenuWidget from "./widgets/menu";
+import { checkAndAppend } from "./append";
+import MenuWidget from "../widgets/menu";
 import Row from "./row";
-import { checkAndAppend } from "./ui/misc";
+import Buttons from "./buttons";
 
 export default function Group(title, data, cur, sets) {
     if (!data.length) return document.createDocumentFragment();
@@ -29,6 +30,7 @@ export default function Group(title, data, cur, sets) {
         switch (obj.type) {
             case 'menu': ctx.$group_col.append(MenuWidget(obj.title, obj.content, cur, sets)); break;
             case 'row': ctx.$group_col.append(Row(obj, cur, sets)); break;
+            case 'buttons': ctx.$group_col.append(Buttons(obj, cur, sets)); break;
             default:
                 checkAndAppend(sets, ctx.$group_col, obj);
                 break;

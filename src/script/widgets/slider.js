@@ -32,7 +32,7 @@ export default class SliderWidget extends WidgetBase {
                 type: 'range',
                 class: 'slider',
                 var: 'slider',
-                style: data.color ? `--accent: ${intToColor(data.color)}` : '',
+                style: ('color' in data) ? `--accent: ${intToColor(data.color)}` : '',
                 min: (data.min ?? 0) + '',
                 max: (data.max ?? 100) + '',
                 step: (data.step ?? 1) + '',

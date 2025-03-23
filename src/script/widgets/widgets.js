@@ -8,7 +8,6 @@ import SliderWidget from "./slider";
 import SwitchWidget from "./switch";
 import { DateWidget, DateTimeWidget, TimeWidget } from "./time";
 import InputWidget from "./input";
-import ButtonsWidget from "./buttons";
 import ParagraphWidget from "./paragraph";
 import Button from "./button";
 import ConfirmWidget from "./confirm";
@@ -38,7 +37,6 @@ export const WidgetList = {
     slider2: Slider2Widget,
     label: LabelWidget,
     color: ColorWidget,
-    buttons: ButtonsWidget,
     button: Button,
     paragraph: ParagraphWidget,
     confirm: ConfirmWidget,
