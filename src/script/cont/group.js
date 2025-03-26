@@ -1,4 +1,4 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import { checkAndAppend } from "./append";
 import MenuWidget from "../widgets/menu";
 import Row from "./row";
@@ -8,7 +8,7 @@ export default function Group(title, data, cur, sets) {
     if (!data.length) return document.createDocumentFragment();
 
     let ctx = {};
-    let group = Component.make('div', {
+    let group = EL.make('div', {
         context: ctx,
         class: 'group',
         children: [

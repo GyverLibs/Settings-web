@@ -1,8 +1,8 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import './popup.css';
 
 export default function popup(text, error = true) {
-    let popup = Component.make('div', {
+    let popup = EL.make('div', {
         class: 'popup',
         style: {
             animation: 'fadeInOut 3.0s',

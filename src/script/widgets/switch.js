@@ -1,4 +1,4 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import './switch.css';
 import { intToColor } from "@alexgyver/utils";
@@ -7,7 +7,7 @@ export default class SwitchWidget extends WidgetBase {
     constructor(data) {
         super(data);
 
-        super.addOutput(Component.make('div', {
+        super.addOutput(EL.make('div', {
             context: this,
             child: {
                 tag: 'input',

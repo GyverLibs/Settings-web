@@ -1,4 +1,4 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import { Arrow } from "../ui/misc";
 
@@ -8,7 +8,7 @@ export default class LinkWidget extends WidgetBase {
 
         this.addOutput(Arrow('right', 20));
 
-        Component.config(this.$root, {
+        EL.config(this.$root, {
             style: 'cursor:pointer',
             events: {
                 click: () => {

@@ -1,4 +1,4 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import './slider.css';
 import { AsyncPrompt } from "../ui/dialog";
@@ -9,7 +9,7 @@ export default class SliderWidget extends WidgetBase {
         super(data);
         this.unit = data.unit ?? '';
 
-        super.addOutput(Component.make('span', {
+        super.addOutput(EL.make('span', {
             context: this,
             var: 'out',
             class: 'value active',
@@ -24,7 +24,7 @@ export default class SliderWidget extends WidgetBase {
             }
         }));
 
-        super.addChild(Component.make('div', {
+        super.addChild(EL.make('div', {
             context: this,
             class: 'slider_cont',
             child: {

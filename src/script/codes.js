@@ -81,4 +81,5 @@ export const codes = [
     'force',
     'link',
     'table',
+    'gauge',
 ];

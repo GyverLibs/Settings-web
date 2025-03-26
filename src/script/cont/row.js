@@ -1,4 +1,4 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import MenuWidget from "../widgets/menu";
 import { checkAndAppend } from "./append";
 import Buttons from "./buttons";
@@ -9,7 +9,7 @@ export default function Row(obj, cur, sets) {
     if (!data.length) return document.createDocumentFragment();
 
     let ctx = {};
-    let row = Component.make('div', {
+    let row = EL.make('div', {
         context: ctx,
         class: 'row',
         children: [

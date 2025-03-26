@@ -1,4 +1,4 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import WidgetEvent from "./wevent";
 import './button.css';
 import { contrastColor, intToColor, isTouch } from "@alexgyver/utils";
@@ -7,7 +7,7 @@ export default class Button {
     constructor(data) {
         this.id = data.id;
         let col = ('color' in data) ? intToColor(data.color) : 'var(--accent)';
-        Component.make('div', {
+        EL.make('div', {
             context: this,
             var: 'root',
             class: 'button',

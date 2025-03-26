@@ -1,11 +1,11 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import WidgetBase from "./widget";
 
 export default class ImageWidget extends WidgetBase {
     constructor(data) {
         super(data, !!data.label);
 
-        super.addChild(Component.make('img', {
+        super.addChild(EL.make('img', {
             context: this,
             var: 'out',
             class: 'image',

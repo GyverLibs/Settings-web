@@ -1,0 +1,14 @@
+.gauge {
+    --color: var(--accent);
+    --value: 10%;
+    border-radius: 10px;
+    background: linear-gradient(90deg, var(--color) var(--value), var(--tab) 0%) !important;
+}
+
+.gauge .value {
+    color: var(--font) !important;
+}
+
+.gauge .widget_row {
+    height: 25px;
+}

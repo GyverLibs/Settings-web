@@ -1,4 +1,4 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import './time.css';
 
@@ -8,7 +8,7 @@ class TimeWidgetBase extends WidgetBase {
 
         this.gmt = (data.zone !== undefined ? -data.zone : new Date().getTimezoneOffset()) * 60;
 
-        super.addOutput(Component.make('div', {
+        super.addOutput(EL.make('div', {
             context: this,
             class: 'input_cont',
             child: {

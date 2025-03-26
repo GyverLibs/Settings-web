@@ -1,4 +1,4 @@
-import { Component, SVG } from "@alexgyver/component";
+import { EL, SVG } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import DragBlock from "@alexgyver/drag-block";
 import { constrain, map, waitRender } from "@alexgyver/utils";
@@ -8,7 +8,7 @@ export default class JoyWidget extends WidgetBase {
     constructor(data) {
         super(data, false);
 
-        this.addChild(Component.make('svg', {
+        this.addChild(EL.make('svg', {
             style: 'width:100%;aspect-ratio:1/1;max-width:300px',
             var: 'svg',
             children: [

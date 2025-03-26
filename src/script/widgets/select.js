@@ -1,4 +1,4 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import { DialogCont } from "../ui/dialog";
 import './select.css';
@@ -35,7 +35,7 @@ function SelectDialog(groups, selected) {
             }
         });
 
-        Component.config(dialog.$root, {
+        EL.config(dialog.$root, {
             style: 'cursor: pointer;',
             events: {
                 click: () => {
@@ -81,7 +81,7 @@ export default class SelectWidget extends WidgetBase {
             groups.push({ title: '', opts: this.options });
         }
 
-        super.addOutput(Component.make('div', {
+        super.addOutput(EL.make('div', {
             context: this,
             style: {
                 display: 'flex',

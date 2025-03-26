@@ -1,4 +1,4 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import { waitFrame } from "@alexgyver/utils";
 import './log.css';
@@ -7,7 +7,7 @@ export default class LogWidget extends WidgetBase {
     constructor(data) {
         super(data, !!data.label);
 
-        super.addChild(Component.make('div', {
+        super.addChild(EL.make('div', {
             context: this,
             class: 'log',
             var: 'out',
@@ -32,8 +32,8 @@ export default class LogWidget extends WidgetBase {
         }
         if (!value) return;
 
-        Component.config(this.$out, {
-            children_r: value.split(/\r?\n/).map(t => Component.make(('p'), { text: t, class: cls(t) })),
+        EL.config(this.$out, {
+            children_r: value.split(/\r?\n/).map(t => EL.make(('p'), { text: t, class: cls(t) })),
         });
         if (this.#auto) {
             this.#lock = true;

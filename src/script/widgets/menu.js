@@ -1,4 +1,4 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import Page from "../cont/page";
 import WidgetBase from "./widget";
 import { Arrow } from "../ui/misc";
@@ -10,7 +10,7 @@ export default function MenuWidget(title, data, cur, sets) {
     let widget = new WidgetBase({ label: title });
     widget.addOutput(Arrow('right', 20));
 
-    Component.config(widget.$root, {
+    EL.config(widget.$root, {
         style: 'cursor:pointer',
         events: {
             click: () => sets.openPage({ index: i, parent: cur }),

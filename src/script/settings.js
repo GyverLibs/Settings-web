@@ -1,4 +1,4 @@
-import { Component } from '@alexgyver/component';
+import { EL } from '@alexgyver/component';
 import { codes } from './codes';
 import { AsyncConfirm, AsyncPrompt } from './ui/dialog';
 import { changeRSSI, makeRSSI } from './ui/rssi';
@@ -55,7 +55,7 @@ export default class Settings {
             marginRight: '4px',
         });
 
-        Component.make('div', {
+        EL.make('div', {
             parent: document.body,
             context: this,
             class: 'main',
@@ -323,7 +323,8 @@ export default class Settings {
 
         const list = {
             WidgetBase: WidgetBase,
-            Component: Component,
+            Component: EL,
+            EL: EL,
             AsyncPrompt: AsyncPrompt,
             AsyncConfirm: AsyncConfirm,
             popup: popup,
@@ -465,8 +466,9 @@ export default class Settings {
                 }
 
                 this.fromCache = false;
-                this.renderUI(packet);
                 LS.set('cache', packet);
+
+                this.renderUI(packet);
 
                 if (!this.authF) {
                     this.authF = true;
@@ -643,14 +645,14 @@ export default class Settings {
     renderFS(packet) {
         this.$fs.replaceChildren();
         if (packet.error) {
-            this.$fs.append(Component.make('div', { class: 'fs_error', text: packet.error }));
+            this.$fs.append(EL.make('div', { class: 'fs_error', text: packet.error }));
         } else {
             let fs = packet.content.trim().split('\n');
             for (let ps of fs) {
                 ps = ps.split(':');
                 let path = ps[0];
                 let size = ps[1];
-                if (path.length) Component.make('div', {
+                if (path.length) EL.make('div', {
                     class: 'fs_row',
                     parent: this.$fs,
                     children: [
@@ -712,7 +714,7 @@ export default class Settings {
             let flash_back = packet.total ? (`linear-gradient(90deg,var(--accent) ${packet.used / packet.total * 100}%, var(--shadow_light) 0%)`) : `linear-gradient(var(--error),var(--error))`;
             let flash_text = packet.total ? (`Flash: ${(packet.used / 1000).toFixed(2)}/${(packet.total / 1000).toFixed(2)} kB [${Math.round(packet.used / packet.total * 100)}%]`) : 'FS Error';
 
-            Component.make('div', {
+            EL.make('div', {
                 parent: this.$fs,
                 class: 'fs_info',
                 style: {

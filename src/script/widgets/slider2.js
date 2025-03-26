@@ -1,4 +1,4 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import { AsyncPrompt } from "../ui/dialog";
 import './slider2.css';
@@ -14,7 +14,7 @@ export default class Slider2Widget extends WidgetBase {
         this.sender1 = new DelaySend(this.data.id, this);
         this.sender2 = new DelaySend(this.data.id2, this);
 
-        super.addOutput(Component.make('div', {
+        super.addOutput(EL.make('div', {
             context: this,
             children: [
                 {
@@ -62,7 +62,7 @@ export default class Slider2Widget extends WidgetBase {
             step: (data.step ?? 1) + '',
         }
 
-        super.addChild(Component.make('div', {
+        super.addChild(EL.make('div', {
             context: this,
             class: 'slider2_cont',
             children: [

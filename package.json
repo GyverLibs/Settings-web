@@ -25,9 +25,9 @@
   },
   "dependencies": {
     "@alexgyver/bson": "^2.0.1",
-    "@alexgyver/component": "^1.3.4",
+    "@alexgyver/component": "^1.3.5",
     "@alexgyver/utils": "^1.0.10",
     "@alexgyver/drag-block": "^1.2.13",
-    "@alexgyver/svplot": "^1.0.20"
+    "@alexgyver/svplot": "^1.0.21"
   }
 }

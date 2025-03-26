@@ -1,4 +1,4 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import { intToColor } from "@alexgyver/utils";
 
@@ -6,7 +6,7 @@ export default class LabelWidget extends WidgetBase {
     constructor(data) {
         super(data);
 
-        super.addOutput(Component.make('span', {
+        super.addOutput(EL.make('span', {
             context: this,
             var: 'out',
             class: 'value bold',

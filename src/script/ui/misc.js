@@ -1,7 +1,7 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 
 export function Arrow(dir = 'right', size = 20, styles = {}) {
-    return Component.make('div', {
+    return EL.make('div', {
         class: 'icon arrow ' + dir,
         style: {
             width: size + 'px',

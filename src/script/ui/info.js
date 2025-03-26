@@ -1,7 +1,7 @@
-import { Component } from "@alexgyver/component"
+import { EL } from "@alexgyver/component"
 
 export default function renderInfoRow(ctx, label, varname) {
-    return Component.make('div', {
+    return EL.make('div', {
         context: ctx,
         class: 'widget',
         child: {

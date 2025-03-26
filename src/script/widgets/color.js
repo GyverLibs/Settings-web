@@ -1,4 +1,4 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import { intToColor } from "@alexgyver/utils";
 import './color.css';
@@ -7,7 +7,7 @@ export default class ColorWidget extends WidgetBase {
     constructor(data) {
         super(data);
 
-        super.addOutput(Component.make('div', {
+        super.addOutput(EL.make('div', {
             context: this,
             class: 'input_cont',
             child: {

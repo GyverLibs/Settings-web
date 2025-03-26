@@ -1,4 +1,4 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import { lang } from "../lang";
 import DelaySend from "../DelaySend";
 
@@ -10,7 +10,7 @@ export default class WidgetBase {
     constructor(data, makeRow = true, makeWidget = true) {
         this.data = data;
         if (makeWidget) {
-            Component.make('div', {
+            EL.make('div', {
                 context: this,
                 class: 'widget',
                 var: 'root',

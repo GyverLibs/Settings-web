@@ -1,9 +1,9 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import './dialog.css';
 
 export class DialogCont {
     constructor() {
-        Component.make('div', {
+        EL.make('div', {
             context: this,
             var: 'root',
             class: 'dialog_back',
@@ -21,7 +21,7 @@ export class DialogCont {
 export function BaseDialog(label, content, actionOK, actionCancel, postRender = null) {
     let dialog = new DialogCont();
 
-    Component.config(dialog.$root, {
+    EL.config(dialog.$root, {
         child: {
             class: 'dialog_cont',
             child: {
@@ -70,7 +70,7 @@ export function BaseDialog(label, content, actionOK, actionCancel, postRender = 
 
 export function AsyncPrompt(label, value, oninput = null, onconfirm = null) {
     return new Promise(resolve => {
-        let area = Component.make('textarea', {
+        let area = EL.make('textarea', {
             text: value,
             rows: 1,
             events: {

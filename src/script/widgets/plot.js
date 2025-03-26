@@ -1,4 +1,4 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import SVPlot from "@alexgyver/svplot";
 import parseTable from "../table";
@@ -9,7 +9,7 @@ class PlotBase extends WidgetBase {
     constructor(data, type) {
         super(data, false);
 
-        super.addChild(Component.make('div', {
+        super.addChild(EL.make('div', {
             context: this,
             var: 'out',
             class: 'plot',

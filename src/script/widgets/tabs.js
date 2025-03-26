@@ -1,4 +1,4 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import './tabs.css';
 import { waitRender } from "@alexgyver/utils";
@@ -10,7 +10,7 @@ export default class TabsWidget extends WidgetBase {
         if (t.endsWith(';')) t = t.slice(0, -1);
         this.options = t.split(/;|\n/);
 
-        this.addChild(Component.make('div', {
+        this.addChild(EL.make('div', {
             context: this,
             class: 'tabs',
             var: 'tabs',

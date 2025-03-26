@@ -23,6 +23,7 @@ import { PlotRunWidget, PlotStockWidget, PlotTimeWidget, PlotWidget } from "./pl
 import JoyWidget from './joystick';
 import LinkWidget from './link';
 import TableWidget from './table';
+import GaugeWidget from './gauge';
 
 export const WidgetList = {
     toggle: SwitchWidget,
@@ -53,4 +54,5 @@ export const WidgetList = {
     joystick: JoyWidget,
     link: LinkWidget,
     table: TableWidget,
+    gauge: GaugeWidget,
 }

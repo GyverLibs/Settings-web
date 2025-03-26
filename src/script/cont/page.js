@@ -1,4 +1,4 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import { checkAndAppend } from "./append";
 import MenuWidget from "../widgets/menu";
 import Group from "./group";
@@ -8,7 +8,7 @@ import Buttons from "./buttons";
 export default function Page(parent, data, title, sets) {
     if (!data.length) return document.createDocumentFragment();
 
-    let page = Component.make('div', { class: 'page', style: 'display: none' });
+    let page = EL.make('div', { class: 'page', style: 'display: none' });
     let cur = sets.pages.length;
     sets.pages.push({ page: page, parent: parent, title:title });
 

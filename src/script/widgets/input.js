@@ -1,4 +1,4 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import { AsyncConfirm, AsyncPrompt } from "../ui/dialog";
 
@@ -21,7 +21,7 @@ export default class InputWidget extends WidgetBase {
             return true;
         }
 
-        super.addOutput(Component.make('span', {
+        super.addOutput(EL.make('span', {
             context: this,
             class: 'value active',
             var: 'out',

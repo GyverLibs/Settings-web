@@ -1,4 +1,4 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import { deltaColor, intToColor, midColor } from "@alexgyver/utils";
 import './led.css';
@@ -7,7 +7,7 @@ export default class LedWidget extends WidgetBase {
     constructor(data) {
         super(data);
 
-        super.addOutput(Component.make('div', {
+        super.addOutput(EL.make('div', {
             context: this,
             class: 'led_cont',
             child: {

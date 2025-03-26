@@ -1,4 +1,4 @@
-import { Component } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import './table.css';
 
@@ -20,7 +20,7 @@ export default class TableWidget extends WidgetBase {
 
         let table = value.trim().split('\n').map(x => x.split(';'));
 
-        Component.config(this.$root, {
+        EL.config(this.$root, {
             child_r: {
                 class: 'table',
                 child: {
