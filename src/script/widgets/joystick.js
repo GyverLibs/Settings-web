@@ -1,7 +1,7 @@
 import { EL, SVG } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import DragBlock from "@alexgyver/drag-block";
-import { constrain, map, waitRender } from "@alexgyver/utils";
+import { constrain, map, waitFrame, waitRender } from "@alexgyver/utils";
 import './joystick.css';
 
 export default class JoyWidget extends WidgetBase {
@@ -23,7 +23,7 @@ export default class JoyWidget extends WidgetBase {
             const attr = v => Number(this.$joy.getAttribute(v));
 
             this._render();
-            this._resizer = new ResizeObserver(() => this._render());
+            this._resizer = new ResizeObserver(() => waitFrame().then(() => this._render()));
             this._resizer.observe(this.$svg);
 
             DragBlock(this.$joy, e => {
@@ -49,7 +49,7 @@ export default class JoyWidget extends WidgetBase {
                         let sx = map(x, offs, s - offs, -255, 255) | 0;
                         let sy = map(y, offs, s - offs, 255, -255) | 0;
                         let a = new Uint16Array([sx, sy]);
-                        this.sendEvent(a[0] << 16 | a[1]);
+                        this.sendValue(a[0] << 16 | a[1]);
                         break;
 
                     case 'release':
@@ -57,7 +57,7 @@ export default class JoyWidget extends WidgetBase {
                         this.$ring.classList.remove('active');
                         if (this.data.center) {
                             this._render();
-                            this.sendEvent(0);
+                            this.sendValue(0);
                         }
                         break;
                 }

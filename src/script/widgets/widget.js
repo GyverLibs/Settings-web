@@ -51,7 +51,7 @@ export default class WidgetBase {
         this.$root.append(child);
     }
 
-    sendEvent(value) {
+    sendValue(value) {
         this.sender.send(value);
     }
 
@@ -63,6 +63,7 @@ export default class WidgetBase {
         }, 2500);
     }
 
+    render() { }
     update(value) { }
     updateColor(value) { }
 }

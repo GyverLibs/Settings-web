@@ -24,6 +24,7 @@ import JoyWidget from './joystick';
 import LinkWidget from './link';
 import TableWidget from './table';
 import GaugeWidget from './gauge';
+import SpinnerWidget from './spinner';
 
 export const WidgetList = {
     toggle: SwitchWidget,
@@ -55,4 +56,5 @@ export const WidgetList = {
     link: LinkWidget,
     table: TableWidget,
     gauge: GaugeWidget,
+    spinner: SpinnerWidget,
 }

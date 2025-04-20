@@ -26,7 +26,7 @@ export default class ColorWidget extends WidgetBase {
                         events: {
                             change: () => {
                                 this.updateOut();
-                                this.sendEvent(this.hexCol());
+                                this.sendValue(this.hexCol());
                             }
                         }
                     },

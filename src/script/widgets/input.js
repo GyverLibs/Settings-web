@@ -29,7 +29,7 @@ export default class InputWidget extends WidgetBase {
                 click: async () => {
                     let res = await AsyncPrompt(this.title, this.text, oninput, onconfirm);
                     if (res !== null) {
-                        this.sendEvent(res);
+                        this.sendValue(res);
                         this.update(res);
                     }
                 }

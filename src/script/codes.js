@@ -82,4 +82,8 @@ export const codes = [
     'link',
     'table',
     'gauge',
+    'as_txt',
+    'mac',
+    'local_ip',
+    'spinner',
 ];

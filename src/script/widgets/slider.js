@@ -1,8 +1,8 @@
 import { EL } from "@alexgyver/component";
 import WidgetBase from "./widget";
-import './slider.css';
 import { AsyncPrompt } from "../ui/dialog";
-import { findFloat, intToColor } from "@alexgyver/utils";
+import { findFloat, formatToStep, intToColor } from "@alexgyver/utils";
+import './slider.css';
 
 export default class SliderWidget extends WidgetBase {
     constructor(data) {
@@ -59,11 +59,10 @@ export default class SliderWidget extends WidgetBase {
     move() {
         let s = this.$slider;
         s.style.backgroundSize = (Number(s.value) - Number(s.min)) * 100 / (Number(s.max) - Number(s.min)) + '% 100%';
-        let digs = s.step.toString().split('.')[1];
-        this.$out.innerText = Number(s.value).toFixed(digs ? digs.length : 0) + (this.unit ? this.unit : '');
+        this.$out.innerText = formatToStep(s.value, s.step) + (this.unit ? this.unit : '');
     }
 
     send() {
-        this.sendEvent(this.$slider.value);
+        this.sendValue(this.$slider.value);
     }
 }

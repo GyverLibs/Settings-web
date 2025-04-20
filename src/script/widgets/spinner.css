@@ -1,0 +1,10 @@
+.spin_btn {
+    cursor: pointer;
+    padding: 5px;
+    font-family: 'Courier New', monospace;
+    font-size: 30px;
+    font-weight: bold;
+    color: var(--font);
+    vertical-align: middle;
+    user-select: none;
+}

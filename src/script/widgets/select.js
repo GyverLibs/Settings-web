@@ -1,11 +1,11 @@
 import { EL } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import { DialogCont } from "../ui/dialog";
-import './select.css';
 import { Arrow } from "../ui/misc";
 import { last, waitFrame } from "@alexgyver/utils";
+import './select.css';
 
-function SelectDialog(groups, selected) {
+function SelectDialog(groups, selected, asText) {
     return new Promise(resolve => {
         let dialog = new DialogCont();
         let i = 0;
@@ -27,7 +27,7 @@ function SelectDialog(groups, selected) {
                                 click: e => {
                                     e.stopPropagation();
                                     dialog.destroy();
-                                    resolve(cur);
+                                    resolve(asText ? opt.trim() : cur);
                                 }
                             }
                         }
@@ -89,10 +89,10 @@ export default class SelectWidget extends WidgetBase {
             },
             events: {
                 click: async () => {
-                    let res = await SelectDialog(groups, this.value);
+                    let res = await SelectDialog(groups, this.value, this.data.as_txt);
                     if (res !== null) {
                         this.update(res);
-                        this.sendEvent(res);
+                        this.sendValue(res);
                     }
                 }
             },
@@ -111,6 +111,7 @@ export default class SelectWidget extends WidgetBase {
     }
 
     update(value) {
+        if (this.data.as_txt) return;
         this.value = value ?? 0;
         this.$label.textContent = this.options[this.value];
     }

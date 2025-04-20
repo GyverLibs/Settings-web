@@ -153,20 +153,6 @@ export default class Settings {
                                             }
                                         },
                                         {
-                                            class: 'menu_icon drop_area',
-                                            events: {
-                                                drop: (e) => this.uploadOta(e.dataTransfer.files[0]),
-                                            },
-                                            child: {
-                                                class: 'icon cloud',
-                                                title: 'OTA',
-                                                var: 'ota',
-                                                events: {
-                                                    click: () => this.$upload_ota.click(),
-                                                }
-                                            }
-                                        },
-                                        {
                                             tag: 'input',
                                             type: 'file',
                                             var: 'upload_file',
@@ -203,6 +189,20 @@ export default class Settings {
                                                 }
                                             }
                                         },
+                                        {
+                                            class: 'menu_icon drop_area',
+                                            events: {
+                                                drop: (e) => this.uploadOta(e.dataTransfer.files[0]),
+                                            },
+                                            child: {
+                                                class: 'icon cloud',
+                                                title: 'OTA',
+                                                var: 'ota',
+                                                events: {
+                                                    click: () => this.$upload_ota.click(),
+                                                }
+                                            }
+                                        },
                                     ]
                                 },
                                 {
@@ -212,12 +212,14 @@ export default class Settings {
                             ]
                         },
                         {
-                            class: 'group',
+                            class: 'group group_info',
                             child: {
                                 class: 'group_col',
                                 children: [
                                     renderInfoRow(this, 'Uptime', 'uptime_i'),
                                     renderInfoRow(this, 'Start', 'start_i'),
+                                    renderInfoRow(this, 'MAC', 'mac_i'),
+                                    renderInfoRow(this, 'IP', 'ip_i'),
                                     renderInfoRow(this, 'RSSI', 'rssi_i'),
                                 ]
                             },
@@ -237,13 +239,6 @@ export default class Settings {
         });
 
         this.renderFooter();
-
-        //#region events
-        document.addEventListener("widget_event", async (e) => {
-            if (e.data.action == 'set') this.updateCache(e.data.id, e.data.value);
-            let res = await this.requset(e.data.action, e.data.id, e.data.value);
-            if (res === null) e.data.widget.setError();
-        });
 
         this.$arrow.addEventListener('click', () => this.back());
         this.$title.addEventListener('click', () => this.back());
@@ -299,13 +294,14 @@ export default class Settings {
 
         // должно быть в конце
         document.addEventListener('dup_id', (e) => {
-            popup(`Duplicated widget ID: ${e.detail.widget.id} [${e.detail.widget.type}]`);
+            popup(`${lang.dup}: ${e.detail.widget.id} [${e.detail.widget.type}]`);
         });
 
         window.addEventListener("beforeunload", async () => {
             await this.requset('unfocus');
         });
     }
+
 
     //#region registerCustom
     registerCustom(js) {
@@ -475,8 +471,12 @@ export default class Settings {
                     if ('granted' in packet) {
                         this.granted = packet.granted;
                         this.$auth.style.backgroundColor = this.granted ? 'var(--accent)' : 'var(--error)';
-                        this.$ota.style.display = this.granted ? 'inline-block' : 'none';
-                        this.$upload.style.display = this.granted ? 'inline-block' : 'none';
+
+                        let change = (el) => el.parentNode.style.display = this.granted ? 'block' : 'none';
+                        change(this.$ota);
+                        change(this.$upload);
+                        change(this.$create);
+
                         if (!this.granted && this.firstBuild) popup('Unauthorized');
                         this.$auth.onclick = async () => {
                             let res = await AsyncPrompt('Password', '');
@@ -536,6 +536,8 @@ export default class Settings {
         const utc = d.getTime() - (d.getTimezoneOffset() * 60000);
         this.$uptime_i.innerText = Math.floor(s / 86400) + ':' + new Date(s * 1000).toISOString().slice(11, 19);
         this.$start_i.innerText = new Date(utc - s * 1000).toISOString().split('.')[0].replace('T', ' ');
+        this.$mac_i.innerText = json.mac;
+        this.$ip_i.innerText = json.local_ip;
 
         this.renderFooter(json.proj_name, json.proj_link);
         if (!json.title) json.title = 'Settings';
@@ -544,8 +546,8 @@ export default class Settings {
         let pagesJSON = JSON.stringify(this.pages);
         this.pages = [];
         this.widgets = new unMap();
+        EL.clear(this.$main_col);
         Page(-1, json.content, json.title, this);
-        this.$main_col.replaceChildren(...this.pages.map(p => p.page));
 
         if (!this.pages.length) {
             this.pageStack = [];
@@ -619,6 +621,8 @@ export default class Settings {
             this.$main_col.style.minHeight = page.offsetHeight + 'px';
             this.observe(page);
         }, anim_ms);
+
+        this.requset('menu', e.id);
     }
 
     observe(page) {
@@ -643,11 +647,11 @@ export default class Settings {
 
     //#region renderFS
     renderFS(packet) {
-        this.$fs.replaceChildren();
+        EL.clear(this.$fs);
         if (packet.error) {
             this.$fs.append(EL.make('div', { class: 'fs_error', text: packet.error }));
         } else {
-            let fs = packet.content.trim().split('\n');
+            let fs = packet.content.trim().split(';');
             for (let ps of fs) {
                 ps = ps.split(':');
                 let path = ps[0];

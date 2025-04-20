@@ -21,7 +21,7 @@ export default class ImageWidget extends WidgetBase {
             this.$out.src = value;
         } else {
             if (!value.startsWith('/')) value = '/' + value;
-            this.$out.src = this.data.sets.makeUrl('fetch', { path: value });
+            this.$out.src = this.app.makeUrl('fetch', { path: value });
         }
     }
 }

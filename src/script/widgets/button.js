@@ -1,7 +1,9 @@
 import { EL } from "@alexgyver/component";
-import WidgetEvent from "./wevent";
-import './button.css';
 import { contrastColor, intToColor, isTouch } from "@alexgyver/utils";
+import { lang } from "../lang";
+import './button.css';
+
+const contrast = 150;
 
 export default class Button {
     constructor(data) {
@@ -13,7 +15,7 @@ export default class Button {
             class: 'button',
             style: {
                 background: col,
-                color: contrastColor(col, 150),
+                color: contrastColor(col, contrast),
             },
             child: {
                 style: 'text-align: center',
@@ -26,7 +28,7 @@ export default class Button {
                     {
                         tag: 'sup',
                         class: 'error_sup',
-                        text: 'Error!',
+                        text: lang.error,
                         var: 'error'
                     }
                 ],
@@ -53,7 +55,7 @@ export default class Button {
     updateColor(value) {
         let col = intToColor(value);
         this.$root.style.background = col;
-        this.$root.style.color = contrastColor(col, 150);
+        this.$root.style.color = contrastColor(col, contrast);
     }
 
     setError() {
@@ -75,8 +77,9 @@ export default class Button {
         }
     }
 
-    _dispatch(val) {
-        document.dispatchEvent(new WidgetEvent('click', this.id, val, this));
+    async _dispatch(val) {
+        let res = await this.app.requset('click', this.id, val);
+        if (res === null) this.setError();
     }
 
     #pressed = 0;

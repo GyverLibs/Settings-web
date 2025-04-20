@@ -25,7 +25,7 @@ export default class WSRequest {
 
     init(url, port) {
         if (this.opened) return;
-        this.ws.init(url, port);
+        this.ws.init(url, port, 'sets');
         this.ws.open();
         this.opened = true;
     }

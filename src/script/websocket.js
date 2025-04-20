@@ -1,13 +1,14 @@
 const ws_tout = 1000;
 
 export default class WS {
-    init(url, port) {
+    init(url, port, proto) {
         this.ip = url.split('//')[1];
         this.port = port;
+        this.proto = proto;
     }
     open() {
         this.reconnect = true;
-        this.ws = new WebSocket(`ws://${this.ip}:${this.port}/`, ['sets']);
+        this.ws = new WebSocket(`ws://${this.ip}:${this.port}/`, [this.proto]);
         this.ws.binaryType = "arraybuffer";
 
         let lws = this.ws;

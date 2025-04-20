@@ -12,6 +12,6 @@ export default class ConfirmWidget extends WidgetBase {
     async update(value) {
         if (typeof value !== 'boolean') this.text = value;
         let res = await AsyncConfirm(this.text);
-        this.sendEvent(res ? 1 : 0);
+        this.sendValue(res ? 1 : 0);
     }
 }

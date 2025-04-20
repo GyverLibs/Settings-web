@@ -16,7 +16,7 @@ export default class SwitchWidget extends WidgetBase {
                 var: 'switch',
                 style: ('color' in data) ? `--accent: ${intToColor(data.color)}` : '',
                 events: {
-                    click: () => this.sendEvent(this.$switch.checked ? 1 : 0),
+                    click: () => this.sendValue(this.$switch.checked ? 1 : 0),
                 }
             }
         }));

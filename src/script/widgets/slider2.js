@@ -3,7 +3,7 @@ import WidgetBase from "./widget";
 import { AsyncPrompt } from "../ui/dialog";
 import './slider2.css';
 import DelaySend from "../DelaySend";
-import { findFloat, intToColor } from "@alexgyver/utils";
+import { findFloat, formatToStep, intToColor } from "@alexgyver/utils";
 
 export default class Slider2Widget extends WidgetBase {
 
@@ -120,12 +120,8 @@ export default class Slider2Widget extends WidgetBase {
         let p1 = map(s1.value);
         let p2 = map(s2.value);
         this.$track.style.background = `linear-gradient(to right, var(--dark) ${p1}% , ${this.color} ${p1}% , ${this.color} ${p2}%, var(--dark) ${p2}%)`;
-        let digs = s1.step.toString().split('.')[1];
 
-        let makeOut = (s) => {
-            return Number(s.value).toFixed(digs ? digs.length : 0);
-        }
-        this.$out1.innerText = makeOut(s1);
-        this.$out2.innerText = makeOut(s2) + (this.unit ? this.unit : '');
+        this.$out1.innerText = formatToStep(s1.value, s1.step);
+        this.$out2.innerText = formatToStep(s2.value, s2.step) + (this.unit ? this.unit : '');
     }
 }

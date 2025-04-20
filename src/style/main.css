@@ -82,3 +82,16 @@ body::-webkit-scrollbar-thumb {
     font-weight: bold;
     color: var(--font);
 }
+
+.group_info .widget {
+    padding: 4px 7px;
+}
+
+.group_info .widget_row {
+    height: unset;
+}
+
+.group_info .widget_label,
+.group_info .value.bold {
+    font-size: 16px;
+}

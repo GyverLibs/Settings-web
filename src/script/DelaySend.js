@@ -1,5 +1,4 @@
 import { Config } from "./config";
-import WidgetEvent from "./widgets/wevent";
 
 export default class DelaySend {
     constructor(id, widget) {
@@ -27,7 +26,9 @@ export default class DelaySend {
             this.inp_t = null;
         }, Config.sliderTout);
     }
-    _send(value) {
-        document.dispatchEvent(new WidgetEvent('set', this.id, value, this.widget));
+    async _send(value) {
+        this.widget.app.updateCache(this.id, value);
+        let res = await this.widget.app.requset('set', this.id, value);
+        if (res === null) this.widget.setError();
     }
 }

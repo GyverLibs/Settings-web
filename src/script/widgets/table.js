@@ -12,7 +12,7 @@ export default class TableWidget extends WidgetBase {
 
     async update(value) {
         if (value.endsWith('.csv')) {
-            let res = await this.data.sets.fetchFile(value);
+            let res = await this.app.fetchFile(value);
             if (!res) return;
             value = await res.text();
             // return;

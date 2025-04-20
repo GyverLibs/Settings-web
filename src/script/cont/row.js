@@ -1,45 +1,40 @@
 import { EL } from "@alexgyver/component";
-import MenuWidget from "../widgets/menu";
 import { checkAndAppend } from "./append";
 import Buttons from "./buttons";
+import MenuWidget from "./menu";
 
-export default function Row(obj, cur, sets) {
-    let title = obj.title
+export default function Row(obj, cur, sets, parent) {
     let data = obj.content;
-    if (!data.length) return document.createDocumentFragment();
+    if (!data.length) return;
 
-    let ctx = {};
+    let r = [];
     let row = EL.make('div', {
-        context: ctx,
         class: 'row',
         children: [
-            !!title && {
+            !!obj.title && {
                 class: 'group_title',
                 child: {
                     tag: 'span',
-                    text: title,
+                    text: obj.title,
                 }
             },
             {
                 class: ['group_row', (obj.divtype ?? 'default')],
-                var: 'group_row',
+                push: r,
             }
         ]
     });
+    parent.append(row);
 
     for (let obj of data) {
         if (!obj.label || !obj.label.length) obj.label = null;
 
         switch (obj.type) {
-            case 'menu': ctx.$group_row.append(MenuWidget(obj.title, obj.content, cur, sets)); break;
-            case 'buttons': ctx.$group_row.append(Buttons(obj, cur, sets)); break;
-            case 'row': ctx.$group_row.append(Row(obj, cur, sets)); break;
-            case 'group':
-                break;
-            default:
-                checkAndAppend(sets, ctx.$group_row, obj);
-                break;
+            case 'menu': MenuWidget(obj.title, obj, cur, sets, r[0]); break;
+            case 'buttons': Buttons(obj, cur, sets, r[0]); break;
+            case 'row': Row(obj, cur, sets, r[0]); break;
+            case 'group': break;
+            default: checkAndAppend(sets, r[0], obj); break;
         }
     }
-    return row;
 };

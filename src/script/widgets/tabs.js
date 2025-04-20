@@ -21,31 +21,30 @@ export default class TabsWidget extends WidgetBase {
                     events: {
                         click: () => {
                             this.update(i);
-                            this.sendEvent(i);
+                            this.sendValue(i);
                         }
                     }
                 }
-            }),
-            events: {
-                mousedown: () => {
-                    this.dragging = true;
-                    this.$tabs.classList.add('dragging');
-                },
-            }
+            })
         }));
+
+        this.$tabs.addEventListener("mousedown", (e) => {
+            this._drag = true;
+            this.$tabs.classList.add('dragging');
+        });
         document.addEventListener("mousemove", (e) => {
-            if (this.dragging) this.$tabs.scrollLeft -= e.movementX;
+            if (this._drag) this.$tabs.scrollLeft -= e.movementX;
         });
         document.addEventListener("mouseup", () => {
-            this.dragging = false;
+            this._drag = false;
             this.$tabs.classList.remove('dragging');
         });
 
-        waitRender(this.$tabs, tabs => {
-            tabs.scrollLeft = tabs.scrollWidth * data.value / this.options.length - tabs.clientWidth / 2;
-        })
-
         this.update(data.value);
+
+        waitRender(this.$tabs, () => {
+            this.$tabs.scrollLeft = this.$tabs.scrollWidth * this.data.value / this.options.length - this.$tabs.clientWidth / 2;
+        });
     }
 
     update(value) {
@@ -55,5 +54,5 @@ export default class TabsWidget extends WidgetBase {
         });
     }
 
-    dragging = false;
+    _drag = false;
 }

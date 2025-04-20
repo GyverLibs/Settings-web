@@ -14,6 +14,7 @@ export const settings_lang = {
         upload: 'Upload?',
         ota: 'Update firmware?',
         fetch_err: "Fetch error",
+        dup: "Duplicated widget ID",
     },
     ru: {
         project: 'Проект',
@@ -30,6 +31,7 @@ export const settings_lang = {
         upload: 'Загрузить?',
         ota: 'Обновить прошивку?',
         fetch_err: "Ошибка скачивания",
+        dup: "Одинаковый ID виджета",
     }
 };
 
