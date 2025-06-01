@@ -14,7 +14,9 @@ export default class TableWidget extends WidgetBase {
     async update(value) {
         let table = [];
 
-        if (value.endsWith('.csv')) {
+        if (typeof value === 'object') {
+            table = parseTable(value);
+        } else if (value.endsWith('.csv')) {
             let res = await this.data.app.fetchFile(value);
             if (!res) return;
             value = await res.text();
