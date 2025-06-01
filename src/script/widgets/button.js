@@ -7,7 +7,7 @@ const contrast = 150;
 
 export default class Button {
     constructor(data) {
-        this.id = data.id;
+        this.data = data;
         let col = ('color' in data) ? intToColor(data.color) : 'var(--accent)';
         EL.make('div', {
             context: this,
@@ -78,7 +78,7 @@ export default class Button {
     }
 
     async _dispatch(val) {
-        let res = await this.app.requset('click', this.id, val);
+        let res = await this.data.app.requset('click', this.data.id, val);
         if (res === null) this.setError();
     }
 

@@ -86,4 +86,6 @@ export const codes = [
     'mac',
     'local_ip',
     'spinner',
+    's_ver',
+    'f_ver',
 ];

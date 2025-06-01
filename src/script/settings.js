@@ -13,7 +13,7 @@ import { lang } from './lang';
 import parseTable from './table';
 import WSRequest from './wsrequest';
 import renderInfoRow from './ui/info';
-import { encodeText, fetchTimeout, hash, httpPost, intToColor, last, LS, waitFrame } from '@alexgyver/utils';
+import { encodeText, FetchQueue, fetchTimeout, hash, httpPost, intToColor, last, LS, waitFrame } from '@alexgyver/utils';
 import { Arrow } from './ui/misc';
 
 const anim_s = '.11s';
@@ -41,6 +41,7 @@ export default class Settings {
     authF = false;
     granted = false;
     firstBuild = true;
+    queue = new FetchQueue();
     auth = 0;
     rssi = 0;
 
@@ -221,6 +222,8 @@ export default class Settings {
                                     renderInfoRow(this, 'MAC', 'mac_i'),
                                     renderInfoRow(this, 'IP', 'ip_i'),
                                     renderInfoRow(this, 'RSSI', 'rssi_i'),
+                                    renderInfoRow(this, 'Settings', 'sett_i'),
+                                    renderInfoRow(this, 'Firmware', 'fw_i'),
                                 ]
                             },
                         },
@@ -525,6 +528,8 @@ export default class Settings {
 
     //#region UI
     renderUI(json) {
+        this.queue.clear();
+        
         Config.updateTout = json.update_tout;
         Config.requestTout = json.request_tout;
         Config.sliderTout = json.send_tout;
@@ -538,6 +543,8 @@ export default class Settings {
         this.$start_i.innerText = new Date(utc - s * 1000).toISOString().split('.')[0].replace('T', ' ');
         this.$mac_i.innerText = json.mac;
         this.$ip_i.innerText = json.local_ip;
+        this.$sett_i.innerText = json.s_ver;
+        this.$fw_i.innerText = json.f_ver ?? '-';
 
         this.renderFooter(json.proj_name, json.proj_link);
         if (!json.title) json.title = 'Settings';
@@ -547,7 +554,7 @@ export default class Settings {
         this.pages = [];
         this.widgets = new unMap();
         EL.clear(this.$main_col);
-        Page(-1, json.content, json.title, this);
+        Page(-1, json.content, json.title, this, 0);
 
         if (!this.pages.length) {
             this.pageStack = [];
@@ -594,6 +601,8 @@ export default class Settings {
                 this.$main_col.style.minHeight = fadein.offsetHeight + 'px';
                 this.observe(fadein);
             }, anim_ms);
+
+            this.requset('menu', this.pages[e.parent].id);
         }
         if (!this.pageStack.length) {
             this.$arrow.style.display = 'none';
@@ -622,7 +631,7 @@ export default class Settings {
             this.observe(page);
         }, anim_ms);
 
-        this.requset('menu', e.id);
+        this.requset('menu', this.pages[e.index].id);
     }
 
     observe(page) {
@@ -685,7 +694,7 @@ export default class Settings {
                                             try {
                                                 let res = await this.fetchFile(path);
                                                 res = await res.text();
-                                                let changed = await AsyncPrompt(lang.edit, res);
+                                                let changed = await AsyncPrompt(lang.edit + ' ' + path, res);
                                                 if (changed !== null) {
                                                     let data = new FormData();
                                                     let blob = new Blob([changed]);
@@ -735,10 +744,9 @@ export default class Settings {
     }
     async fetchFile(path) {
         this.stopPing();
-        let res = await fetchTimeout(this.makeUrl('fetch', { path: path }), filefetch_tout);
+        let res = this.queue.fetch(this.makeUrl('fetch', { path: path }), { timeout: filefetch_tout });
+        if (!res) popup(lang.fetch_err + ': ' + path);
         this.restartPing();
-
-        if (!res) popup(lang.fetch_err);
         return res;
     }
     async downloadFile(path) {

@@ -1,6 +1,7 @@
 import { EL } from "@alexgyver/component";
 import WidgetBase from "./widget";
 import './table.css';
+import parseTable from "../table";
 
 export default class TableWidget extends WidgetBase {
     constructor(data) {
@@ -11,14 +12,22 @@ export default class TableWidget extends WidgetBase {
     }
 
     async update(value) {
+        let table = [];
+
         if (value.endsWith('.csv')) {
-            let res = await this.app.fetchFile(value);
+            let res = await this.data.app.fetchFile(value);
             if (!res) return;
             value = await res.text();
-            // return;
+            table = value.trim().split('\n').map(x => x.split(';'));
+        } else if (value.endsWith('.tbl')) {
+            let res = await this.data.app.fetchFile(value);
+            if (!res) return;
+            table = parseTable(await res.arrayBuffer());
+        } else {
+            table = value.trim().split('\n').map(x => x.split(';'));
         }
 
-        let table = value.trim().split('\n').map(x => x.split(';'));
+        if (!table.length) return;
 
         EL.config(this.$root, {
             child_r: {

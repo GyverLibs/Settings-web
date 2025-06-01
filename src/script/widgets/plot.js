@@ -32,7 +32,7 @@ class PlotBase extends WidgetBase {
 
     async getTable(value) {
         if (typeof value === 'string') {
-            let res = await this.app.fetchFile(value);
+            let res = await this.data.app.fetchFile(value);
             if (!res) return;
             if (value.endsWith('.csv')) {
                 value = await res.text();
@@ -75,7 +75,7 @@ export class PlotWidget extends PlotBase {
     }
 
     async update(value) {
-        if (!value || this.app.fromCache || !this.plot) return;
+        if (!value || this.data.app.fromCache || !this.plot) return;
         let table = await this.getTable(value);
         if (!table) return;
 
@@ -91,7 +91,7 @@ export class PlotTimeWidget extends PlotBase {
     }
 
     async update(value) {
-        if (!value || this.app.fromCache || !this.plot) return;
+        if (!value || this.data.app.fromCache || !this.plot) return;
         let table = await this.getTable(value);
         if (!table) return;
 

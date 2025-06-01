@@ -5,10 +5,10 @@ import Row from "./row";
 import Buttons from "./buttons";
 import MenuWidget from "./menu";
 
-export default function Page(p, data, title, sets) {
+export default function Page(p, data, title, sets, id) {
     let page = EL.make('div', { class: 'page', style: 'display: none' });
     let cur = sets.pages.length;
-    sets.pages.push({ page: page, parent: p, title: title });
+    sets.pages.push({ page: page, parent: p, title: title, id: id });
     sets.$main_col.append(page);
 
     for (let obj of data) {

@@ -6,7 +6,7 @@ import Page from "./page";
 export default function MenuWidget(title, data, cur, sets, parent) {
     if (!data.content.length) return;
 
-    let i = Page(cur, data.content, title, sets);
+    let i = Page(cur, data.content, title, sets, data.id);
     let widget = new WidgetBase({ label: title });
     parent.append(widget.$root);
     widget.addOutput(Arrow('right', 20));
@@ -14,7 +14,7 @@ export default function MenuWidget(title, data, cur, sets, parent) {
     EL.config(widget.$root, {
         style: 'cursor:pointer',
         events: {
-            click: () => sets.openPage({ index: i, parent: cur, id: data.id }),
+            click: () => sets.openPage({ index: i, parent: cur }),
         }
     });
 };

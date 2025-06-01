@@ -27,8 +27,8 @@ export default class DelaySend {
         }, Config.sliderTout);
     }
     async _send(value) {
-        this.widget.app.updateCache(this.id, value);
-        let res = await this.widget.app.requset('set', this.id, value);
+        this.widget.data.app.updateCache(this.id, value);
+        let res = await this.widget.data.app.requset('set', this.id, value);
         if (res === null) this.widget.setError();
     }
 }

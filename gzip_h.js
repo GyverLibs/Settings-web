@@ -50,6 +50,8 @@ async function compile() {
     
     Build: ${new Date()}
 */
+
+#define SETTINGS_VER "${pkg.version}"
 `;
 
     function addBin(fname, gzip) {
