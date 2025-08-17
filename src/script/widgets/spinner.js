@@ -24,7 +24,7 @@ export default class SpinnerWidget extends NumberWidget {
                     tag: 'span',
                     class: 'value active',
                     style: 'margin: 0 5px',
-                    var: 'out',
+                    $: 'out',
                 },
                 {
                     tag: 'span',
@@ -45,7 +45,10 @@ export default class SpinnerWidget extends NumberWidget {
     }
 
     change(dir) {
-        let v = constrain(Number(this.text) + this.data.step * dir, this.data.min, this.data.max);
+        let v = Number(this.text) + this.data.step * dir;
+        if (this.data.min !== undefined && this.data.max !== undefined) {
+            v = constrain(v, this.data.min, this.data.max);
+        }
         if (this.text != v) {
             this.update(v);
             this.sendValue(v);

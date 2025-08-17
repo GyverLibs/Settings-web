@@ -13,10 +13,10 @@ export default class WidgetBase {
             EL.make('div', {
                 context: this,
                 class: 'widget',
-                var: 'root',
+                $: 'root',
                 child: makeRow && {
                     class: 'widget_row',
-                    var: 'row',
+                    $: 'row',
                     children: [
                         {
                             // style: 'padding-right: 8px',
@@ -30,7 +30,7 @@ export default class WidgetBase {
                                     tag: 'sup',
                                     class: 'error_sup',
                                     text: lang.error,
-                                    var: 'error',
+                                    $: 'error',
                                 }
                             ]
                         }

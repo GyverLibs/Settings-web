@@ -72,26 +72,26 @@ export default class Settings {
                                         this.$arrow,
                                         {
                                             tag: 'span',
-                                            var: 'title'
+                                            $: 'title'
                                         }
                                     ]
                                 },
                                 {
                                     class: 'rssi',
-                                    var: 'rssi',
+                                    $: 'rssi',
                                     html: makeRSSI(),
                                 },
                                 {
                                     tag: 'span',
                                     class: 'ws',
-                                    var: 'ws',
+                                    $: 'ws',
                                     text: 'WS',
                                 }
                             ]
                         },
                         {
                             class: 'icon bars menubutton',
-                            var: 'menubutton',
+                            $: 'menubutton',
                             events: {
                                 click: async () => {
                                     iconFill(this.$ota, 'var(--font_tint)');
@@ -102,9 +102,13 @@ export default class Settings {
                                         this.$menubutton.classList = 'icon bars menubutton';
                                         this.restartUpdates();
                                     } else {
+                                        let change = (el, state) => el.parentNode.style.display = state ? 'block' : 'none';
+                                        change(this.$ota, this.granted);
+                                        change(this.$upload, this.granted && Config.useFS);
+                                        change(this.$create, this.granted && Config.useFS);
                                         this.$menubutton.classList = 'icon cross menubutton';
                                         this.stopUpdates();
-                                        await this.requset('fs');
+                                        if (this.granted && Config.useFS) await this.requset('fs');
                                     }
                                 },
                             }
@@ -113,7 +117,7 @@ export default class Settings {
                 },
                 {
                     class: 'hidden',
-                    var: 'main_menu',
+                    $: 'main_menu',
                     style: { marginTop: '10px' },
                     children: [
                         {
@@ -140,13 +144,13 @@ export default class Settings {
                                             class: 'menu_icon',
                                             child: {
                                                 class: 'icon key',
-                                                var: 'auth',
+                                                $: 'auth',
                                             }
                                         },
                                         {
                                             tag: 'input',
                                             type: 'file',
-                                            var: 'upload_ota',
+                                            $: 'upload_ota',
                                             style: 'display: none',
                                             accept: '.bin',
                                             events: {
@@ -156,7 +160,7 @@ export default class Settings {
                                         {
                                             tag: 'input',
                                             type: 'file',
-                                            var: 'upload_file',
+                                            $: 'upload_file',
                                             style: 'display: none',
                                             events: {
                                                 change: () => this.uploadFile(this.$upload_file.files[0]),
@@ -170,7 +174,7 @@ export default class Settings {
                                             child: {
                                                 class: 'icon upload',
                                                 title: lang.upload,
-                                                var: 'upload',
+                                                $: 'upload',
                                                 events: {
                                                     click: () => this.$upload_file.click(),
                                                 }
@@ -181,7 +185,7 @@ export default class Settings {
                                             child: {
                                                 class: 'icon create',
                                                 title: lang.create,
-                                                var: 'create',
+                                                $: 'create',
                                                 events: {
                                                     click: async () => {
                                                         let path = await AsyncPrompt(lang.create, '/');
@@ -198,7 +202,7 @@ export default class Settings {
                                             child: {
                                                 class: 'icon cloud',
                                                 title: 'OTA',
-                                                var: 'ota',
+                                                $: 'ota',
                                                 events: {
                                                     click: () => this.$upload_ota.click(),
                                                 }
@@ -208,7 +212,7 @@ export default class Settings {
                                 },
                                 {
                                     class: 'fs_cont',
-                                    var: 'fs',
+                                    $: 'fs',
                                 }
                             ]
                         },
@@ -220,23 +224,22 @@ export default class Settings {
                                     renderInfoRow(this, 'Uptime', 'uptime_i'),
                                     renderInfoRow(this, 'Start', 'start_i'),
                                     renderInfoRow(this, 'MAC', 'mac_i'),
-                                    renderInfoRow(this, 'IP', 'ip_i'),
+                                    renderInfoRow(this, 'Local IP', 'ip_i'),
                                     renderInfoRow(this, 'RSSI', 'rssi_i'),
-                                    renderInfoRow(this, 'Settings', 'sett_i'),
                                     renderInfoRow(this, 'Firmware', 'fw_i'),
                                 ]
                             },
                         },
                         {
                             tag: 'span',
-                            var: 'footer',
+                            $: 'footer',
                             style: `text-align: center;display: block;font-size: 13px;font-style: italic;margin-top: 18px;opacity: 0.7;`,
                         }
                     ],
                 },
                 {
                     class: 'main_col',
-                    var: 'main_col'
+                    $: 'main_col'
                 },
             ],
         });
@@ -475,11 +478,6 @@ export default class Settings {
                         this.granted = packet.granted;
                         this.$auth.style.backgroundColor = this.granted ? 'var(--accent)' : 'var(--error)';
 
-                        let change = (el) => el.parentNode.style.display = this.granted ? 'block' : 'none';
-                        change(this.$ota);
-                        change(this.$upload);
-                        change(this.$create);
-
                         if (!this.granted && this.firstBuild) popup('Unauthorized');
                         this.$auth.onclick = async () => {
                             let res = await AsyncPrompt('Password', '');
@@ -529,10 +527,11 @@ export default class Settings {
     //#region UI
     renderUI(json) {
         this.queue.clear();
-        
+
         Config.updateTout = json.update_tout;
         Config.requestTout = json.request_tout;
         Config.sliderTout = json.send_tout;
+        Config.useFS = json.use_fs;
         document.body.style.setProperty('--accent', intToColor(json.color));
 
         json.rssi && (this.$rssi_i.innerText = json.rssi + '%');
@@ -543,7 +542,6 @@ export default class Settings {
         this.$start_i.innerText = new Date(utc - s * 1000).toISOString().split('.')[0].replace('T', ' ');
         this.$mac_i.innerText = json.mac;
         this.$ip_i.innerText = json.local_ip;
-        this.$sett_i.innerText = json.s_ver;
         this.$fw_i.innerText = json.f_ver ?? '-';
 
         this.renderFooter(json.proj_name, json.proj_link);

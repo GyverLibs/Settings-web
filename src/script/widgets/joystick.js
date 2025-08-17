@@ -10,10 +10,10 @@ export default class JoyWidget extends WidgetBase {
 
         this.addChild(EL.make('svg', {
             style: 'width:100%;aspect-ratio:1/1;max-width:300px',
-            var: 'svg',
+            $: 'svg',
             children: [
-                SVG.circle(0, 0, 0, { class: 'ring' }, { var: 'ring' }),
-                SVG.circle(0, 0, 0, { fill: 'var(--accent)', filter: 'drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.2))' }, { class: 'joy', var: 'joy' }),
+                SVG.circle(0, 0, 0, { class: 'ring' }, { $: 'ring' }),
+                SVG.circle(0, 0, 0, { fill: 'var(--accent)', filter: 'drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.2))' }, { class: 'joy', $: 'joy' }),
             ],
         }));
 

@@ -13,7 +13,7 @@ export default class SwitchWidget extends WidgetBase {
                 tag: 'input',
                 class: 'switch',
                 type: 'checkbox',
-                var: 'switch',
+                $: 'switch',
                 style: ('color' in data) ? `--accent: ${intToColor(data.color)}` : '',
                 events: {
                     click: () => this.sendValue(this.$switch.checked ? 1 : 0),

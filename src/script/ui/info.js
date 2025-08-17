@@ -14,7 +14,7 @@ export default function renderInfoRow(ctx, label, varname) {
                 },
                 {
                     class: 'value bold',
-                    var: varname,
+                    $: varname,
                 }
             ]
         }

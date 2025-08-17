@@ -19,7 +19,7 @@ export default class Slider2Widget extends WidgetBase {
             children: [
                 {
                     tag: 'span',
-                    var: 'out1',
+                    $: 'out1',
                     class: 'value active',
                     events: {
                         click: async () => {
@@ -38,7 +38,7 @@ export default class Slider2Widget extends WidgetBase {
                 },
                 {
                     tag: 'span',
-                    var: 'out2',
+                    $: 'out2',
                     class: 'value active',
                     events: {
                         click: async () => {
@@ -68,10 +68,10 @@ export default class Slider2Widget extends WidgetBase {
             children: [
                 {
                     class: 'track',
-                    var: 'track',
+                    $: 'track',
                 },
                 {
-                    var: 'slider1',
+                    $: 'slider1',
                     ...slider,
                     events: {
                         input: () => {
@@ -82,7 +82,7 @@ export default class Slider2Widget extends WidgetBase {
                     }
                 },
                 {
-                    var: 'slider2',
+                    $: 'slider2',
                     ...slider,
                     events: {
                         input: () => {

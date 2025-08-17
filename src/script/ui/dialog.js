@@ -5,7 +5,7 @@ export class DialogCont {
     constructor() {
         EL.make('div', {
             context: this,
-            var: 'root',
+            $: 'root',
             class: 'dialog_back',
             style: 'animation: fadeIn 0.16s;',
             parent: document.body,

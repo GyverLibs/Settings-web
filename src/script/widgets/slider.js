@@ -11,7 +11,7 @@ export default class SliderWidget extends WidgetBase {
 
         super.addOutput(EL.make('span', {
             context: this,
-            var: 'out',
+            $: 'out',
             class: 'value active',
             events: {
                 click: async () => {
@@ -31,7 +31,7 @@ export default class SliderWidget extends WidgetBase {
                 tag: 'input',
                 type: 'range',
                 class: 'slider',
-                var: 'slider',
+                $: 'slider',
                 style: ('color' in data) ? `--accent: ${intToColor(data.color)}` : '',
                 min: (data.min ?? 0) + '',
                 max: (data.max ?? 100) + '',

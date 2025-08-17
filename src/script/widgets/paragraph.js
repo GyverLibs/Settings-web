@@ -8,7 +8,7 @@ export default class ParagraphWidget extends WidgetBase {
 
         super.addChild(EL.make('p', {
             context: this,
-            var: 'out',
+            $: 'out',
             class: 'paragraph',
         }));
 

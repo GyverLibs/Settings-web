@@ -10,7 +10,7 @@ export default class LogWidget extends WidgetBase {
         super.addChild(EL.make('div', {
             context: this,
             class: 'log',
-            var: 'out',
+            $: 'out',
             events: {
                 scroll: () => {
                     if (!this.#lock) {

@@ -13,7 +13,7 @@ export default class TabsWidget extends WidgetBase {
         this.addChild(EL.make('div', {
             context: this,
             class: 'tabs',
-            var: 'tabs',
+            $: 'tabs',
             children: this.options.map((x, i) => {
                 return {
                     class: 'tab',

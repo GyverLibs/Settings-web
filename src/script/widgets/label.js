@@ -8,7 +8,7 @@ export default class LabelWidget extends WidgetBase {
 
         super.addOutput(EL.make('span', {
             context: this,
-            var: 'out',
+            $: 'out',
             class: 'value bold',
             style: {
                 color: ('color' in data) ? intToColor(data.color) : 'var(--font_tint)',

@@ -11,7 +11,7 @@ class PlotBase extends WidgetBase {
 
         super.addChild(EL.make('div', {
             context: this,
-            var: 'out',
+            $: 'out',
             class: 'plot',
         }));
 

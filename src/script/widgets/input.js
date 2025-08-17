@@ -24,7 +24,7 @@ export default class InputWidget extends WidgetBase {
         super.addOutput(EL.make('span', {
             context: this,
             class: 'value active',
-            var: 'out',
+            $: 'out',
             events: {
                 click: async () => {
                     let res = await AsyncPrompt(this.title, this.text, oninput, onconfirm);

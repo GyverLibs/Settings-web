@@ -15,13 +15,13 @@ export default class ColorWidget extends WidgetBase {
                 children: [
                     {
                         class: 'color_out',
-                        var: 'out',
+                        $: 'out',
                     },
                     {
                         tag: 'input',
                         type: 'color',
                         class: 'color',
-                        var: 'col',
+                        $: 'col',
                         attrs: { 'colorpick-eyedropper-active': false },
                         events: {
                             change: () => {

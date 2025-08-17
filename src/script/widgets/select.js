@@ -101,7 +101,7 @@ export default class SelectWidget extends WidgetBase {
                     tag: 'span',
                     class: 'value active',
                     style: 'padding-right: 7px',
-                    var: 'label',
+                    $: 'label',
                 },
                 Arrow('down', 15)
             ]

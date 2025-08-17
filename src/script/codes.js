@@ -88,4 +88,5 @@ export const codes = [
     'spinner',
     's_ver',
     'f_ver',
+    'use_fs',
 ];

@@ -7,7 +7,7 @@ export default class HTMLWidget extends WidgetBase {
 
         super.addChild(EL.make('div', {
             context: this,
-            var: 'out',
+            $: 'out',
             style: 'margin: 5px 0',
         }));
 

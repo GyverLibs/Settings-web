@@ -11,7 +11,7 @@ export default class Button {
         let col = ('color' in data) ? intToColor(data.color) : 'var(--accent)';
         EL.make('div', {
             context: this,
-            var: 'root',
+            $: 'root',
             class: 'button',
             style: {
                 background: col,
@@ -23,13 +23,13 @@ export default class Button {
                     {
                         tag: 'span',
                         text: data.label ?? 'Button',
-                        var: 'btext',
+                        $: 'btext',
                     },
                     {
                         tag: 'sup',
                         class: 'error_sup',
                         text: lang.error,
-                        var: 'error'
+                        $: 'error'
                     }
                 ],
             },

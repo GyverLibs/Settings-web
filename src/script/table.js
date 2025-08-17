@@ -1,3 +1,5 @@
+import { localTime } from "@alexgyver/utils";
+
 export default function parseTable(buffer) {
     if (!(buffer instanceof Uint8Array)) buffer = new Uint8Array(buffer);
 
@@ -34,6 +36,30 @@ export default function parseTable(buffer) {
                     out.push(new Float32Array(buffer.slice(byte, byte + len).buffer)[0]);
                     break;
 
+                case 't':
+                    len = 4;
+                    if (end(len)) break;
+                    let unix = new Uint32Array(buffer.slice(byte, byte + len).buffer)[0];
+                    out.push(localTime(unix * 1000).toISOString().split('T').join(' ').slice(0, -5));
+                    break;
+
+                case 'c':
+                    len = 1;
+                    if (end(len)) break;
+                    out.push(String.fromCharCode(buffer[byte]));
+                    break;
+
+                case 's':
+                    len = parseInt(x.slice(1)) + 1;
+                    if (end(len)) break;
+                    let rlen = 0;
+                    for (let i = 0; i < len; i++) {
+                        if (!buffer[byte + rlen]) break;
+                        ++rlen;
+                    }
+                    out.push(new TextDecoder().decode(buffer.slice(byte, byte + rlen)));
+                    break;
+
                 default:
                     out.push(0);
                     break;
@@ -47,6 +73,6 @@ export default function parseTable(buffer) {
     let cols = parse('u1');
     let rows = parse('u2');
     let types = parse(Array(cols).fill('u1'));
-    types = types.map(t => [null, 'i1', 'u1', 'i2', 'u2', 'i4', 'u4', 'f', 'i8', 'u8'][t]);
+    types = types.map(t => [null, 'i1', 'u1', 'i2', 'u2', 'i4', 'u4', 'f', 'i8', 'u8', 't', 'c', 's8', 's16', 's32', 's64', 's128', 's256'][t]);
     return [...Array(rows).keys()].map(x => parse(types));
 }

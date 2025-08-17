@@ -3,4 +3,5 @@ export const Config = {
     requestTout: 2000,
     updateTout: 2500,
     pingPrd: 2500,
+    useFS: true,
 };

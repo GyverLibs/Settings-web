@@ -56,7 +56,7 @@ async function compile() {
 
     function addBin(fname, gzip) {
         let data = fs.readFileSync(gzip).toString('hex');
-        let code = '\r\n' + `const uint8_t ${pkg.name}_${fname}[] PROGMEM = {`;
+        let code = '\r\n' + `const uint8_t ${pkg.name}_${fname}_gz[] PROGMEM = {`;
         for (let i = 0; i < data.length; i += 2) {
             if (i % 48 == 0) code += '\r\n    ';
             code += '0x' + data[i] + data[i + 1];
@@ -66,10 +66,10 @@ async function compile() {
         return code;
     }
 
-    code += addBin('index_gz', index_gz);
-    code += addBin('script_gz', script_gz);
-    code += addBin('style_gz', style_gz);
-    code += addBin('favicon_gz', favicon_gz);
+    code += addBin('index', index_gz);
+    code += addBin('script', script_gz);
+    code += addBin('style', style_gz);
+    code += addBin('favicon', favicon_gz);
 
     fs.writeFile(`${out_folder}/${pkg.name}.h`, code, err => {
         if (err) console.error(err);

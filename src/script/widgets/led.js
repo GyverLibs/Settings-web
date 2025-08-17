@@ -13,7 +13,7 @@ export default class LedWidget extends WidgetBase {
             child: {
                 tag: 'span',
                 class: 'led',
-                var: 'led',
+                $: 'led',
             }
         }));
 

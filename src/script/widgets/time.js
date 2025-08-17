@@ -16,7 +16,7 @@ class TimeWidgetBase extends WidgetBase {
                 children: [
                     {
                         tag: 'input',
-                        var: 'input',
+                        $: 'input',
                         type: type,
                         class: 'date value',
                         step: 1,
@@ -32,7 +32,7 @@ class TimeWidgetBase extends WidgetBase {
                     {
                         tag: 'span',
                         class: 'value active',
-                        var: 'out',
+                        $: 'out',
                     }
                 ]
             }
