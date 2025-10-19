@@ -1,4 +1,4 @@
-import { EL, SVG } from "@alexgyver/component";
+import { EL } from "@alexgyver/component";
 import NumberWidget from "./number";
 import './spinner.css';
 import { constrain, formatToStep } from "@alexgyver/utils";
@@ -8,6 +8,7 @@ export default class SpinnerWidget extends NumberWidget {
         super(data);
 
         let cont = this.$out.parentNode;
+        const out = this.$out;
         this.$out.remove();
         cont.appendChild(EL.make('div', {
             children: [
@@ -20,12 +21,7 @@ export default class SpinnerWidget extends NumberWidget {
                         click: () => this.change(-1),
                     }
                 },
-                {
-                    tag: 'span',
-                    class: 'value active',
-                    style: 'margin: 0 5px',
-                    $: 'out',
-                },
+                out,
                 {
                     tag: 'span',
                     class: 'spin_btn',
