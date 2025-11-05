@@ -1,8 +1,7 @@
 import { EL } from "@alexgyver/component"
 
 export default function renderInfoRow(ctx, label, varname) {
-    return EL.make('div', {
-        context: ctx,
+    return EL.makeIn(ctx, 'div', {
         class: 'widget',
         child: {
             class: 'widget_row',

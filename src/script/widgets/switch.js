@@ -7,17 +7,14 @@ export default class SwitchWidget extends WidgetBase {
     constructor(data) {
         super(data);
 
-        super.addOutput(EL.make('div', {
-            context: this,
+        super.addOutput(EL.makeIn(this, 'div', {
             child: {
                 tag: 'input',
                 class: 'switch',
                 type: 'checkbox',
                 $: 'switch',
                 style: ('color' in data) ? `--accent: ${intToColor(data.color)}` : '',
-                events: {
-                    click: () => this.sendValue(this.$switch.checked ? 1 : 0),
-                }
+                click: () => this.sendValue(this.$switch.checked ? 1 : 0),
             }
         }));
 

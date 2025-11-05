@@ -5,8 +5,7 @@ export default class ImageWidget extends WidgetBase {
     constructor(data) {
         super(data, !!data.label);
 
-        super.addChild(EL.make('img', {
-            context: this,
+        super.addChild(EL.makeIn(this, 'img', {
             $: 'out',
             class: 'image',
             style: 'width: 100%;border-radius: 5px',

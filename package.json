@@ -1,10 +1,9 @@
 {
   "name": "settings",
-  "version": "1.3.12",
+  "version": "1.3.14",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --config ./webpack.single.js & webpack --config ./webpack.index.js",
-    "postbuild": "node gzip_h.js",
+    "build": "webpack --config ./webpack.index.js && node gzip_h.js",
     "dev": "webpack serve --config ./webpack.dev.js & webpack --config ./webpack.dev.js"
   },
   "keywords": [],
@@ -16,18 +15,18 @@
     "css-minimizer-webpack-plugin": "^7.0.2",
     "html-inline-css-webpack-plugin": "^1.11.2",
     "html-inline-script-webpack-plugin": "^3.2.1",
-    "html-webpack-plugin": "^5.6.3",
-    "mini-css-extract-plugin": "^2.9.2",
+    "html-webpack-plugin": "^5.6.4",
+    "mini-css-extract-plugin": "^2.9.4",
     "style-loader": "^4.0.0",
-    "webpack": "^5.99.9",
+    "webpack": "^5.101.3",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.2"
   },
   "dependencies": {
     "@alexgyver/bson": "^2.0.2",
-    "@alexgyver/component": "^1.3.9",
-    "@alexgyver/utils": "^1.0.16",
-    "@alexgyver/drag-block": "^1.2.14",
-    "@alexgyver/svplot": "^1.1.1"
+    "@alexgyver/component": "^1.4.0",
+    "@alexgyver/utils": "^1.2.0",
+    "@alexgyver/drag-block": "^1.3.1",
+    "@alexgyver/svplot": "^1.1.4"
   }
 }

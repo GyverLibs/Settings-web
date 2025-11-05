@@ -10,13 +10,11 @@ export default class LinkWidget extends WidgetBase {
 
         EL.config(this.$root, {
             style: 'cursor:pointer',
-            events: {
-                click: () => {
-                    try {
-                        window.open(data.value, "_blank");
-                    } catch (e) { }
-                },
-            }
+            click: () => {
+                try {
+                    window.open(data.value, "_blank");
+                } catch (e) { }
+            },
         });
     }
 }

@@ -21,17 +21,14 @@ export default class InputWidget extends WidgetBase {
             return true;
         }
 
-        super.addOutput(EL.make('span', {
-            context: this,
+        super.addOutput(EL.makeIn(this, 'span', {
             class: 'value active',
             $: 'out',
-            events: {
-                click: async () => {
-                    let res = await AsyncPrompt(this.title, this.text, oninput, onconfirm);
-                    if (res !== null) {
-                        this.sendValue(res);
-                        this.update(res);
-                    }
+            click: async () => {
+                let res = await AsyncPrompt(this.title, this.text, oninput, onconfirm);
+                if (res !== null) {
+                    this.sendValue(res);
+                    this.update(res);
                 }
             }
         }));

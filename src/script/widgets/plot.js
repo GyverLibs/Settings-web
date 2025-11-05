@@ -9,8 +9,7 @@ class PlotBase extends WidgetBase {
     constructor(data, type) {
         super(data, false);
 
-        super.addChild(EL.make('div', {
-            context: this,
+        super.addChild(EL.makeIn(this, 'div', {
             $: 'out',
             class: 'plot',
         }));

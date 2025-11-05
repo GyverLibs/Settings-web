@@ -9,23 +9,19 @@ export default class SliderWidget extends WidgetBase {
         super(data);
         this.unit = data.unit ?? '';
 
-        super.addOutput(EL.make('span', {
-            context: this,
+        super.addOutput(EL.makeIn(this, 'span', {
             $: 'out',
             class: 'value active',
-            events: {
-                click: async () => {
-                    let res = await AsyncPrompt(data.label ?? data.type, this.$slider.value, (v) => findFloat(v));
-                    if (res) {
-                        this.update(res);
-                        this.send();
-                    }
+            click: async () => {
+                let res = await AsyncPrompt(data.label ?? data.type, this.$slider.value, (v) => findFloat(v));
+                if (res) {
+                    this.update(res);
+                    this.send();
                 }
             }
         }));
 
-        super.addChild(EL.make('div', {
-            context: this,
+        super.addChild(EL.makeIn(this, 'div', {
             class: 'slider_cont',
             child: {
                 tag: 'input',
@@ -36,15 +32,13 @@ export default class SliderWidget extends WidgetBase {
                 min: (data.min ?? 0) + '',
                 max: (data.max ?? 100) + '',
                 step: (data.step ?? 1) + '',
-                events: {
-                    change: () => {
-                        this.send();
-                    },
-                    input: () => {
-                        this.move();
-                        this.send();
-                    },
-                }
+                change: () => {
+                    this.send();
+                },
+                input: () => {
+                    this.move();
+                    this.send();
+                },
             }
         }));
 

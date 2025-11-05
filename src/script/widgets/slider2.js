@@ -14,20 +14,17 @@ export default class Slider2Widget extends WidgetBase {
         this.sender1 = new DelaySend(this.data.id, this);
         this.sender2 = new DelaySend(this.data.id2, this);
 
-        super.addOutput(EL.make('div', {
-            context: this,
+        super.addOutput(EL.makeIn(this, 'div', {
             children: [
                 {
                     tag: 'span',
                     $: 'out1',
                     class: 'value active',
-                    events: {
-                        click: async () => {
-                            let res = await AsyncPrompt(data.label ?? data.type, this.$slider1.value, (v) => findFloat(v));
-                            if (res) {
-                                this.update([res, this.$slider2.value]);
-                                this.sender1.send(this.$slider1.value);
-                            }
+                    click: async () => {
+                        let res = await AsyncPrompt(data.label ?? data.type, this.$slider1.value, (v) => findFloat(v));
+                        if (res) {
+                            this.update([res, this.$slider2.value]);
+                            this.sender1.send(this.$slider1.value);
                         }
                     }
                 },
@@ -40,13 +37,11 @@ export default class Slider2Widget extends WidgetBase {
                     tag: 'span',
                     $: 'out2',
                     class: 'value active',
-                    events: {
-                        click: async () => {
-                            let res = await AsyncPrompt(data.label ?? data.type, this.$slider2.value, (v) => findFloat(v));
-                            if (res) {
-                                this.update([this.$slider1.value, res]);
-                                this.sender2.send(this.$slider2.value);
-                            }
+                    click: async () => {
+                        let res = await AsyncPrompt(data.label ?? data.type, this.$slider2.value, (v) => findFloat(v));
+                        if (res) {
+                            this.update([this.$slider1.value, res]);
+                            this.sender2.send(this.$slider2.value);
                         }
                     }
                 }
@@ -62,8 +57,7 @@ export default class Slider2Widget extends WidgetBase {
             step: (data.step ?? 1) + '',
         }
 
-        super.addChild(EL.make('div', {
-            context: this,
+        super.addChild(EL.makeIn(this, 'div', {
             class: 'slider2_cont',
             children: [
                 {
@@ -73,24 +67,20 @@ export default class Slider2Widget extends WidgetBase {
                 {
                     $: 'slider1',
                     ...slider,
-                    events: {
-                        input: () => {
-                            this.check1();
-                            this.move();
-                            this.sender1.send(this.$slider1.value);
-                        },
-                    }
+                    input: () => {
+                        this.check1();
+                        this.move();
+                        this.sender1.send(this.$slider1.value);
+                    },
                 },
                 {
                     $: 'slider2',
                     ...slider,
-                    events: {
-                        input: () => {
-                            this.check2();
-                            this.move();
-                            this.sender2.send(this.$slider2.value);
-                        },
-                    }
+                    input: () => {
+                        this.check2();
+                        this.move();
+                        this.sender2.send(this.$slider2.value);
+                    },
                 }
             ]
         }));

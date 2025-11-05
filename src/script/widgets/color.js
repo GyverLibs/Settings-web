@@ -7,8 +7,7 @@ export default class ColorWidget extends WidgetBase {
     constructor(data) {
         super(data);
 
-        super.addOutput(EL.make('div', {
-            context: this,
+        super.addOutput(EL.makeIn(this, 'div', {
             class: 'input_cont',
             child: {
                 class: 'color_block',
@@ -23,11 +22,9 @@ export default class ColorWidget extends WidgetBase {
                         class: 'color',
                         $: 'col',
                         attrs: { 'colorpick-eyedropper-active': false },
-                        events: {
-                            change: () => {
-                                this.updateOut();
-                                this.sendValue(this.hexCol());
-                            }
+                        change: () => {
+                            this.updateOut();
+                            this.sendValue(this.hexCol());
                         }
                     },
                 ]

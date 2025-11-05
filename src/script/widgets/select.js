@@ -23,12 +23,10 @@ function SelectDialog(groups, selected, asText) {
                         return {
                             text: opt.trim(),
                             class: ['option', (selected == cur && 'active'), opt.startsWith('~') && 'hidden'],
-                            events: {
-                                click: e => {
-                                    e.stopPropagation();
-                                    dialog.destroy();
-                                    resolve(asText ? opt.trim() : cur);
-                                }
+                            click: e => {
+                                e.stopPropagation();
+                                dialog.destroy();
+                                resolve(asText ? opt.trim() : cur);
                             }
                         }
                     })]
@@ -37,11 +35,9 @@ function SelectDialog(groups, selected, asText) {
 
         EL.config(dialog.$root, {
             style: 'cursor: pointer;',
-            events: {
-                click: () => {
-                    dialog.destroy();
-                    resolve(null);
-                },
+            click: () => {
+                dialog.destroy();
+                resolve(null);
             },
             child: {
                 class: 'dialog_cont',
@@ -81,19 +77,16 @@ export default class SelectWidget extends WidgetBase {
             groups.push({ title: '', opts: this.options });
         }
 
-        super.addOutput(EL.make('div', {
-            context: this,
+        super.addOutput(EL.makeIn(this, 'div', {
             style: {
                 display: 'flex',
                 alignItems: 'center',
             },
-            events: {
-                click: async () => {
-                    let res = await SelectDialog(groups, this.value, this.data.as_txt);
-                    if (res !== null) {
-                        this.update(res);
-                        this.sendValue(res);
-                    }
+            click: async () => {
+                let res = await SelectDialog(groups, this.value, this.data.as_txt);
+                if (res !== null) {
+                    this.update(res);
+                    this.sendValue(res);
                 }
             },
             children: [

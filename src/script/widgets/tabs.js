@@ -10,19 +10,16 @@ export default class TabsWidget extends WidgetBase {
         if (t.endsWith(';')) t = t.slice(0, -1);
         this.options = t.split(/;|\n/);
 
-        this.addChild(EL.make('div', {
-            context: this,
+        this.addChild(EL.makeIn(this, 'div', {
             class: 'tabs',
             $: 'tabs',
             children: this.options.map((x, i) => {
                 return {
                     class: 'tab',
                     text: x.trim(),
-                    events: {
-                        click: () => {
-                            this.update(i);
-                            this.sendValue(i);
-                        }
+                    click: () => {
+                        this.update(i);
+                        this.sendValue(i);
                     }
                 }
             })

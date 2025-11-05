@@ -7,8 +7,7 @@ export default class LogWidget extends WidgetBase {
     constructor(data) {
         super(data, !!data.label);
 
-        super.addChild(EL.make('div', {
-            context: this,
+        super.addChild(EL.makeIn(this, 'div', {
             class: 'log',
             $: 'out',
             events: {

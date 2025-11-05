@@ -5,8 +5,7 @@ export default class HTMLWidget extends WidgetBase {
     constructor(data) {
         super(data, !!data.label);
 
-        super.addChild(EL.make('div', {
-            context: this,
+        super.addChild(EL.makeIn(this, 'div', {
             $: 'out',
             style: 'margin: 5px 0',
         }));

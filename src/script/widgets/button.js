@@ -9,8 +9,7 @@ export default class Button {
     constructor(data) {
         this.data = data;
         let col = ('color' in data) ? intToColor(data.color) : 'var(--accent)';
-        EL.make('div', {
-            context: this,
+        EL.makeIn(this, 'div', {
             $: 'root',
             class: 'button',
             style: {

@@ -16,9 +16,7 @@ export default class SpinnerWidget extends NumberWidget {
                     tag: 'span',
                     class: 'spin_btn',
                     text: '-',
-                    events: {
-                        click: () => this.change(-1),
-                    }
+                    click: () => this.change(-1),
                 },
                 {
                     tag: 'span',
@@ -30,9 +28,7 @@ export default class SpinnerWidget extends NumberWidget {
                     tag: 'span',
                     class: 'spin_btn',
                     text: '+',
-                    events: {
-                        click: () => this.change(1),
-                    }
+                    click: () => this.change(1),
                 },
             ]
         }));

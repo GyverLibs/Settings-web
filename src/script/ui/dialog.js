@@ -3,8 +3,7 @@ import './dialog.css';
 
 export class DialogCont {
     constructor() {
-        EL.make('div', {
-            context: this,
+        EL.makeIn(this, 'div', {
             $: 'root',
             class: 'dialog_back',
             style: 'animation: fadeIn 0.16s;',
@@ -38,11 +37,9 @@ export function BaseDialog(label, content, actionOK, actionCancel, postRender = 
                             {
                                 class: 'button',
                                 text: 'OK',
-                                events: {
-                                    click: async () => {
-                                        let res = await actionOK();
-                                        if (res || res == undefined) dialog.destroy();
-                                    },
+                                click: async () => {
+                                    let res = await actionOK();
+                                    if (res || res == undefined) dialog.destroy();
                                 },
                             },
                             {
@@ -52,11 +49,9 @@ export function BaseDialog(label, content, actionOK, actionCancel, postRender = 
                                 class: 'button',
                                 style: 'background: var(--error)',
                                 text: 'Cancel',
-                                events: {
-                                    click: () => {
-                                        actionCancel();
-                                        dialog.destroy();
-                                    },
+                                click: () => {
+                                    actionCancel();
+                                    dialog.destroy();
                                 },
                             }
                         ]
@@ -73,12 +68,10 @@ export function AsyncPrompt(label, value, oninput = null, onconfirm = null) {
         let area = EL.make('textarea', {
             text: value,
             rows: 1,
-            events: {
-                input: () => {
-                    area.style.height = area.scrollHeight + "px";
-                    if (oninput) area.value = oninput(area.value) + '';
-                },
-            }
+            input: () => {
+                area.style.height = area.scrollHeight + "px";
+                if (oninput) area.value = oninput(area.value) + '';
+            },
         });
 
         BaseDialog(label, area,

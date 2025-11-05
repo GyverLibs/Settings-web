@@ -12,6 +12,7 @@
 
 /* https://svgomg.net/ */
 /* https://yoksel.github.io/url-encoder/ */
+/* https://www.untitledui.com/free-icons */
 .icon.bars {
     --svg: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 82c0-20 16-35 35-35h417a35 35 0 0 1 0 69H46c-19 0-35-15-35-34Zm0 173c0-19 16-34 35-34h417a35 35 0 0 1 0 69H46c-19 0-35-15-35-35Zm486 174c0 19-15 34-34 34H46a35 35 0 1 1 0-69h417c19 0 34 15 34 35Z'/%3E%3C/svg%3E");
 }

@@ -6,8 +6,7 @@ export default class LabelWidget extends WidgetBase {
     constructor(data) {
         super(data);
 
-        super.addOutput(EL.make('span', {
-            context: this,
+        super.addOutput(EL.makeIn(this, 'span', {
             $: 'out',
             class: 'value bold',
             style: {

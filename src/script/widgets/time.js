@@ -8,8 +8,7 @@ class TimeWidgetBase extends WidgetBase {
 
         this.gmt = (data.zone !== undefined ? -data.zone : new Date().getTimezoneOffset()) * 60;
 
-        super.addOutput(EL.make('div', {
-            context: this,
+        super.addOutput(EL.makeIn(this, 'div', {
             class: 'input_cont',
             child: {
                 class: 'date_block',
@@ -20,14 +19,12 @@ class TimeWidgetBase extends WidgetBase {
                         type: type,
                         class: 'date value',
                         step: 1,
-                        events: {
-                            change: () => {
-                                if (!this.$input.value) this.update(0);
-                                this.sendValue(this.getUnix());
-                                this.update(this.getUnix());
-                            },
-                            click: () => this.$input.showPicker(),
-                        }
+                        change: () => {
+                            if (!this.$input.value) this.update(0);
+                            this.sendValue(this.getUnix());
+                            this.update(this.getUnix());
+                        },
+                        click: () => this.$input.showPicker(),
                     },
                     {
                         tag: 'span',

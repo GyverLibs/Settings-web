@@ -56,9 +56,8 @@ export default class Settings {
             marginRight: '4px',
         });
 
-        EL.make('div', {
+        EL.makeIn(this, 'div', {
             parent: document.body,
-            context: this,
             class: 'main',
             children: [
                 {
@@ -92,26 +91,24 @@ export default class Settings {
                         {
                             class: 'icon bars menubutton',
                             $: 'menubutton',
-                            events: {
-                                click: async () => {
-                                    iconFill(this.$ota, 'var(--font_tint)');
-                                    iconFill(this.$upload, 'var(--font_tint)');
-                                    this.$main_col.classList.toggle('hidden');
-                                    this.$main_menu.classList.toggle('hidden');
-                                    if (this.$main_menu.classList.contains('hidden')) {
-                                        this.$menubutton.classList = 'icon bars menubutton';
-                                        this.restartUpdates();
-                                    } else {
-                                        let change = (el, state) => el.parentNode.style.display = state ? 'block' : 'none';
-                                        change(this.$ota, this.granted);
-                                        change(this.$upload, this.granted && Config.useFS);
-                                        change(this.$create, this.granted && Config.useFS);
-                                        this.$menubutton.classList = 'icon cross menubutton';
-                                        this.stopUpdates();
-                                        if (this.granted && Config.useFS) await this.requset('fs');
-                                    }
-                                },
-                            }
+                            click: async () => {
+                                iconFill(this.$ota, 'var(--font_tint)');
+                                iconFill(this.$upload, 'var(--font_tint)');
+                                this.$main_col.classList.toggle('hidden');
+                                this.$main_menu.classList.toggle('hidden');
+                                if (this.$main_menu.classList.contains('hidden')) {
+                                    this.$menubutton.classList = 'icon bars menubutton';
+                                    this.restartUpdates();
+                                } else {
+                                    let change = (el, state) => el.parentNode.style.display = state ? 'block' : 'none';
+                                    change(this.$ota, this.granted);
+                                    change(this.$upload, this.granted && Config.useFS);
+                                    change(this.$create, this.granted && Config.useFS);
+                                    this.$menubutton.classList = 'icon cross menubutton';
+                                    this.stopUpdates();
+                                    if (this.granted && Config.useFS) await this.requset('fs');
+                                }
+                            },
                         },
                     ]
                 },
@@ -130,14 +127,12 @@ export default class Settings {
                                             class: 'menu_icon',
                                             child: {
                                                 class: 'icon moon',
-                                                events: {
-                                                    click: () => {
-                                                        document.body.classList.toggle('theme_dark');
-                                                        let dark = document.body.classList.contains('theme_dark');
-                                                        LS.set('dark', dark);
-                                                        Array.from(document.querySelectorAll('.plot')).map(p => p.dispatchEvent(new CustomEvent("dark_change", { detail: { dark: dark } })));
-                                                    },
-                                                }
+                                                click: () => {
+                                                    document.body.classList.toggle('theme_dark');
+                                                    let dark = document.body.classList.contains('theme_dark');
+                                                    LS.set('dark', dark);
+                                                    Array.from(document.querySelectorAll('.plot')).map(p => p.dispatchEvent(new CustomEvent("dark_change", { detail: { dark: dark } })));
+                                                },
                                             }
                                         },
                                         {
@@ -153,18 +148,14 @@ export default class Settings {
                                             $: 'upload_ota',
                                             style: 'display: none',
                                             accept: '.bin',
-                                            events: {
-                                                change: () => this.uploadOta(this.$upload_ota.files[0]),
-                                            }
+                                            change: () => this.uploadOta(this.$upload_ota.files[0]),
                                         },
                                         {
                                             tag: 'input',
                                             type: 'file',
                                             $: 'upload_file',
                                             style: 'display: none',
-                                            events: {
-                                                change: () => this.uploadFile(this.$upload_file.files[0]),
-                                            }
+                                            change: () => this.uploadFile(this.$upload_file.files[0]),
                                         },
                                         {
                                             class: 'menu_icon drop_area',
@@ -175,9 +166,7 @@ export default class Settings {
                                                 class: 'icon upload',
                                                 title: lang.upload,
                                                 $: 'upload',
-                                                events: {
-                                                    click: () => this.$upload_file.click(),
-                                                }
+                                                click: () => this.$upload_file.click(),
                                             }
                                         },
                                         {
@@ -186,11 +175,9 @@ export default class Settings {
                                                 class: 'icon create',
                                                 title: lang.create,
                                                 $: 'create',
-                                                events: {
-                                                    click: async () => {
-                                                        let path = await AsyncPrompt(lang.create, '/');
-                                                        if (path) await this.requset('create', 0, path);
-                                                    }
+                                                click: async () => {
+                                                    let path = await AsyncPrompt(lang.create, '/');
+                                                    if (path) await this.requset('create', 0, path);
                                                 }
                                             }
                                         },
@@ -203,9 +190,7 @@ export default class Settings {
                                                 class: 'icon cloud',
                                                 title: 'OTA',
                                                 $: 'ota',
-                                                events: {
-                                                    click: () => this.$upload_ota.click(),
-                                                }
+                                                click: () => this.$upload_ota.click(),
                                             }
                                         },
                                     ]
@@ -671,9 +656,7 @@ export default class Settings {
                             tag: 'span',
                             class: 'fs_path',
                             text: path,
-                            events: {
-                                click: () => this.downloadFile(path),
-                            }
+                            click: () => this.downloadFile(path),
                         },
                         {
                             class: 'fs_row',
@@ -687,32 +670,28 @@ export default class Settings {
                                 {
                                     class: 'icon edit fs_icon',
                                     style: { background: 'var(--accent)' },
-                                    events: {
-                                        click: async () => {
-                                            try {
-                                                let res = await this.fetchFile(path);
-                                                res = await res.text();
-                                                let changed = await AsyncPrompt(lang.edit + ' ' + path, res);
-                                                if (changed !== null) {
-                                                    let data = new FormData();
-                                                    let blob = new Blob([changed]);
-                                                    data.append('upload', blob, path);
-                                                    await this.uploadFormData(path, data);
-                                                }
-                                            } catch (e) {
-                                                popup(e);
+                                    click: async () => {
+                                        try {
+                                            let res = await this.fetchFile(path);
+                                            res = await res.text();
+                                            let changed = await AsyncPrompt(lang.edit + ' ' + path, res);
+                                            if (changed !== null) {
+                                                let data = new FormData();
+                                                let blob = new Blob([changed]);
+                                                data.append('upload', blob, path);
+                                                await this.uploadFormData(path, data);
                                             }
+                                        } catch (e) {
+                                            popup(e);
                                         }
                                     }
                                 },
                                 {
                                     class: 'icon cross fs_icon',
                                     style: { width: '17px', height: '17px', background: 'var(--error)' },
-                                    events: {
-                                        click: async () => {
-                                            if (await AsyncConfirm(`${lang.remove} ${path}?`)) {
-                                                this.removeFile(path);
-                                            }
+                                    click: async () => {
+                                        if (await AsyncConfirm(`${lang.remove} ${path}?`)) {
+                                            this.removeFile(path);
                                         }
                                     }
                                 }

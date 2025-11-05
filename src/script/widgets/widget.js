@@ -10,8 +10,7 @@ export default class WidgetBase {
     constructor(data, makeRow = true, makeWidget = true) {
         this.data = data;
         if (makeWidget) {
-            EL.make('div', {
-                context: this,
+            EL.makeIn(this, 'div', {
                 class: 'widget',
                 $: 'root',
                 child: makeRow && {
