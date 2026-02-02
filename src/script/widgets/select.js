@@ -68,7 +68,7 @@ export default class SelectWidget extends WidgetBase {
                     let opts = g[2].trim().split(/;|\n/);
                     if (!last(opts)) opts.pop();
                     groups.push({ title: g[1], opts: opts });
-                    this.options.push(...opts);
+                    this.options.push(...opts.map(o => g[1]+ '.' + o));
                 }
             }
         } else {

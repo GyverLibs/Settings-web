@@ -1,6 +1,7 @@
 .select {
-    max-height: 350px;
-    overflow-y: auto;
+    /* max-height: 350px; */
+    /* overflow-y: auto; */
+    overflow: hidden;
     padding: 0;
 }
 
