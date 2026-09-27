@@ -6,7 +6,6 @@ import { Config } from './config';
 import popup from './ui/popup';
 import unMap from './unmap';
 import Page from './cont/page';
-import { decodeBson } from '@alexgyver/bson';
 import { WidgetList } from './widgets/widgets';
 import WidgetBase from './widgets/widget';
 import { lang } from './lang';
@@ -15,6 +14,7 @@ import WSRequest from './wsrequest';
 import renderInfoRow from './ui/info';
 import { encodeText, FetchQueue, fetchTimeout, hash, httpPost, intToColor, last, LS, waitFrame } from '@alexgyver/utils';
 import { Arrow } from './ui/misc';
+import { BSDecoder } from '@alexgyver/bson';
 
 const anim_s = '.11s';
 const anim_ms = 100;
@@ -350,7 +350,7 @@ export default class Settings {
     //#region timers
     restartPing() {
         this.stopPing();
-        if (Config.pingPrd) this.ping_t = setTimeout(() => this.requset('ping'), Config.pingPrd);
+        if (Config.pingTout) this.ping_t = setTimeout(() => this.requset('ping'), Config.pingTout);
     }
     stopPing() {
         clearTimeout(this.ping_t);
@@ -416,11 +416,12 @@ export default class Settings {
 
     async parse(packet) {
         try {
-            packet = decodeBson(packet, codes);
+            packet = new BSDecoder(packet, codes).decode();
         } catch (e) {
             popup(e);
             return;
         }
+        if (!packet) return;
 
         if (packet.rssi) this.rssi = packet.rssi;
         changeRSSI(this.$rssi, this.rssi);
@@ -514,6 +515,7 @@ export default class Settings {
         this.queue.clear();
 
         Config.updateTout = json.update_tout;
+        Config.pingTout = json.ping_tout;
         Config.requestTout = json.request_tout;
         Config.sliderTout = json.send_tout;
         Config.useFS = json.use_fs;

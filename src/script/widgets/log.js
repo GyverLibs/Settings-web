@@ -23,17 +23,19 @@ export default class LogWidget extends WidgetBase {
     }
 
     async update(value) {
-        let cls = (t) => {
-            for (let v of ['info', 'warn', 'err']) {
-                if (t.startsWith(v + ':')) return v;
-            }
-            return '';
-        }
         if (!value) return;
 
+        let textAndClass = (t) => {
+            for (let v of ['info', 'warn', 'err']) {
+                if (t.startsWith(v + ':')) return { text: t.slice(v.length + 1).trim(), class: v };
+            }
+            return { text: t };
+        }
+
         EL.config(this.$out, {
-            children_r: value.split(/\r?\n/).map(t => EL.make(('p'), { text: t, class: cls(t) })),
+            children_r: value.split(/\r?\n/).map(t => EL.make('p', textAndClass(t))),
         });
+
         if (this.#auto) {
             this.#lock = true;
             await waitFrame();
